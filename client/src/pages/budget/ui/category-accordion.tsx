@@ -56,37 +56,39 @@ export function CategoryAccordion({
 	const amountColor = getCategoryAmountColor(categoryName);
 
 	return (
-		<View className="mx-4 mb-3 bg-white rounded-2xl shadow-sm overflow-hidden">
-			<Pressable
-				className="flex-row justify-between items-center px-4 py-3"
-				onPress={() => setExpanded((prev) => !prev)}
-			>
-				<Text className="text-sm font-bold text-slate-900">{categoryName}</Text>
-				<View className="flex-row items-center gap-2">
-					<Text className={`text-sm font-bold ${amountColor}`}>
-						{formatCurrency(categoryTotal, currency)}
-					</Text>
-					<Text className="text-slate-400 text-xs">
-						{expanded ? '‹' : '›'}
-					</Text>
-				</View>
-			</Pressable>
-			{expanded && items.length > 0 && (
-				<View className="border-t border-slate-100">
-					{items.map((item) => (
-						<BudgetItemRow
-							key={item.id}
-							name={item.name}
-							amount={getDisplayAmount(item)}
-							allocation={getAllocation(item)}
-							currency={currency}
-							onPress={() => onEditItem(item)}
-							onTogglePaid={onTogglePaid}
-							showCheckbox={selectedPeriodIndex !== 'full'}
-						/>
-					))}
-				</View>
-			)}
+		<View className="mx-4 mb-3 rounded-2xl shadow-sm">
+			<View className="bg-white rounded-2xl overflow-hidden">
+				<Pressable
+					className="flex-row justify-between items-center px-4 py-3"
+					onPress={() => setExpanded((prev) => !prev)}
+				>
+					<Text className="text-sm font-bold text-slate-900">{categoryName}</Text>
+					<View className="flex-row items-center gap-2">
+						<Text className={`text-sm font-bold ${amountColor}`}>
+							{formatCurrency(categoryTotal, currency)}
+						</Text>
+						<Text className="text-slate-400 text-xs">
+							{expanded ? '‹' : '›'}
+						</Text>
+					</View>
+				</Pressable>
+				{expanded && items.length > 0 && (
+					<View className="border-t border-slate-100">
+						{items.map((item) => (
+							<BudgetItemRow
+								key={item.id}
+								name={item.name}
+								amount={getDisplayAmount(item)}
+								allocation={getAllocation(item)}
+								currency={currency}
+								onPress={() => onEditItem(item)}
+								onTogglePaid={onTogglePaid}
+								showCheckbox={selectedPeriodIndex !== 'full'}
+							/>
+						))}
+					</View>
+				)}
+			</View>
 		</View>
 	);
 }
