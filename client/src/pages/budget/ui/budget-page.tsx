@@ -106,7 +106,9 @@ export function BudgetPage({
 
 					{itemsByCategory.length === 0 && (
 						<Text className="text-slate-400 text-sm text-center mt-16">
-							No budget items yet.{'\n'}Tap + to add one.
+							{isTotal
+							? 'No budget items yet.'
+							: 'No budget items yet.\nTap + to add one.'}
 						</Text>
 					)}
 				</ScrollView>
