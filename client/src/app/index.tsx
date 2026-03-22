@@ -3,7 +3,7 @@ import { ActivityIndicator, View } from 'react-native';
 import { Redirect } from 'expo-router';
 import { getDatabase } from '@shared/db';
 
-export default function Index() {
+const Index = () => {
 	const [isLoading, setIsLoading] = useState(true);
 	const [hasOnboarded, setHasOnboarded] = useState(false);
 
@@ -32,4 +32,6 @@ export default function Index() {
 	}
 
 	return <Redirect href="/onboarding/welcome" />;
-}
+};
+
+export default Index;

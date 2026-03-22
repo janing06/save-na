@@ -2,7 +2,7 @@ import { useCallback, useEffect, useState } from 'react';
 import type { Category } from '@shared/lib';
 import { listCategories } from '../../api/list-categories';
 
-export function useCategories() {
+export const useCategories = () => {
 	const [categories, setCategories] = useState<Category[]>([]);
 	const [isLoading, setIsLoading] = useState(true);
 

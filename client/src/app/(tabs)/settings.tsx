@@ -1,5 +1,7 @@
 import { SettingsPageContainer } from '@pages/settings';
 
-export default function SettingsScreen() {
+const SettingsScreen = () => {
 	return <SettingsPageContainer />;
-}
+};
+
+export default SettingsScreen;

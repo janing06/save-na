@@ -16,12 +16,12 @@ const scheduleLabels: Record<string, string> = {
 	weekly: 'Every week',
 };
 
-export function IncomeSourceCard({
+export const IncomeSourceCard = ({
 	source,
 	currency,
 	onEdit,
 	onDelete,
-}: Props) {
+}: Props) => {
 	return (
 		<Pressable
 			className="bg-white rounded-2xl shadow-sm mx-4 mb-3 px-4 py-3"

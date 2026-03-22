@@ -1,8 +1,8 @@
 import { Ionicons } from '@expo/vector-icons';
+import type { BudgetItemAllocation } from '@shared/lib';
+import { formatCurrency } from '@shared/lib';
 import { useState } from 'react';
 import { Pressable, Text, View } from 'react-native';
-import { formatCurrency } from '@shared/lib';
-import type { BudgetItemAllocation } from '@shared/lib';
 import type { BudgetItemWithAllocations } from '../api/list-budget-items';
 import { BudgetItemRow } from './budget-item-row';
 
@@ -15,18 +15,18 @@ type Props = {
 	onTogglePaid: (allocationId: number) => void;
 };
 
-function getCategoryAmountColor(categoryName: string): string {
+const getCategoryAmountColor = (categoryName: string): string => {
 	return categoryName === 'Expenses' ? 'text-red-500' : 'text-green-600';
-}
+};
 
-export function CategoryAccordion({
+export const CategoryAccordion = ({
 	categoryName,
 	items,
 	selectedPeriodIndex,
 	currency,
 	onEditItem,
 	onTogglePaid,
-}: Props) {
+}: Props) => {
 	const [expanded, setExpanded] = useState(true);
 
 	const categoryTotal = items.reduce((sum, item) => {
@@ -63,7 +63,9 @@ export function CategoryAccordion({
 					className="flex-row justify-between items-center px-4 py-3"
 					onPress={() => setExpanded((prev) => !prev)}
 				>
-					<Text className="text-sm font-bold text-slate-900">{categoryName}</Text>
+					<Text className="text-sm font-bold text-slate-900">
+						{categoryName}
+					</Text>
 					<View className="flex-row items-center gap-2">
 						<Text className={`text-sm font-bold ${amountColor}`}>
 							{formatCurrency(categoryTotal, currency)}
@@ -94,4 +96,4 @@ export function CategoryAccordion({
 			</View>
 		</View>
 	);
-}
+};

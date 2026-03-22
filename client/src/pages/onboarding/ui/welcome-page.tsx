@@ -4,7 +4,7 @@ type Props = {
 	onNext: () => void;
 };
 
-export function WelcomePage({ onNext }: Props) {
+export const WelcomePage = ({ onNext }: Props) => {
 	return (
 		<View className="flex-1 items-center justify-center bg-white px-8">
 			<Text className="text-4xl font-extrabold text-teal-600 mb-3">SaveNa</Text>

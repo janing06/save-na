@@ -1,11 +1,11 @@
 import { Ionicons } from '@expo/vector-icons';
+import type { Category, IncomeSource, PayPeriod } from '@shared/lib';
 import { Pressable, ScrollView, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import type { Category, IncomeSource, PayPeriod } from '@shared/lib';
+import type { BudgetItemWithAllocations } from '../api/list-budget-items';
 import type { useCreateBudgetItem } from '../model/hooks/use-create-budget-item';
 import type { useDeleteBudgetItem } from '../model/hooks/use-delete-budget-item';
 import type { useUpdateBudgetItem } from '../model/hooks/use-update-budget-item';
-import type { BudgetItemWithAllocations } from '../api/list-budget-items';
 import { BudgetItemModal } from './budget-item-modal';
 import { CategoryAccordion } from './category-accordion';
 import { MonthSelector } from './month-selector';
@@ -38,7 +38,7 @@ type Props = {
 	onTogglePaid: (allocationId: number) => void;
 };
 
-export function BudgetPage({
+export const BudgetPage = ({
 	month,
 	sourceSwitcher,
 	payPeriod,
@@ -49,7 +49,7 @@ export function BudgetPage({
 	update,
 	remove,
 	onTogglePaid,
-}: Props) {
+}: Props) => {
 	const modalVisible = create.showModal || !!update.editingItem;
 	const isTotal = sourceSwitcher.selectedSourceId === 'total';
 
@@ -107,8 +107,8 @@ export function BudgetPage({
 					{itemsByCategory.length === 0 && (
 						<Text className="text-slate-400 text-sm text-center mt-16">
 							{isTotal
-							? 'No budget items yet.'
-							: 'No budget items yet.\nTap + to add one.'}
+								? 'No budget items yet.'
+								: 'No budget items yet.\nTap + to add one.'}
 						</Text>
 					)}
 				</ScrollView>
@@ -135,4 +135,4 @@ export function BudgetPage({
 			/>
 		</View>
 	);
-}
+};

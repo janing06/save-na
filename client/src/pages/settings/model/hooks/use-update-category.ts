@@ -2,7 +2,7 @@ import { useState } from 'react';
 import type { Category } from '@shared/lib';
 import { updateCategory } from '../../api/update-category';
 
-export function useUpdateCategory(onSuccess: () => void) {
+export const useUpdateCategory = (onSuccess: () => void) => {
 	const [editingCategory, setEditingCategory] = useState<Category | null>(null);
 	const [isPending, setIsPending] = useState(false);
 

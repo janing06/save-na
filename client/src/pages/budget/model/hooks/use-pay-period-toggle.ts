@@ -1,11 +1,11 @@
-import { useEffect, useMemo, useState } from 'react';
-import { type PayPeriod, computePayPeriods } from '@shared/lib';
 import type { IncomeSource } from '@shared/lib';
+import { type PayPeriod, computePayPeriods } from '@shared/lib';
+import { useEffect, useMemo, useState } from 'react';
 
-export function usePayPeriodToggle(
+export const usePayPeriodToggle = (
 	source: IncomeSource | null,
 	yearMonth: string,
-) {
+) => {
 	const [selectedIndex, setSelectedIndex] = useState<number | 'full'>('full');
 
 	const periods: PayPeriod[] = useMemo(() => {

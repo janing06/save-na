@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { togglePaid } from '../../api/toggle-paid';
 
-export function useTogglePaid(onSuccess: () => void) {
+export const useTogglePaid = (onSuccess: () => void) => {
 	const [isPending, setIsPending] = useState(false);
 
 	const onToggle = async (allocationId: number) => {

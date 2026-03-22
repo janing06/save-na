@@ -1,12 +1,12 @@
-import { useState } from 'react';
 import {
 	currentYearMonth,
 	formatYearMonth,
 	nextMonth,
 	prevMonth,
 } from '@shared/lib';
+import { useState } from 'react';
 
-export function useBudgetMonth() {
+export const useBudgetMonth = () => {
 	const [yearMonth, setYearMonth] = useState(currentYearMonth());
 
 	const onNext = () => setYearMonth((prev) => nextMonth(prev));

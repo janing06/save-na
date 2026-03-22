@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { Alert } from 'react-native';
 import { deleteCategory } from '../../api/delete-category';
 
-export function useDeleteCategory(onSuccess: () => void) {
+export const useDeleteCategory = (onSuccess: () => void) => {
 	const [isPending, setIsPending] = useState(false);
 
 	const onDelete = (id: number) => {

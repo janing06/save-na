@@ -14,11 +14,11 @@ export type PayPeriod = {
  * @param yearMonth - "YYYY-MM" string
  * @returns Array of pay periods for the month
  */
-export function computePayPeriods(
+export const computePayPeriods = (
 	paySchedule: PaySchedule,
 	payDatesJson: string,
 	yearMonth: string,
-): PayPeriod[] {
+): PayPeriod[] => {
 	const payDates: number[] = JSON.parse(payDatesJson);
 	const [year, month] = yearMonth.split('-').map(Number);
 
@@ -50,20 +50,20 @@ export function computePayPeriods(
 }
 
 /** Returns the number of pay periods for a schedule in a given month */
-export function getPayPeriodCount(
+export const getPayPeriodCount = (
 	paySchedule: PaySchedule,
 	payDatesJson: string,
 	yearMonth: string,
-): number {
+): number => {
 	return computePayPeriods(paySchedule, payDatesJson, yearMonth).length;
 }
 
 /** Computes all dates for a given day-of-week in a month */
-function computeWeeklyDates(
+const computeWeeklyDates = (
 	dayOfWeek: number,
 	year: number,
 	month: number,
-): number[] {
+): number[] => {
 	const dates: number[] = [];
 	const daysInMonth = new Date(year, month, 0).getDate();
 
@@ -78,17 +78,17 @@ function computeWeeklyDates(
 }
 
 /** Computes bi-weekly dates (every other occurrence of a day-of-week) */
-function computeBiWeeklyDates(
+const computeBiWeeklyDates = (
 	dayOfWeek: number,
 	year: number,
 	month: number,
-): number[] {
+): number[] => {
 	const allDates = computeWeeklyDates(dayOfWeek, year, month);
 	return allDates.filter((_, i) => i % 2 === 0);
 }
 
 /** Returns ordinal suffix for a number, e.g. 1 → "1st", 15 → "15th" */
-function ordinal(n: number): string {
+const ordinal = (n: number): string => {
 	const s = ['th', 'st', 'nd', 'rd'];
 	const v = n % 100;
 	return n + (s[(v - 20) % 10] || s[v] || s[0]);

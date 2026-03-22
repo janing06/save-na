@@ -1,7 +1,7 @@
 import { Ionicons } from '@expo/vector-icons';
-import { Pressable, Text } from 'react-native';
-import { formatCurrency } from '@shared/lib';
 import type { BudgetItemAllocation } from '@shared/lib';
+import { formatCurrency } from '@shared/lib';
+import { Pressable, Text } from 'react-native';
 
 type Props = {
 	name: string;
@@ -13,7 +13,7 @@ type Props = {
 	showCheckbox: boolean;
 };
 
-export function BudgetItemRow({
+export const BudgetItemRow = ({
 	name,
 	amount,
 	allocation,
@@ -21,7 +21,7 @@ export function BudgetItemRow({
 	onPress,
 	onTogglePaid,
 	showCheckbox,
-}: Props) {
+}: Props) => {
 	const isPaid = allocation?.is_paid === 1;
 
 	return (
@@ -47,4 +47,4 @@ export function BudgetItemRow({
 			</Text>
 		</Pressable>
 	);
-}
+};

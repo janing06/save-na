@@ -18,13 +18,13 @@ type Props = {
 	remove: ReturnType<typeof useDeleteIncomeSource>;
 };
 
-export function IncomePage({
+export const IncomePage = ({
 	sources,
 	currency,
 	create,
 	update,
 	remove,
-}: Props) {
+}: Props) => {
 	const modalVisible = create.showModal || !!update.editingSource;
 	const totalIncome = sources.reduce((sum, s) => sum + s.amount, 0);
 

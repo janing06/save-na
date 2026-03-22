@@ -8,7 +8,7 @@ import {
 } from '../model/hooks';
 import { IncomePage } from './income-page';
 
-export function IncomePageContainer() {
+export const IncomePageContainer = () => {
 	const { sources, isLoading, refresh } = useIncomeSources();
 	const create = useCreateIncomeSource(refresh);
 	const update = useUpdateIncomeSource(refresh);

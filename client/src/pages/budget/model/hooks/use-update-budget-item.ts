@@ -1,13 +1,13 @@
-import { useState } from 'react';
 import type { IncomeSource, SplitType } from '@shared/lib';
+import { useState } from 'react';
 import type { BudgetItemWithAllocations } from '../../api/list-budget-items';
 import { updateBudgetItem } from '../../api/update-budget-item';
 
-export function useUpdateBudgetItem(
+export const useUpdateBudgetItem = (
 	selectedSource: IncomeSource | null,
 	yearMonth: string,
 	onSuccess: () => void,
-) {
+) => {
 	const [editingItem, setEditingItem] =
 		useState<BudgetItemWithAllocations | null>(null);
 	const [isPending, setIsPending] = useState(false);

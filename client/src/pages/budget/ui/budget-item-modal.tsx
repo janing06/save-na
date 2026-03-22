@@ -1,5 +1,6 @@
-import { useEffect, useState } from 'react';
 import { Ionicons } from '@expo/vector-icons';
+import type { Category, SplitType } from '@shared/lib';
+import { useEffect, useState } from 'react';
 import {
 	Modal,
 	Pressable,
@@ -8,7 +9,6 @@ import {
 	TextInput,
 	View,
 } from 'react-native';
-import type { Category, SplitType } from '@shared/lib';
 import type { BudgetItemWithAllocations } from '../api/list-budget-items';
 
 type Props = {
@@ -26,7 +26,7 @@ type Props = {
 	isPending: boolean;
 };
 
-export function BudgetItemModal({
+export const BudgetItemModal = ({
 	visible,
 	editingItem,
 	categories,
@@ -34,7 +34,7 @@ export function BudgetItemModal({
 	onDelete,
 	onClose,
 	isPending,
-}: Props) {
+}: Props) => {
 	const [name, setName] = useState('');
 	const [amount, setAmount] = useState('');
 	const [categoryId, setCategoryId] = useState<number | null>(null);
@@ -55,6 +55,13 @@ export function BudgetItemModal({
 
 	const isValid =
 		name.trim() !== '' && Number(amount) > 0 && categoryId !== null;
+
+	const canSubmit = isValid && !isPending;
+	const submitLabel = isPending
+		? 'Saving...'
+		: editingItem
+			? 'Save Changes'
+			: 'Add Item';
 
 	return (
 		<Modal
@@ -97,7 +104,9 @@ export function BudgetItemModal({
 					onBlur={() => setFocusedField(null)}
 				/>
 
-				<Text className="text-sm font-medium text-slate-700 mb-2">Category</Text>
+				<Text className="text-sm font-medium text-slate-700 mb-2">
+					Category
+				</Text>
 				<View className="flex-row flex-wrap gap-2 mb-6">
 					{categories.map((cat) => (
 						<Pressable
@@ -122,7 +131,7 @@ export function BudgetItemModal({
 
 				<Pressable
 					className={`rounded-xl px-8 py-4 items-center mb-3 ${
-						isValid && !isPending ? 'bg-teal-600' : 'bg-slate-200'
+						canSubmit ? 'bg-teal-600' : 'bg-slate-200'
 					}`}
 					onPress={() =>
 						isValid &&
@@ -133,14 +142,12 @@ export function BudgetItemModal({
 							splitType: 'even',
 						})
 					}
-					disabled={!isValid || isPending}
+					disabled={!canSubmit}
 				>
-					<Text className={`text-base font-bold ${isValid && !isPending ? 'text-white' : 'text-slate-400'}`}>
-						{isPending
-							? 'Saving...'
-							: editingItem
-								? 'Save Changes'
-								: 'Add Item'}
+					<Text
+						className={`text-base font-bold ${canSubmit ? 'text-white' : 'text-slate-400'}`}
+					>
+						{submitLabel}
 					</Text>
 				</Pressable>
 
@@ -157,4 +164,4 @@ export function BudgetItemModal({
 			</ScrollView>
 		</Modal>
 	);
-}
+};

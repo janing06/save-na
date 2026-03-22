@@ -29,7 +29,7 @@ const dayOfWeekOptions = [
 	{ value: 6, label: 'Saturday' },
 ];
 
-export function IncomeSourcePage({ onFinish, isPending }: Props) {
+export const IncomeSourcePage = ({ onFinish, isPending }: Props) => {
 	const [name, setName] = useState('');
 	const [amount, setAmount] = useState('');
 	const [paySchedule, setPaySchedule] = useState<PaySchedule>('bi-monthly');
@@ -51,6 +51,8 @@ export function IncomeSourcePage({ onFinish, isPending }: Props) {
 	};
 
 	const isValid = name.trim() !== '' && Number(amount) > 0;
+
+	const canSubmit = isValid && !isPending;
 
 	const handleFinish = () => {
 		if (!isValid) return;
@@ -185,12 +187,12 @@ export function IncomeSourcePage({ onFinish, isPending }: Props) {
 
 			<Pressable
 				className={`rounded-xl px-8 py-4 items-center mb-12 ${
-					isValid && !isPending ? 'bg-teal-600' : 'bg-slate-200'
+					canSubmit ? 'bg-teal-600' : 'bg-slate-200'
 				}`}
 				onPress={handleFinish}
-				disabled={!isValid || isPending}
+				disabled={!canSubmit}
 			>
-				<Text className={`text-base font-bold ${isValid && !isPending ? 'text-white' : 'text-slate-400'}`}>
+				<Text className={`text-base font-bold ${canSubmit ? 'text-white' : 'text-slate-400'}`}>
 					{isPending ? 'Setting up...' : 'Start Budgeting'}
 				</Text>
 			</Pressable>

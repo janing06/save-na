@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { createCategory } from '../../api/create-category';
 
-export function useCreateCategory(onSuccess: () => void) {
+export const useCreateCategory = (onSuccess: () => void) => {
 	const [showModal, setShowModal] = useState(false);
 	const [isPending, setIsPending] = useState(false);
 

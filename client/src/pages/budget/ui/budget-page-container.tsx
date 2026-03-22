@@ -1,7 +1,7 @@
-import { useCallback, useMemo, useState } from 'react';
-import { useFocusEffect } from 'expo-router';
 import { getPreferences, listCategories } from '@shared/db';
 import type { Category } from '@shared/lib';
+import { useFocusEffect } from 'expo-router';
+import { useCallback, useMemo, useState } from 'react';
 import {
 	useBudgetItems,
 	useBudgetMonth,
@@ -14,7 +14,7 @@ import {
 } from '../model/hooks';
 import { BudgetPage } from './budget-page';
 
-export function BudgetPageContainer() {
+export const BudgetPageContainer = () => {
 	const month = useBudgetMonth();
 	const switcher = useSourceSwitcher();
 	const payPeriod = usePayPeriodToggle(
@@ -36,7 +36,10 @@ export function BudgetPageContainer() {
 		month.yearMonth,
 		refresh,
 	);
-	const remove = useDeleteBudgetItem(() => { refresh(); update.onCancel(); });
+	const remove = useDeleteBudgetItem(() => {
+		refresh();
+		update.onCancel();
+	});
 	const { onToggle } = useTogglePaid(refresh);
 
 	const [currency, setCurrency] = useState('PHP');
@@ -114,4 +117,4 @@ export function BudgetPageContainer() {
 			onTogglePaid={onToggle}
 		/>
 	);
-}
+};

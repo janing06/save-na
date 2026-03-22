@@ -1,6 +1,6 @@
 import { CurrencyPage, useOnboarding } from '@pages/onboarding';
 
-export default function CurrencyScreen() {
+const CurrencyScreen = () => {
 	const { currency, onSelectCurrency, onCurrencyNext } = useOnboarding();
 	return (
 		<CurrencyPage
@@ -9,4 +9,6 @@ export default function CurrencyScreen() {
 			onNext={onCurrencyNext}
 		/>
 	);
-}
+};
+
+export default CurrencyScreen;

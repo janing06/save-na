@@ -1,5 +1,5 @@
-import { Pressable, ScrollView, Text } from 'react-native';
 import type { IncomeSource } from '@shared/lib';
+import { Pressable, ScrollView, Text } from 'react-native';
 
 type Props = {
 	sources: IncomeSource[];
@@ -7,7 +7,7 @@ type Props = {
 	onSelect: (id: number | 'total') => void;
 };
 
-export function SourceSwitcher({ sources, selectedId, onSelect }: Props) {
+export const SourceSwitcher = ({ sources, selectedId, onSelect }: Props) => {
 	return (
 		<ScrollView
 			horizontal
@@ -48,4 +48,4 @@ export function SourceSwitcher({ sources, selectedId, onSelect }: Props) {
 			</Pressable>
 		</ScrollView>
 	);
-}
+};

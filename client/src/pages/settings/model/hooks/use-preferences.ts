@@ -2,7 +2,7 @@ import { useCallback, useEffect, useState } from 'react';
 import type { UserPreferences } from '@shared/lib';
 import { getPreferences } from '../../api/get-preferences';
 
-export function usePreferences() {
+export const usePreferences = () => {
 	const [preferences, setPreferences] = useState<UserPreferences | null>(null);
 	const [isLoading, setIsLoading] = useState(true);
 

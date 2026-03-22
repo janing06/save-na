@@ -1,5 +1,7 @@
 import { IncomePageContainer } from '@pages/income';
 
-export default function IncomeScreen() {
+const IncomeScreen = () => {
 	return <IncomePageContainer />;
-}
+};
+
+export default IncomeScreen;

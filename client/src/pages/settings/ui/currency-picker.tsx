@@ -9,12 +9,12 @@ type Props = {
 	onClose: () => void;
 };
 
-export function CurrencyPicker({
+export const CurrencyPicker = ({
 	visible,
 	selectedCurrency,
 	onSelect,
 	onClose,
-}: Props) {
+}: Props) => {
 	return (
 		<Modal
 			visible={visible}
