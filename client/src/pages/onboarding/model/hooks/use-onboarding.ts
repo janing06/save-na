@@ -7,7 +7,7 @@ import { saveIncomeSource } from '../../api/save-income-source';
 
 const onboardingCurrencyAtom = atom('PHP');
 
-export function useOnboarding() {
+export const useOnboarding = () => {
 	const router = useRouter();
 	const [currency, setCurrency] = useAtom(onboardingCurrencyAtom);
 	const [isPending, setIsPending] = useState(false);

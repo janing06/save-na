@@ -1,5 +1,7 @@
 import { BudgetPageContainer } from '@pages/budget';
 
-export default function BudgetScreen() {
+const BudgetScreen = () => {
 	return <BudgetPageContainer />;
-}
+};
+
+export default BudgetScreen;

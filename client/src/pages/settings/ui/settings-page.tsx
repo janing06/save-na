@@ -23,14 +23,14 @@ type Props = {
 	deleteCategory: ReturnType<typeof useDeleteCategory>;
 };
 
-export function SettingsPage({
+export const SettingsPage = ({
 	preferences,
 	categories,
 	currencyPicker,
 	createCategory,
 	updateCategory,
 	deleteCategory,
-}: Props) {
+}: Props) => {
 	const currencyInfo = currencies.find((c) => c.code === preferences?.currency);
 
 	const categoryModalVisible =

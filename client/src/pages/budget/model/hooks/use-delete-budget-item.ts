@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { Alert } from 'react-native';
 import { deleteBudgetItem } from '../../api/delete-budget-item';
 
-export function useDeleteBudgetItem(onSuccess: () => void) {
+export const useDeleteBudgetItem = (onSuccess: () => void) => {
 	const [isPending, setIsPending] = useState(false);
 
 	const onDelete = (id: number) => {

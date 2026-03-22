@@ -2,7 +2,7 @@ import { useState } from 'react';
 import type { IncomeSource, PaySchedule } from '@shared/lib';
 import { updateIncomeSource } from '../../api/update-income-source';
 
-export function useUpdateIncomeSource(onSuccess: () => void) {
+export const useUpdateIncomeSource = (onSuccess: () => void) => {
 	const [editingSource, setEditingSource] = useState<IncomeSource | null>(null);
 	const [isPending, setIsPending] = useState(false);
 

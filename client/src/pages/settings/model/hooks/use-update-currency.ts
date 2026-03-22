@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { updateCurrency } from '../../api/update-currency';
 
-export function useUpdateCurrency(onSuccess: () => void) {
+export const useUpdateCurrency = (onSuccess: () => void) => {
 	const [isPending, setIsPending] = useState(false);
 
 	const onUpdate = async (currency: string) => {

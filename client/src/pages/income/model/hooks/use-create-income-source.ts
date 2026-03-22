@@ -1,8 +1,8 @@
-import { useState } from 'react';
 import type { PaySchedule } from '@shared/lib';
+import { useState } from 'react';
 import { createIncomeSource } from '../../api/create-income-source';
 
-export function useCreateIncomeSource(onSuccess: () => void) {
+export const useCreateIncomeSource = (onSuccess: () => void) => {
 	const [showModal, setShowModal] = useState(false);
 	const [isPending, setIsPending] = useState(false);
 

@@ -1,5 +1,5 @@
-import { Text, View } from 'react-native';
 import { formatCurrency } from '@shared/lib';
+import { Text, View } from 'react-native';
 
 type Props = {
 	income: number;
@@ -7,9 +7,10 @@ type Props = {
 	currency: string;
 };
 
-export function SummaryCard({ income, allocated, currency }: Props) {
+export const SummaryCard = ({ income, allocated, currency }: Props) => {
 	const remaining = income - allocated;
-	const allocatedPercent = income > 0 ? Math.min((allocated / income) * 100, 100) : 0;
+	const allocatedPercent =
+		income > 0 ? Math.min((allocated / income) * 100, 100) : 0;
 
 	return (
 		<View className="bg-white/15 rounded-2xl mx-4 p-4 mb-2">
@@ -51,4 +52,4 @@ export function SummaryCard({ income, allocated, currency }: Props) {
 			</Text>
 		</View>
 	);
-}
+};

@@ -1,9 +1,9 @@
-import { useCallback, useRef, useState } from 'react';
-import { useFocusEffect } from 'expo-router';
-import type { IncomeSource } from '@shared/lib';
 import { listIncomeSources } from '@shared/db';
+import type { IncomeSource } from '@shared/lib';
+import { useFocusEffect } from 'expo-router';
+import { useCallback, useRef, useState } from 'react';
 
-export function useSourceSwitcher() {
+export const useSourceSwitcher = () => {
 	const [sources, setSources] = useState<IncomeSource[]>([]);
 	const [selectedSourceId, setSelectedSourceId] = useState<
 		number | 'total' | null

@@ -1,5 +1,5 @@
-import { Pressable, ScrollView, Text } from 'react-native';
 import type { PayPeriod } from '@shared/lib';
+import { Pressable, ScrollView, Text } from 'react-native';
 
 type Props = {
 	periods: PayPeriod[];
@@ -7,7 +7,11 @@ type Props = {
 	onSelect: (index: number | 'full') => void;
 };
 
-export function PayPeriodToggle({ periods, selectedIndex, onSelect }: Props) {
+export const PayPeriodToggle = ({
+	periods,
+	selectedIndex,
+	onSelect,
+}: Props) => {
 	return (
 		<ScrollView
 			horizontal
@@ -52,4 +56,4 @@ export function PayPeriodToggle({ periods, selectedIndex, onSelect }: Props) {
 			))}
 		</ScrollView>
 	);
-}
+};

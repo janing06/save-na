@@ -1,20 +1,45 @@
 {
-	"paths": {
-		"@/*": ["src/*"],
-		"@core/*": ["src/core/*"],
-		"@entities/*": ["src/entities/*"],
-		"@pages/*": ["src/pages/*"],
-		"@shared/*": ["src/shared/*"],
-		"@widgets/*": ["src/widgets/*"],
-		"@features/*": ["src/features/*"]
-	},
-	// Pages barrel exports consumed by app/ via direct subpath imports
-	"ignore": ["steiger.config.ts", "src/pages/onboarding/index.ts"],
-	"ignoreDependencies": [
-		"@feature-sliced/steiger-plugin",
-		// Used by Expo at build time via app.json
-		"expo-updates"
-	],
-	// Public API exports kept for future use
-	"ignoreExportsUsedInFile": true
+  "paths": {
+    "@/*": [
+      "src/*"
+    ],
+    "@core/*": [
+      "src/core/*"
+    ],
+    "@entities/*": [
+      "src/entities/*"
+    ],
+    "@pages/*": [
+      "src/pages/*"
+    ],
+    "@shared/*": [
+      "src/shared/*"
+    ],
+    "@widgets/*": [
+      "src/widgets/*"
+    ],
+    "@features/*": [
+      "src/features/*"
+    ]
+  },
+  // Expo Router file-based routing — entry points are the app/ directory.
+  // Setting entry explicitly prevents knip from resolving package.json "main"
+  // (expo-router/entry is an Expo convention, not a local file).
+  "entry": ["src/app/**/*.{ts,tsx}"],
+  // Pages barrel exports consumed by app/ via direct subpath imports
+  "ignore": [
+    "steiger.config.ts",
+    // Used by Expo build tooling, not imported directly
+    "babel.config.js",
+    "metro.config.js"
+  ],
+  "ignoreDependencies": [
+    "@feature-sliced/steiger-plugin",
+    // Used by Expo at build time via app.json
+    "expo-updates",
+    // Bundled with Expo SDK, not listed as a direct dependency
+    "@expo/vector-icons"
+  ],
+  // Public API exports kept for future use
+  "ignoreExportsUsedInFile": true
 }

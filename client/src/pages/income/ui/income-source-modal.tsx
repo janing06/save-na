@@ -41,14 +41,14 @@ const dayOfWeekOptions = [
 	{ value: 6, label: 'Sat' },
 ];
 
-export function IncomeSourceModal({
+export const IncomeSourceModal = ({
 	visible,
 	editingSource,
 	onSubmit,
 	onDelete,
 	onClose,
 	isPending,
-}: Props) {
+}: Props) => {
 	const [name, setName] = useState('');
 	const [amount, setAmount] = useState('');
 	const [paySchedule, setPaySchedule] = useState<PaySchedule>('bi-monthly');
@@ -100,6 +100,9 @@ export function IncomeSourceModal({
 	};
 
 	const isValid = name.trim() !== '' && Number(amount) > 0;
+
+	const canSubmit = isValid && !isPending;
+	const submitLabel = isPending ? 'Saving...' : editingSource ? 'Save Changes' : 'Add Income';
 
 	return (
 		<Modal
@@ -231,7 +234,7 @@ export function IncomeSourceModal({
 
 				<Pressable
 					className={`rounded-xl px-8 py-4 items-center mb-3 ${
-						isValid && !isPending ? 'bg-teal-600' : 'bg-slate-200'
+						canSubmit ? 'bg-teal-600' : 'bg-slate-200'
 					}`}
 					onPress={() =>
 						isValid &&
@@ -242,14 +245,10 @@ export function IncomeSourceModal({
 							payDates: getPayDates(),
 						})
 					}
-					disabled={!isValid || isPending}
+					disabled={!canSubmit}
 				>
-					<Text className={`text-base font-bold ${isValid && !isPending ? 'text-white' : 'text-slate-400'}`}>
-						{isPending
-							? 'Saving...'
-							: editingSource
-								? 'Save Changes'
-								: 'Add Income'}
+					<Text className={`text-base font-bold ${canSubmit ? 'text-white' : 'text-slate-400'}`}>
+						{submitLabel}
 					</Text>
 				</Pressable>
 				{editingSource && onDelete && (

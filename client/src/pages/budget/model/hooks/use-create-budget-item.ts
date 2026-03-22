@@ -1,13 +1,13 @@
-import { useState } from 'react';
 import type { IncomeSource, SplitType } from '@shared/lib';
+import { useState } from 'react';
 import { createBudgetItem } from '../../api/create-budget-item';
 
-export function useCreateBudgetItem(
+export const useCreateBudgetItem = (
 	budgetMonthId: number | null,
 	selectedSource: IncomeSource | null,
 	yearMonth: string,
 	onSuccess: () => void,
-) {
+) => {
 	const [showModal, setShowModal] = useState(false);
 	const [isPending, setIsPending] = useState(false);
 

@@ -9,7 +9,7 @@ import {
 } from '../model/hooks';
 import { SettingsPage } from './settings-page';
 
-export function SettingsPageContainer() {
+export const SettingsPageContainer = () => {
 	const { preferences, refresh: refreshPrefs } = usePreferences();
 	const { categories, refresh: refreshCats } = useCategories();
 	const { onUpdate } = useUpdateCurrency(refreshPrefs);

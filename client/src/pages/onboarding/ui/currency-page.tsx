@@ -8,7 +8,7 @@ type Props = {
 	onNext: () => void;
 };
 
-export function CurrencyPage({ selectedCurrency, onSelect, onNext }: Props) {
+export const CurrencyPage = ({ selectedCurrency, onSelect, onNext }: Props) => {
 	return (
 		<View className="flex-1 bg-white pt-16 px-6">
 			<Text className="text-2xl font-bold text-slate-900 mb-2">

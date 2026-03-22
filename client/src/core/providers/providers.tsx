@@ -5,7 +5,7 @@ type Props = {
 	children: ReactNode;
 };
 
-export function Providers({ children }: Props) {
+export const Providers = ({ children }: Props) => {
 	return (
 		<Suspense
 			fallback={

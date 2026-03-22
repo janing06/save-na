@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { Alert } from 'react-native';
 import { deleteIncomeSource } from '../../api/delete-income-source';
 
-export function useDeleteIncomeSource(onSuccess: () => void) {
+export const useDeleteIncomeSource = (onSuccess: () => void) => {
 	const [isPending, setIsPending] = useState(false);
 
 	const onDelete = (id: number) => {

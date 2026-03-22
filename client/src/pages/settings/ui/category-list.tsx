@@ -13,14 +13,14 @@ type Props = {
 	onCurrencyPress: () => void;
 };
 
-export function CategoryList({
+export const CategoryList = ({
 	categories,
 	currencyInfo,
 	onEdit,
 	onDelete,
 	onAdd,
 	onCurrencyPress,
-}: Props) {
+}: Props) => {
 	return (
 		<View>
 			{/* Currency row */}

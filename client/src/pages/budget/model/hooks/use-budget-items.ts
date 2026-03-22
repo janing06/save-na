@@ -5,10 +5,10 @@ import {
 	listBudgetItems,
 } from '../../api/list-budget-items';
 
-export function useBudgetItems(
+export const useBudgetItems = (
 	yearMonth: string,
 	incomeSourceId: number | 'total' | null,
-) {
+) => {
 	const [items, setItems] = useState<BudgetItemWithAllocations[]>([]);
 	const [budgetMonthId, setBudgetMonthId] = useState<number | null>(null);
 	const [isLoading, setIsLoading] = useState(true);

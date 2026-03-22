@@ -11,13 +11,13 @@ type Props = {
 	isPending: boolean;
 };
 
-export function CategoryModal({
+export const CategoryModal = ({
 	visible,
 	editingCategory,
 	onSubmit,
 	onClose,
 	isPending,
-}: Props) {
+}: Props) => {
 	const [name, setName] = useState('');
 	const [nameFocused, setNameFocused] = useState(false);
 
