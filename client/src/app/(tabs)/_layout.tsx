@@ -1,5 +1,5 @@
+import { Ionicons } from '@expo/vector-icons';
 import { Tabs } from 'expo-router';
-import { Text } from 'react-native';
 
 export default function TabLayout() {
 	return (
@@ -19,7 +19,7 @@ export default function TabLayout() {
 				options={{
 					title: 'Budget',
 					tabBarIcon: ({ color }) => (
-						<Text style={{ color, fontSize: 20 }}>📊</Text>
+						<Ionicons name="bar-chart" size={22} color={color} />
 					),
 				}}
 			/>
@@ -28,7 +28,7 @@ export default function TabLayout() {
 				options={{
 					title: 'Income',
 					tabBarIcon: ({ color }) => (
-						<Text style={{ color, fontSize: 20 }}>💰</Text>
+						<Ionicons name="cash" size={22} color={color} />
 					),
 				}}
 			/>
@@ -37,7 +37,7 @@ export default function TabLayout() {
 				options={{
 					title: 'Settings',
 					tabBarIcon: ({ color }) => (
-						<Text style={{ color, fontSize: 20 }}>⚙️</Text>
+						<Ionicons name="settings-sharp" size={22} color={color} />
 					),
 				}}
 			/>

@@ -7,6 +7,7 @@ import {
 	TextInput,
 	View,
 } from 'react-native';
+import { Ionicons } from '@expo/vector-icons';
 import type { IncomeSource, PaySchedule } from '@shared/lib';
 
 type Props = {
@@ -18,6 +19,7 @@ type Props = {
 		paySchedule: PaySchedule;
 		payDates: number[];
 	}) => void;
+	onDelete?: (id: number) => void;
 	onClose: () => void;
 	isPending: boolean;
 };
@@ -43,6 +45,7 @@ export function IncomeSourceModal({
 	visible,
 	editingSource,
 	onSubmit,
+	onDelete,
 	onClose,
 	isPending,
 }: Props) {
@@ -60,7 +63,12 @@ export function IncomeSourceModal({
 			setName(editingSource.name);
 			setAmount(String(editingSource.amount));
 			setPaySchedule(editingSource.pay_schedule);
-			const dates: number[] = JSON.parse(editingSource.pay_dates);
+			let dates: number[] = [];
+			try {
+				dates = JSON.parse(editingSource.pay_dates);
+			} catch {
+				dates = [];
+			}
 			if (editingSource.pay_schedule === 'monthly') {
 				setFirstPayDay(String(dates[0]));
 			} else if (editingSource.pay_schedule === 'bi-monthly') {
@@ -105,7 +113,7 @@ export function IncomeSourceModal({
 						{editingSource ? 'Edit Income' : 'Add Income'}
 					</Text>
 					<Pressable onPress={onClose}>
-						<Text className="text-slate-400 text-lg">✕</Text>
+						<Ionicons name="close" size={22} color="#94a3b8" />
 					</Pressable>
 				</View>
 
@@ -222,7 +230,7 @@ export function IncomeSourceModal({
 				)}
 
 				<Pressable
-					className={`rounded-xl px-8 py-4 items-center mb-12 ${
+					className={`rounded-xl px-8 py-4 items-center mb-3 ${
 						isValid && !isPending ? 'bg-teal-600' : 'bg-slate-200'
 					}`}
 					onPress={() =>
@@ -244,6 +252,16 @@ export function IncomeSourceModal({
 								: 'Add Income'}
 					</Text>
 				</Pressable>
+				{editingSource && onDelete && (
+					<Pressable
+						className="items-center py-3 mb-12"
+						onPress={() => onDelete(editingSource.id)}
+					>
+						<Text className="text-red-500 text-sm font-semibold">
+							Delete Income Source
+						</Text>
+					</Pressable>
+				)}
 			</ScrollView>
 		</Modal>
 	);

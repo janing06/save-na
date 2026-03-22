@@ -1,3 +1,4 @@
+import { Ionicons } from '@expo/vector-icons';
 import { Pressable, Text } from 'react-native';
 import { formatCurrency } from '@shared/lib';
 import type { BudgetItemAllocation } from '@shared/lib';
@@ -27,7 +28,11 @@ export function BudgetItemRow({
 		<Pressable className="flex-row items-center px-4 py-2.5" onPress={onPress}>
 			{showCheckbox && allocation && (
 				<Pressable className="mr-3" onPress={() => onTogglePaid(allocation.id)}>
-					<Text className="text-lg text-slate-400">{isPaid ? '☑' : '☐'}</Text>
+					<Ionicons
+						name={isPaid ? 'checkbox' : 'square-outline'}
+						size={20}
+						color={isPaid ? '#0d9488' : '#94a3b8'}
+					/>
 				</Pressable>
 			)}
 			<Text

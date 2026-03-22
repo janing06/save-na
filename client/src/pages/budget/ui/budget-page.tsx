@@ -1,3 +1,4 @@
+import { Ionicons } from '@expo/vector-icons';
 import { Pressable, ScrollView, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import type { Category, IncomeSource, PayPeriod } from '@shared/lib';
@@ -19,7 +20,6 @@ type Props = {
 		selectedSourceId: number | 'total' | null;
 		showSwitcher: boolean;
 		onSelect: (id: number | 'total') => void;
-		selectedSource: IncomeSource | null;
 	};
 	payPeriod: {
 		periods: PayPeriod[];
@@ -119,7 +119,7 @@ export function BudgetPage({
 						style={{ shadowColor: '#0d9488' }}
 						onPress={create.onShow}
 					>
-						<Text className="text-white text-2xl">+</Text>
+						<Ionicons name="add" size={28} color="white" />
 					</Pressable>
 				)}
 			</View>

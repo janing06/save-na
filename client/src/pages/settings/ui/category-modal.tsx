@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Modal, Pressable, Text, TextInput, View } from 'react-native';
+import { Ionicons } from '@expo/vector-icons';
 import type { Category } from '@shared/lib';
 
 type Props = {
@@ -39,7 +40,7 @@ export function CategoryModal({
 						{editingCategory ? 'Rename Category' : 'Add Category'}
 					</Text>
 					<Pressable onPress={onClose}>
-						<Text className="text-slate-400 text-lg">✕</Text>
+						<Ionicons name="close" size={22} color="#94a3b8" />
 					</Pressable>
 				</View>
 

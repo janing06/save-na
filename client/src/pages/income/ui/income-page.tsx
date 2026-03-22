@@ -1,3 +1,4 @@
+import { Ionicons } from '@expo/vector-icons';
 import { FlatList, Pressable, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import type { IncomeSource } from '@shared/lib';
@@ -19,7 +20,6 @@ type Props = {
 
 export function IncomePage({
 	sources,
-	isLoading,
 	currency,
 	create,
 	update,
@@ -68,7 +68,7 @@ export function IncomePage({
 					style={{ shadowColor: '#0d9488' }}
 					onPress={create.onShow}
 				>
-					<Text className="text-white text-2xl">+</Text>
+					<Ionicons name="add" size={28} color="white" />
 				</Pressable>
 			</View>
 
@@ -76,6 +76,7 @@ export function IncomePage({
 				visible={modalVisible}
 				editingSource={update.editingSource}
 				onSubmit={update.editingSource ? update.onSubmit : create.onSubmit}
+				onDelete={update.editingSource ? remove.onDelete : undefined}
 				onClose={update.editingSource ? update.onCancel : create.onHide}
 				isPending={create.isPending || update.isPending}
 			/>

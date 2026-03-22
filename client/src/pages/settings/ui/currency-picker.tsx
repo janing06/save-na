@@ -1,4 +1,5 @@
 import { FlatList, Modal, Pressable, Text, View } from 'react-native';
+import { Ionicons } from '@expo/vector-icons';
 import { currencies } from '@shared/config';
 
 type Props = {
@@ -24,7 +25,7 @@ export function CurrencyPicker({
 				<View className="flex-row justify-between items-center mb-6">
 					<Text className="text-xl font-bold text-slate-900">Currency</Text>
 					<Pressable onPress={onClose}>
-						<Text className="text-slate-400 text-lg">✕</Text>
+						<Ionicons name="close" size={22} color="#94a3b8" />
 					</Pressable>
 				</View>
 				<FlatList
@@ -43,7 +44,7 @@ export function CurrencyPicker({
 								}}
 							>
 								<Text className="text-base text-slate-900 flex-1">
-									{item.symbol} {item.name}
+									{item.name}
 								</Text>
 								<Text
 									className={`text-sm font-semibold mr-2 ${
@@ -53,7 +54,7 @@ export function CurrencyPicker({
 									{item.code}
 								</Text>
 								{isSelected && (
-									<Text className="text-teal-600 font-bold">✓</Text>
+									<Ionicons name="checkmark" size={18} color="#0d9488" />
 								)}
 							</Pressable>
 						);

@@ -1,3 +1,4 @@
+import { Ionicons } from '@expo/vector-icons';
 import { useState } from 'react';
 import { Pressable, Text, View } from 'react-native';
 import { formatCurrency } from '@shared/lib';
@@ -67,9 +68,11 @@ export function CategoryAccordion({
 						<Text className={`text-sm font-bold ${amountColor}`}>
 							{formatCurrency(categoryTotal, currency)}
 						</Text>
-						<Text className="text-slate-400 text-xs">
-							{expanded ? '‹' : '›'}
-						</Text>
+						<Ionicons
+							name={expanded ? 'chevron-up' : 'chevron-forward'}
+							size={16}
+							color="#94a3b8"
+						/>
 					</View>
 				</Pressable>
 				{expanded && items.length > 0 && (

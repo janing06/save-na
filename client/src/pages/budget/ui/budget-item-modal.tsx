@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { Ionicons } from '@expo/vector-icons';
 import {
 	Modal,
 	Pressable,
@@ -67,7 +68,7 @@ export function BudgetItemModal({
 						{editingItem ? 'Edit Item' : 'Add Item'}
 					</Text>
 					<Pressable onPress={onClose}>
-						<Text className="text-slate-400 text-lg">✕</Text>
+						<Ionicons name="close" size={22} color="#94a3b8" />
 					</Pressable>
 				</View>
 
