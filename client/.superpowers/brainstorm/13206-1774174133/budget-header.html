@@ -1,0 +1,124 @@
+<h2>How should the Budget screen header look?</h2>
+<p class="subtitle">Teal accent · Clean & Light · This is the first thing users see every day</p>
+
+<div class="cards">
+
+  <div class="card" data-choice="hero-card" onclick="toggleSelect(this)">
+    <div class="card-image" style="background:#f1f5f9;font-family:sans-serif;border-radius:8px 8px 0 0;overflow:hidden">
+      <!-- Nav bar -->
+      <div style="background:#f1f5f9;padding:10px 14px 6px;display:flex;justify-content:space-between;align-items:center">
+        <span style="font-size:11px;color:#64748b">◀</span>
+        <span style="font-size:13px;font-weight:700;color:#0f172a">March 2026</span>
+        <span style="font-size:11px;color:#64748b">▶</span>
+      </div>
+      <!-- Hero summary card -->
+      <div style="background:#0d9488;margin:0 14px 10px;border-radius:16px;padding:16px">
+        <div style="display:flex;justify-content:space-between;margin-bottom:12px">
+          <div>
+            <div style="font-size:10px;color:rgba(255,255,255,0.7);margin-bottom:2px">Income</div>
+            <div style="font-size:18px;font-weight:800;color:#fff">₱53,392</div>
+          </div>
+          <div style="text-align:right">
+            <div style="font-size:10px;color:rgba(255,255,255,0.7);margin-bottom:2px">Remaining</div>
+            <div style="font-size:18px;font-weight:800;color:#fff">₱27,296</div>
+          </div>
+        </div>
+        <!-- Progress bar -->
+        <div style="background:rgba(255,255,255,0.25);border-radius:4px;height:6px;margin-bottom:6px">
+          <div style="background:#fff;border-radius:4px;height:6px;width:51%"></div>
+        </div>
+        <div style="font-size:10px;color:rgba(255,255,255,0.8)">₱26,096 allocated · 49% of income</div>
+      </div>
+      <!-- Pay period pills -->
+      <div style="padding:0 14px;display:flex;gap:6px;margin-bottom:8px">
+        <div style="background:#0d9488;color:#fff;border-radius:20px;padding:4px 12px;font-size:11px;font-weight:600">Full Month</div>
+        <div style="background:#fff;color:#64748b;border-radius:20px;padding:4px 12px;font-size:11px;border:1px solid #e2e8f0">15th</div>
+        <div style="background:#fff;color:#64748b;border-radius:20px;padding:4px 12px;font-size:11px;border:1px solid #e2e8f0">30th</div>
+      </div>
+      <!-- Category -->
+      <div style="margin:0 14px;background:#fff;border-radius:12px;padding:10px 12px;box-shadow:0 1px 4px rgba(0,0,0,0.06);display:flex;justify-content:space-between">
+        <span style="font-size:13px;font-weight:600;color:#0f172a">Expenses</span>
+        <span style="font-size:13px;font-weight:700;color:#ef4444">₱18,000</span>
+      </div>
+    </div>
+    <div class="card-body">
+      <h3>A · Hero Card</h3>
+      <p>Big teal summary card dominates the top with a progress bar. Immediately shows budget health. Bold and modern.</p>
+    </div>
+  </div>
+
+  <div class="card" data-choice="stats-row" onclick="toggleSelect(this)">
+    <div class="card-image" style="background:#f8fafc;font-family:sans-serif;border-radius:8px 8px 0 0;overflow:hidden">
+      <!-- Nav bar -->
+      <div style="background:#f8fafc;padding:10px 14px 10px;display:flex;justify-content:space-between;align-items:center">
+        <span style="font-size:11px;color:#64748b">◀</span>
+        <span style="font-size:13px;font-weight:700;color:#0f172a">March 2026</span>
+        <span style="font-size:11px;color:#64748b">▶</span>
+      </div>
+      <!-- 3-stat row -->
+      <div style="display:flex;gap:8px;padding:0 14px;margin-bottom:10px">
+        <div style="flex:1;background:#fff;border-radius:12px;padding:10px;box-shadow:0 1px 4px rgba(0,0,0,0.07);text-align:center">
+          <div style="font-size:9px;color:#94a3b8;margin-bottom:3px">INCOME</div>
+          <div style="font-size:13px;font-weight:700;color:#16a34a">₱53,392</div>
+        </div>
+        <div style="flex:1;background:#fff;border-radius:12px;padding:10px;box-shadow:0 1px 4px rgba(0,0,0,0.07);text-align:center">
+          <div style="font-size:9px;color:#94a3b8;margin-bottom:3px">ALLOCATED</div>
+          <div style="font-size:13px;font-weight:700;color:#d97706">₱26,096</div>
+        </div>
+        <div style="flex:1;background:#fff;border-radius:12px;padding:10px;box-shadow:0 1px 4px rgba(0,0,0,0.07);text-align:center">
+          <div style="font-size:9px;color:#94a3b8;margin-bottom:3px">REMAINING</div>
+          <div style="font-size:13px;font-weight:700;color:#0d9488">₱27,296</div>
+        </div>
+      </div>
+      <!-- Pay period pills -->
+      <div style="padding:0 14px;display:flex;gap:6px;margin-bottom:8px">
+        <div style="background:#0d9488;color:#fff;border-radius:20px;padding:4px 12px;font-size:11px;font-weight:600">Full Month</div>
+        <div style="background:#fff;color:#64748b;border-radius:20px;padding:4px 12px;font-size:11px;border:1px solid #e2e8f0">15th</div>
+        <div style="background:#fff;color:#64748b;border-radius:20px;padding:4px 12px;font-size:11px;border:1px solid #e2e8f0">30th</div>
+      </div>
+      <!-- Category -->
+      <div style="margin:0 14px;background:#fff;border-radius:12px;padding:10px 12px;box-shadow:0 1px 4px rgba(0,0,0,0.06);display:flex;justify-content:space-between">
+        <span style="font-size:13px;font-weight:600;color:#0f172a">Expenses</span>
+        <span style="font-size:13px;font-weight:700;color:#ef4444">₱18,000</span>
+      </div>
+    </div>
+    <div class="card-body">
+      <h3>B · Stat Tiles</h3>
+      <p>Three equal-sized tiles for income, allocated, remaining. Compact, data-first, easy to scan. Leaves more space for the budget list below.</p>
+    </div>
+  </div>
+
+  <div class="card" data-choice="compact-banner" onclick="toggleSelect(this)">
+    <div class="card-image" style="background:#f8fafc;font-family:sans-serif;border-radius:8px 8px 0 0;overflow:hidden">
+      <!-- Teal banner header -->
+      <div style="background:#0d9488;padding:14px 14px 20px">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">
+          <span style="font-size:11px;color:rgba(255,255,255,0.7)">◀  March 2026  ▶</span>
+          <span style="font-size:11px;color:rgba(255,255,255,0.7)">Developer ▾</span>
+        </div>
+        <div style="display:flex;justify-content:space-between">
+          <div><div style="font-size:9px;color:rgba(255,255,255,0.6)">INCOME</div><div style="font-size:16px;font-weight:700;color:#fff">₱53,392</div></div>
+          <div><div style="font-size:9px;color:rgba(255,255,255,0.6)">ALLOCATED</div><div style="font-size:16px;font-weight:700;color:#fff">₱26,096</div></div>
+          <div><div style="font-size:9px;color:rgba(255,255,255,0.6)">REMAINING</div><div style="font-size:16px;font-weight:700;color:#fff">₱27,296</div></div>
+        </div>
+      </div>
+      <!-- White content area overlapping -->
+      <div style="background:#f8fafc;border-radius:16px 16px 0 0;margin-top:-10px;padding:10px 14px 0">
+        <div style="display:flex;gap:6px;margin-bottom:8px">
+          <div style="background:#0d9488;color:#fff;border-radius:20px;padding:4px 12px;font-size:11px;font-weight:600">Full Month</div>
+          <div style="background:#fff;color:#64748b;border-radius:20px;padding:4px 12px;font-size:11px;border:1px solid #e2e8f0">15th</div>
+          <div style="background:#fff;color:#64748b;border-radius:20px;padding:4px 12px;font-size:11px;border:1px solid #e2e8f0">30th</div>
+        </div>
+        <div style="background:#fff;border-radius:12px;padding:10px 12px;box-shadow:0 1px 4px rgba(0,0,0,0.06);display:flex;justify-content:space-between">
+          <span style="font-size:13px;font-weight:600;color:#0f172a">Expenses</span>
+          <span style="font-size:13px;font-weight:700;color:#ef4444">₱18,000</span>
+        </div>
+      </div>
+    </div>
+    <div class="card-body">
+      <h3>C · Teal Banner</h3>
+      <p>Teal fills the top bar with all three stats in white text, then white content slides up over it. Feels immersive and app-like.</p>
+    </div>
+  </div>
+
+</div>

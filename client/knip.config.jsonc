@@ -1,0 +1,20 @@
+{
+	"paths": {
+		"@/*": ["src/*"],
+		"@core/*": ["src/core/*"],
+		"@entities/*": ["src/entities/*"],
+		"@pages/*": ["src/pages/*"],
+		"@shared/*": ["src/shared/*"],
+		"@widgets/*": ["src/widgets/*"],
+		"@features/*": ["src/features/*"]
+	},
+	// Pages barrel exports consumed by app/ via direct subpath imports
+	"ignore": ["steiger.config.ts", "src/pages/onboarding/index.ts"],
+	"ignoreDependencies": [
+		"@feature-sliced/steiger-plugin",
+		// Used by Expo at build time via app.json
+		"expo-updates"
+	],
+	// Public API exports kept for future use
+	"ignoreExportsUsedInFile": true
+}

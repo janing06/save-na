@@ -1,0 +1,25 @@
+import { getDatabase } from '@shared/db';
+import type { PaySchedule } from '@shared/lib';
+
+type CreateIncomeSourceInput = {
+	name: string;
+	amount: number;
+	paySchedule: PaySchedule;
+	payDates: number[];
+};
+
+export async function saveIncomeSource(
+	input: CreateIncomeSourceInput,
+): Promise<void> {
+	const db = await getDatabase();
+
+	await db.runAsync(
+		'INSERT INTO income_source (name, amount, pay_schedule, pay_dates, sort_order) VALUES (?, ?, ?, ?, 0)',
+		[
+			input.name,
+			input.amount,
+			input.paySchedule,
+			JSON.stringify(input.payDates),
+		],
+	);
+}
