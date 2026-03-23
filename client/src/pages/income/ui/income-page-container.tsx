@@ -1,5 +1,4 @@
-import { useEffect, useState } from 'react';
-import { getPreferences } from '@shared/db';
+import { useQuery } from '@tanstack/react-query';
 import {
 	useCreateIncomeSource,
 	useDeleteIncomeSource,
@@ -7,21 +6,20 @@ import {
 	useUpdateIncomeSource,
 } from '../model/hooks';
 import { IncomePage } from './income-page';
+import { queryKeys } from '@shared/lib';
+import { getPreferences } from '@shared/db';
 
 export const IncomePageContainer = () => {
-	const { sources, isLoading, refresh } = useIncomeSources();
-	const create = useCreateIncomeSource(refresh);
-	const update = useUpdateIncomeSource(refresh);
-	const remove = useDeleteIncomeSource(() => { refresh(); update.onCancel(); });
-	const [currency, setCurrency] = useState('PHP');
+	const { sources, isLoading } = useIncomeSources();
+	const create = useCreateIncomeSource();
+	const update = useUpdateIncomeSource();
+	const remove = useDeleteIncomeSource(update.onCancel);
 
-	useEffect(() => {
-		async function loadCurrency() {
-			const prefs = await getPreferences();
-			if (prefs) setCurrency(prefs.currency);
-		}
-		loadCurrency();
-	}, []);
+	const { data: prefs } = useQuery({
+		queryKey: queryKeys.preferences,
+		queryFn: getPreferences,
+	});
+	const currency = prefs?.currency ?? 'PHP';
 
 	return (
 		<IncomePage
@@ -33,4 +31,4 @@ export const IncomePageContainer = () => {
 			remove={remove}
 		/>
 	);
-}
+};

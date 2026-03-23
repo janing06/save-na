@@ -1,68 +1,60 @@
-import { getDatabase } from '@shared/db';
-import type { PaySchedule } from '@shared/lib';
+import { asc, desc, eq } from 'drizzle-orm';
+import { db } from '@shared/db';
+import {
+	budgetItem,
+	budgetItemAllocation,
+	budgetMonth,
+	incomeSource,
+} from '@shared/db';
 import { getPayPeriodCount } from '@shared/lib';
+import type { PaySchedule } from '@shared/lib';
 
-/**
- * Creates a new budget month by copying items from the most recent existing month.
- * Recomputes allocations based on the target month's pay period count.
- * If no previous month exists, creates an empty month.
- */
-export async function rolloverMonth(yearMonth: string): Promise<void> {
-	const db = await getDatabase();
+export const rolloverMonth = async (yearMonth: string): Promise<void> => {
+	const latestMonth = await db
+		.select({ id: budgetMonth.id, year_month: budgetMonth.year_month })
+		.from(budgetMonth)
+		.orderBy(desc(budgetMonth.year_month))
+		.limit(1);
 
-	const latestMonth = await db.getFirstAsync<{
-		id: number;
-		year_month: string;
-	}>(
-		'SELECT id, year_month FROM budget_month ORDER BY year_month DESC LIMIT 1',
-	);
-
-	if (!latestMonth) {
-		await db.runAsync('INSERT INTO budget_month (year_month) VALUES (?)', [
-			yearMonth,
-		]);
+	if (latestMonth.length === 0) {
+		await db.insert(budgetMonth).values({ year_month: yearMonth });
 		return;
 	}
 
-	const result = await db.runAsync(
-		'INSERT INTO budget_month (year_month, created_from_id) VALUES (?, ?)',
-		[yearMonth, latestMonth.id],
-	);
-	const newMonthId = result.lastInsertRowId;
+	const [newMonth] = await db
+		.insert(budgetMonth)
+		.values({ year_month: yearMonth, created_from_id: latestMonth[0].id })
+		.returning();
 
-	const items = await db.getAllAsync<{
-		id: number;
-		income_source_id: number;
-		category_id: number;
-		name: string;
-		total_amount: number;
-		split_type: string;
-		sort_order: number;
-		pay_schedule: string;
-		pay_dates: string;
-	}>(
-		`SELECT bi.id, bi.income_source_id, bi.category_id, bi.name, bi.total_amount,
-		        bi.split_type, bi.sort_order, inc.pay_schedule, inc.pay_dates
-		 FROM budget_item bi
-		 JOIN income_source inc ON inc.id = bi.income_source_id
-		 WHERE bi.budget_month_id = ?`,
-		[latestMonth.id],
-	);
+	const items = await db
+		.select({
+			id: budgetItem.id,
+			income_source_id: budgetItem.income_source_id,
+			category_id: budgetItem.category_id,
+			name: budgetItem.name,
+			total_amount: budgetItem.total_amount,
+			sort_order: budgetItem.sort_order,
+			pay_schedule: incomeSource.pay_schedule,
+			pay_dates: incomeSource.pay_dates,
+		})
+		.from(budgetItem)
+		.innerJoin(incomeSource, eq(incomeSource.id, budgetItem.income_source_id))
+		.where(eq(budgetItem.budget_month_id, latestMonth[0].id))
+		.orderBy(asc(budgetItem.sort_order));
 
 	for (const item of items) {
-		const itemResult = await db.runAsync(
-			'INSERT INTO budget_item (budget_month_id, income_source_id, category_id, name, total_amount, split_type, sort_order) VALUES (?, ?, ?, ?, ?, ?, ?)',
-			[
-				newMonthId,
-				item.income_source_id,
-				item.category_id,
-				item.name,
-				item.total_amount,
-				'even',
-				item.sort_order,
-			],
-		);
-		const newItemId = itemResult.lastInsertRowId;
+		const [newItem] = await db
+			.insert(budgetItem)
+			.values({
+				budget_month_id: newMonth.id,
+				income_source_id: item.income_source_id,
+				category_id: item.category_id,
+				name: item.name,
+				total_amount: item.total_amount,
+				split_type: 'even',
+				sort_order: item.sort_order,
+			})
+			.returning();
 
 		const periodCount = getPayPeriodCount(
 			item.pay_schedule as PaySchedule,
@@ -72,10 +64,12 @@ export async function rolloverMonth(yearMonth: string): Promise<void> {
 		const evenAmount = item.total_amount / periodCount;
 
 		for (let i = 1; i <= periodCount; i++) {
-			await db.runAsync(
-				'INSERT INTO budget_item_allocation (budget_item_id, pay_period_index, amount, is_paid) VALUES (?, ?, ?, 0)',
-				[newItemId, i, evenAmount],
-			);
+			await db.insert(budgetItemAllocation).values({
+				budget_item_id: newItem.id,
+				pay_period_index: i,
+				amount: evenAmount,
+				is_paid: 0,
+			});
 		}
 	}
-}
+};

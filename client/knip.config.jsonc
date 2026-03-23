@@ -38,7 +38,13 @@
     // Used by Expo at build time via app.json
     "expo-updates",
     // Bundled with Expo SDK, not listed as a direct dependency
-    "@expo/vector-icons"
+    "@expo/vector-icons",
+    // Installed now; wired into source files in later migration tasks
+    "drizzle-orm",
+    "@tanstack/react-query",
+    "expo-file-system",
+    // Used by babel.config.js (excluded from knip scanning)
+    "babel-plugin-inline-import"
   ],
   // Public API exports kept for future use
   "ignoreExportsUsedInFile": true

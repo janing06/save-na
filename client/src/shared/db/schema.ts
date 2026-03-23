@@ -1,60 +1,135 @@
-export const createTables = `
-  CREATE TABLE IF NOT EXISTS user_preferences (
-    id INTEGER PRIMARY KEY DEFAULT 1 CHECK (id = 1),
-    currency TEXT NOT NULL DEFAULT 'PHP',
-    created_at TEXT NOT NULL DEFAULT (datetime('now')),
-    updated_at TEXT NOT NULL DEFAULT (datetime('now'))
-  );
+import { InferSelectModel, sql } from 'drizzle-orm';
+import {
+	type AnySQLiteColumn,
+	check,
+	integer,
+	real,
+	sqliteTable,
+	text,
+	uniqueIndex,
+} from 'drizzle-orm/sqlite-core';
 
-  CREATE TABLE IF NOT EXISTS income_source (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    name TEXT NOT NULL,
-    amount REAL NOT NULL,
-    pay_schedule TEXT NOT NULL CHECK (pay_schedule IN ('monthly', 'bi-monthly', 'bi-weekly', 'weekly')),
-    pay_dates TEXT NOT NULL,
-    sort_order INTEGER NOT NULL DEFAULT 0,
-    created_at TEXT NOT NULL DEFAULT (datetime('now')),
-    updated_at TEXT NOT NULL DEFAULT (datetime('now'))
-  );
+export const userPreferences = sqliteTable(
+	'user_preferences',
+	{
+		id: integer('id').primaryKey(),
+		currency: text('currency').notNull().default('PHP'),
+		created_at: text('created_at')
+			.notNull()
+			.default(sql`(datetime('now'))`),
+		updated_at: text('updated_at')
+			.notNull()
+			.default(sql`(datetime('now'))`),
+	},
+	(t) => [check('user_preferences_id_check', sql`${t.id} = 1`)],
+);
 
-  CREATE TABLE IF NOT EXISTS category (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    name TEXT NOT NULL,
-    sort_order INTEGER NOT NULL DEFAULT 0,
-    is_default INTEGER NOT NULL DEFAULT 0,
-    created_at TEXT NOT NULL DEFAULT (datetime('now')),
-    updated_at TEXT NOT NULL DEFAULT (datetime('now'))
-  );
+export const incomeSource = sqliteTable('income_source', {
+	id: integer('id').primaryKey({ autoIncrement: true }),
+	name: text('name').notNull(),
+	amount: real('amount').notNull(),
+	pay_schedule: text('pay_schedule', {
+		enum: ['monthly', 'bi-monthly', 'bi-weekly', 'weekly'],
+	}).notNull(),
+	pay_dates: text('pay_dates').notNull(),
+	sort_order: integer('sort_order').notNull().default(0),
+	created_at: text('created_at')
+		.notNull()
+		.default(sql`(datetime('now'))`),
+	updated_at: text('updated_at')
+		.notNull()
+		.default(sql`(datetime('now'))`),
+});
 
-  CREATE TABLE IF NOT EXISTS budget_month (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    year_month TEXT NOT NULL UNIQUE,
-    created_from_id INTEGER REFERENCES budget_month(id),
-    created_at TEXT NOT NULL DEFAULT (datetime('now')),
-    updated_at TEXT NOT NULL DEFAULT (datetime('now'))
-  );
+export const category = sqliteTable('category', {
+	id: integer('id').primaryKey({ autoIncrement: true }),
+	name: text('name').notNull(),
+	sort_order: integer('sort_order').notNull().default(0),
+	is_default: integer('is_default').notNull().default(0),
+	created_at: text('created_at')
+		.notNull()
+		.default(sql`(datetime('now'))`),
+	updated_at: text('updated_at')
+		.notNull()
+		.default(sql`(datetime('now'))`),
+});
 
-  CREATE TABLE IF NOT EXISTS budget_item (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    budget_month_id INTEGER NOT NULL REFERENCES budget_month(id) ON DELETE CASCADE,
-    income_source_id INTEGER NOT NULL REFERENCES income_source(id),
-    category_id INTEGER NOT NULL REFERENCES category(id),
-    name TEXT NOT NULL,
-    total_amount REAL NOT NULL,
-    split_type TEXT NOT NULL DEFAULT 'even' CHECK (split_type IN ('even', 'custom')),
-    sort_order INTEGER NOT NULL DEFAULT 0,
-    created_at TEXT NOT NULL DEFAULT (datetime('now')),
-    updated_at TEXT NOT NULL DEFAULT (datetime('now'))
-  );
+export const budgetMonth = sqliteTable(
+	'budget_month',
+	{
+		id: integer('id').primaryKey({ autoIncrement: true }),
+		year_month: text('year_month').notNull(),
+		created_from_id: integer('created_from_id').references(
+			(): AnySQLiteColumn => budgetMonth.id,
+		),
+		created_at: text('created_at')
+			.notNull()
+			.default(sql`(datetime('now'))`),
+		updated_at: text('updated_at')
+			.notNull()
+			.default(sql`(datetime('now'))`),
+	},
+	(t) => [uniqueIndex('budget_month_year_month_idx').on(t.year_month)],
+);
 
-  CREATE TABLE IF NOT EXISTS budget_item_allocation (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    budget_item_id INTEGER NOT NULL REFERENCES budget_item(id) ON DELETE CASCADE,
-    pay_period_index INTEGER NOT NULL,
-    amount REAL NOT NULL,
-    is_paid INTEGER NOT NULL DEFAULT 0,
-    created_at TEXT NOT NULL DEFAULT (datetime('now')),
-    updated_at TEXT NOT NULL DEFAULT (datetime('now')),
-    UNIQUE(budget_item_id, pay_period_index)
-  );
-`;
+export const budgetItem = sqliteTable('budget_item', {
+	id: integer('id').primaryKey({ autoIncrement: true }),
+	budget_month_id: integer('budget_month_id')
+		.notNull()
+		.references(() => budgetMonth.id, { onDelete: 'cascade' }),
+	income_source_id: integer('income_source_id')
+		.notNull()
+		.references(() => incomeSource.id),
+	category_id: integer('category_id')
+		.notNull()
+		.references(() => category.id),
+	name: text('name').notNull(),
+	total_amount: real('total_amount').notNull(),
+	split_type: text('split_type', { enum: ['even', 'custom'] })
+		.notNull()
+		.default('even'),
+	sort_order: integer('sort_order').notNull().default(0),
+	created_at: text('created_at')
+		.notNull()
+		.default(sql`(datetime('now'))`),
+	updated_at: text('updated_at')
+		.notNull()
+		.default(sql`(datetime('now'))`),
+});
+
+export const budgetItemAllocation = sqliteTable(
+	'budget_item_allocation',
+	{
+		id: integer('id').primaryKey({ autoIncrement: true }),
+		budget_item_id: integer('budget_item_id')
+			.notNull()
+			.references(() => budgetItem.id, { onDelete: 'cascade' }),
+		pay_period_index: integer('pay_period_index').notNull(),
+		amount: real('amount').notNull(),
+		is_paid: integer('is_paid').notNull().default(0),
+		created_at: text('created_at')
+			.notNull()
+			.default(sql`(datetime('now'))`),
+		updated_at: text('updated_at')
+			.notNull()
+			.default(sql`(datetime('now'))`),
+	},
+	(t) => [
+		uniqueIndex('budget_item_allocation_unique_idx').on(
+			t.budget_item_id,
+			t.pay_period_index,
+		),
+	],
+);
+
+// Inferred types — match existing hand-written types in types.ts
+export type UserPreferences = InferSelectModel<typeof userPreferences>;
+export type IncomeSource = InferSelectModel<typeof incomeSource>;
+export type Category = InferSelectModel<typeof category>;
+export type BudgetMonth = InferSelectModel<typeof budgetMonth>;
+export type BudgetItem = InferSelectModel<typeof budgetItem>;
+export type BudgetItemAllocation = InferSelectModel<typeof budgetItemAllocation>;
+
+// Kept as explicit type — cannot be inferred (JOIN + nested array)
+export type PaySchedule = 'monthly' | 'bi-monthly' | 'bi-weekly' | 'weekly';
+export type SplitType = 'even' | 'custom';

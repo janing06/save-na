@@ -1,22 +1,17 @@
 import { useEffect, useState } from 'react';
 import { ActivityIndicator, View } from 'react-native';
 import { Redirect } from 'expo-router';
-import { getDatabase } from '@shared/db';
+import { getPreferences } from '@shared/db';
 
 const Index = () => {
 	const [isLoading, setIsLoading] = useState(true);
 	const [hasOnboarded, setHasOnboarded] = useState(false);
 
 	useEffect(() => {
-		async function check() {
-			const db = await getDatabase();
-			const prefs = await db.getFirstAsync<{ id: number }>(
-				'SELECT id FROM user_preferences WHERE id = 1',
-			);
+		getPreferences().then((prefs) => {
 			setHasOnboarded(!!prefs);
 			setIsLoading(false);
-		}
-		check();
+		});
 	}, []);
 
 	if (isLoading) {

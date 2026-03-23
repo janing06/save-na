@@ -1,9 +1,25 @@
-import { useState } from 'react';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { Alert } from 'react-native';
 import { deleteIncomeSource } from '../../api/delete-income-source';
+import { queryKeys } from '@shared/lib';
 
-export const useDeleteIncomeSource = (onSuccess: () => void) => {
-	const [isPending, setIsPending] = useState(false);
+export const useDeleteIncomeSource = (onSuccess?: () => void) => {
+	const queryClient = useQueryClient();
+
+	const mutation = useMutation({
+		mutationFn: deleteIncomeSource,
+		onSuccess: (result) => {
+			if (result.blocked) {
+				Alert.alert(
+					'Cannot Delete',
+					'This income source has budget items. Remove or reassign them first.',
+				);
+				return;
+			}
+			queryClient.invalidateQueries({ queryKey: queryKeys.incomeSources });
+			onSuccess?.();
+		},
+	});
 
 	const onDelete = (id: number) => {
 		Alert.alert(
@@ -14,26 +30,11 @@ export const useDeleteIncomeSource = (onSuccess: () => void) => {
 				{
 					text: 'Delete',
 					style: 'destructive',
-					onPress: async () => {
-						setIsPending(true);
-						try {
-							const result = await deleteIncomeSource(id);
-							if (result.blocked) {
-								Alert.alert(
-									'Cannot Delete',
-									'This income source has budget items. Remove or reassign them first.',
-								);
-							} else {
-								onSuccess();
-							}
-						} finally {
-							setIsPending(false);
-						}
-					},
+					onPress: () => mutation.mutate(id),
 				},
 			],
 		);
 	};
 
-	return { onDelete, isPending };
-}
+	return { onDelete, isPending: mutation.isPending };
+};

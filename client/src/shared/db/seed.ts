@@ -1,16 +1,16 @@
-import type { SQLiteDatabase } from 'expo-sqlite';
 import { defaultCategories } from '@shared/config';
+import { db } from './client';
+import { category } from './schema';
 
-export async function seedDefaultCategories(db: SQLiteDatabase): Promise<void> {
-	const existing = await db.getFirstAsync<{ count: number }>(
-		'SELECT COUNT(*) as count FROM category',
-	);
-	if (existing && existing.count > 0) return;
+export const seedDefaultCategories = async (): Promise<void> => {
+	const existing = await db.select().from(category).limit(1);
+	if (existing.length > 0) return;
 
 	for (const cat of defaultCategories) {
-		await db.runAsync(
-			'INSERT INTO category (name, sort_order, is_default) VALUES (?, ?, 1)',
-			[cat.name, cat.sort_order],
-		);
+		await db.insert(category).values({
+			name: cat.name,
+			sort_order: cat.sort_order,
+			is_default: 1,
+		});
 	}
-}
+};

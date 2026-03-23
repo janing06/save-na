@@ -1,33 +1,26 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useQuery } from '@tanstack/react-query';
+import { queryKeys } from '@shared/lib';
 import { getBudgetMonth } from '../../api/get-budget-month';
-import {
-	type BudgetItemWithAllocations,
-	listBudgetItems,
-} from '../../api/list-budget-items';
+import { listBudgetItems } from '../../api/list-budget-items';
 
 export const useBudgetItems = (
 	yearMonth: string,
 	incomeSourceId: number | 'total' | null,
 ) => {
-	const [items, setItems] = useState<BudgetItemWithAllocations[]>([]);
-	const [budgetMonthId, setBudgetMonthId] = useState<number | null>(null);
-	const [isLoading, setIsLoading] = useState(true);
+	const { data, isLoading } = useQuery({
+		queryKey: queryKeys.budgetItems(yearMonth, incomeSourceId),
+		queryFn: async () => {
+			const budgetMonthRecord = await getBudgetMonth(yearMonth);
+			const sourceId =
+				incomeSourceId === 'total' ? undefined : (incomeSourceId ?? undefined);
+			const items = await listBudgetItems(budgetMonthRecord.id, sourceId);
+			return { items, budgetMonthId: budgetMonthRecord.id };
+		},
+	});
 
-	const refresh = useCallback(async () => {
-		setIsLoading(true);
-		const budgetMonth = await getBudgetMonth(yearMonth);
-		setBudgetMonthId(budgetMonth.id);
-
-		const sourceId =
-			incomeSourceId === 'total' ? undefined : (incomeSourceId ?? undefined);
-		const data = await listBudgetItems(budgetMonth.id, sourceId);
-		setItems(data);
-		setIsLoading(false);
-	}, [yearMonth, incomeSourceId]);
-
-	useEffect(() => {
-		refresh();
-	}, [refresh]);
-
-	return { items, budgetMonthId, isLoading, refresh };
-}
+	return {
+		items: data?.items ?? [],
+		budgetMonthId: data?.budgetMonthId ?? null,
+		isLoading,
+	};
+};

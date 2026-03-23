@@ -14,11 +14,15 @@
     "ts:check": "tsc --noEmit",
     "fsd": "steiger ./src",
     "knip": "knip -c knip.config.jsonc --no-config-hints",
+    "db:generate": "drizzle-kit generate",
     "check-all": "npm run ts:check && npm run lint && npm run fsd && npm run knip"
   },
   "dependencies": {
+    "@tanstack/react-query": "^5.95.0",
+    "drizzle-orm": "^0.45.1",
     "expo": "~54.0.33",
     "expo-constants": "~18.0.13",
+    "expo-file-system": "~19.0.21",
     "expo-linking": "~8.0.11",
     "expo-router": "~6.0.23",
     "expo-splash-screen": "~31.0.13",
@@ -40,6 +44,8 @@
     "@biomejs/biome": "^2.4.8",
     "@feature-sliced/steiger-plugin": "^0.5.7",
     "@types/react": "~19.1.0",
+    "babel-plugin-inline-import": "^3.0.0",
+    "drizzle-kit": "^0.31.10",
     "knip": "^6.0.1",
     "steiger": "^0.5.11",
     "typescript": "~5.9.2"

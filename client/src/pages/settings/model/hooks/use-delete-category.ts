@@ -1,39 +1,16 @@
-import { useState } from 'react';
-import { Alert } from 'react-native';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { deleteCategory } from '../../api/delete-category';
+import { queryKeys } from '@shared/lib';
 
-export const useDeleteCategory = (onSuccess: () => void) => {
-	const [isPending, setIsPending] = useState(false);
+export const useDeleteCategory = () => {
+	const queryClient = useQueryClient();
 
-	const onDelete = (id: number) => {
-		Alert.alert(
-			'Delete Category',
-			'Are you sure you want to delete this category?',
-			[
-				{ text: 'Cancel', style: 'cancel' },
-				{
-					text: 'Delete',
-					style: 'destructive',
-					onPress: async () => {
-						setIsPending(true);
-						try {
-							const result = await deleteCategory(id);
-							if (result.blocked) {
-								Alert.alert(
-									'Cannot Delete',
-									'This category has budget items. Remove them first.',
-								);
-							} else {
-								onSuccess();
-							}
-						} finally {
-							setIsPending(false);
-						}
-					},
-				},
-			],
-		);
-	};
+	const mutation = useMutation({
+		mutationFn: deleteCategory,
+		onSuccess: () => {
+			queryClient.invalidateQueries({ queryKey: queryKeys.categories });
+		},
+	});
 
-	return { onDelete, isPending };
-}
+	return { onDelete: (id: number) => mutation.mutate(id), isPending: mutation.isPending };
+};

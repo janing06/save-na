@@ -1,29 +1,31 @@
-import type { PaySchedule } from '@shared/lib';
 import { useState } from 'react';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { createIncomeSource } from '../../api/create-income-source';
+import { queryKeys } from '@shared/lib';
+import type { PaySchedule } from '@shared/lib';
 
-export const useCreateIncomeSource = (onSuccess: () => void) => {
+export const useCreateIncomeSource = () => {
+	const queryClient = useQueryClient();
 	const [showModal, setShowModal] = useState(false);
-	const [isPending, setIsPending] = useState(false);
 
-	const onShow = () => setShowModal(true);
-	const onHide = () => setShowModal(false);
-
-	const onSubmit = async (input: {
-		name: string;
-		amount: number;
-		paySchedule: PaySchedule;
-		payDates: number[];
-	}) => {
-		setIsPending(true);
-		try {
-			await createIncomeSource(input);
+	const mutation = useMutation({
+		mutationFn: createIncomeSource,
+		onSuccess: () => {
+			queryClient.invalidateQueries({ queryKey: queryKeys.incomeSources });
 			setShowModal(false);
-			onSuccess();
-		} finally {
-			setIsPending(false);
-		}
-	};
+		},
+	});
 
-	return { showModal, onShow, onHide, onSubmit, isPending };
-}
+	return {
+		showModal,
+		onShow: () => setShowModal(true),
+		onHide: () => setShowModal(false),
+		onSubmit: (input: {
+			name: string;
+			amount: number;
+			paySchedule: PaySchedule;
+			payDates: number[];
+		}) => mutation.mutate(input),
+		isPending: mutation.isPending,
+	};
+};

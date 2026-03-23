@@ -1,9 +1,18 @@
-import { useState } from 'react';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { Alert } from 'react-native';
 import { deleteBudgetItem } from '../../api/delete-budget-item';
 
-export const useDeleteBudgetItem = (onSuccess: () => void) => {
-	const [isPending, setIsPending] = useState(false);
+export const useDeleteBudgetItem = (yearMonth: string, onSuccess?: () => void) => {
+	const queryClient = useQueryClient();
+
+	const mutation = useMutation({
+		mutationFn: deleteBudgetItem,
+		onSuccess: () => {
+			// Partial key — invalidates all incomeSourceId variants for this month
+			queryClient.invalidateQueries({ queryKey: ['budget-items', yearMonth] });
+			onSuccess?.();
+		},
+	});
 
 	const onDelete = (id: number) => {
 		Alert.alert(
@@ -14,19 +23,11 @@ export const useDeleteBudgetItem = (onSuccess: () => void) => {
 				{
 					text: 'Delete',
 					style: 'destructive',
-					onPress: async () => {
-						setIsPending(true);
-						try {
-							await deleteBudgetItem(id);
-							onSuccess();
-						} finally {
-							setIsPending(false);
-						}
-					},
+					onPress: () => mutation.mutate(id),
 				},
 			],
 		);
 	};
 
-	return { onDelete, isPending };
-}
+	return { onDelete, isPending: mutation.isPending };
+};

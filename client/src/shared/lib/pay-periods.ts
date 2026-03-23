@@ -1,4 +1,4 @@
-import type { PaySchedule } from './types';
+import type { PaySchedule } from '../db/schema';
 
 export type PayPeriod = {
 	index: number; // 1-based

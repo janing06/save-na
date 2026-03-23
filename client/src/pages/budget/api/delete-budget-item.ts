@@ -1,6 +1,7 @@
-import { getDatabase } from '@shared/db';
+import { eq } from 'drizzle-orm';
+import { db } from '@shared/db';
+import { budgetItem } from '@shared/db';
 
-export async function deleteBudgetItem(id: number): Promise<void> {
-	const db = await getDatabase();
-	await db.runAsync('DELETE FROM budget_item WHERE id = ?', [id]);
-}
+export const deleteBudgetItem = async (id: number): Promise<void> => {
+	await db.delete(budgetItem).where(eq(budgetItem.id, id));
+};

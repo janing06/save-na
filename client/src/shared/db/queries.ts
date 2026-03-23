@@ -1,23 +1,21 @@
-import type { Category, IncomeSource, UserPreferences } from '@shared/lib';
-import { getDatabase } from './client';
+import { asc, eq } from 'drizzle-orm';
+import type { Category, IncomeSource, UserPreferences } from './schema';
+import { category, incomeSource, userPreferences } from './schema';
+import { db } from './client';
 
-export async function listIncomeSources(): Promise<IncomeSource[]> {
-	const db = await getDatabase();
-	return db.getAllAsync<IncomeSource>(
-		'SELECT * FROM income_source ORDER BY sort_order ASC',
-	);
-}
+export const listIncomeSources = async (): Promise<IncomeSource[]> => {
+	return db.select().from(incomeSource).orderBy(asc(incomeSource.sort_order));
+};
 
-export async function listCategories(): Promise<Category[]> {
-	const db = await getDatabase();
-	return db.getAllAsync<Category>(
-		'SELECT * FROM category ORDER BY sort_order ASC',
-	);
-}
+export const listCategories = async (): Promise<Category[]> => {
+	return db.select().from(category).orderBy(asc(category.sort_order));
+};
 
-export async function getPreferences(): Promise<UserPreferences | null> {
-	const db = await getDatabase();
-	return db.getFirstAsync<UserPreferences>(
-		'SELECT * FROM user_preferences WHERE id = 1',
-	);
-}
+export const getPreferences = async (): Promise<UserPreferences | null> => {
+	const result = await db
+		.select()
+		.from(userPreferences)
+		.where(eq(userPreferences.id, 1))
+		.limit(1);
+	return result[0] ?? null;
+};

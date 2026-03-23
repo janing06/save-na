@@ -1,21 +1,12 @@
-import { useCallback, useEffect, useState } from 'react';
-import type { UserPreferences } from '@shared/lib';
+import { useQuery } from '@tanstack/react-query';
 import { getPreferences } from '../../api/get-preferences';
+import { queryKeys } from '@shared/lib';
 
 export const usePreferences = () => {
-	const [preferences, setPreferences] = useState<UserPreferences | null>(null);
-	const [isLoading, setIsLoading] = useState(true);
+	const { data, isLoading } = useQuery({
+		queryKey: queryKeys.preferences,
+		queryFn: getPreferences,
+	});
 
-	const refresh = useCallback(async () => {
-		setIsLoading(true);
-		const prefs = await getPreferences();
-		setPreferences(prefs);
-		setIsLoading(false);
-	}, []);
-
-	useEffect(() => {
-		refresh();
-	}, [refresh]);
-
-	return { preferences, isLoading, refresh };
-}
+	return { preferences: data ?? null, isLoading };
+};

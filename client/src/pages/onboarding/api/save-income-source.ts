@@ -1,25 +1,26 @@
-import { getDatabase } from '@shared/db';
+import { sql } from 'drizzle-orm';
+import { db } from '@shared/db';
+import { incomeSource } from '@shared/db';
 import type { PaySchedule } from '@shared/lib';
 
-type CreateIncomeSourceInput = {
+type Input = {
 	name: string;
 	amount: number;
 	paySchedule: PaySchedule;
 	payDates: number[];
 };
 
-export async function saveIncomeSource(
-	input: CreateIncomeSourceInput,
-): Promise<void> {
-	const db = await getDatabase();
+export const saveIncomeSource = async (input: Input): Promise<void> => {
+	const maxResult = await db
+		.select({ maxOrder: sql<number>`MAX(${incomeSource.sort_order})` })
+		.from(incomeSource);
+	const sortOrder = (maxResult[0]?.maxOrder ?? -1) + 1;
 
-	await db.runAsync(
-		'INSERT INTO income_source (name, amount, pay_schedule, pay_dates, sort_order) VALUES (?, ?, ?, ?, 0)',
-		[
-			input.name,
-			input.amount,
-			input.paySchedule,
-			JSON.stringify(input.payDates),
-		],
-	);
-}
+	await db.insert(incomeSource).values({
+		name: input.name,
+		amount: input.amount,
+		pay_schedule: input.paySchedule,
+		pay_dates: JSON.stringify(input.payDates),
+		sort_order: sortOrder,
+	});
+};
