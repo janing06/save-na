@@ -1,18 +1,18 @@
-import { eq } from 'drizzle-orm';
-import { db } from '@shared/db';
-import { budgetItem, incomeSource } from '@shared/db';
+import { getDatabase } from '@shared/db';
 
-export const deleteIncomeSource = async (
+export async function deleteIncomeSource(
 	id: number,
-): Promise<{ blocked: boolean }> => {
-	const usedIn = await db
-		.select({ id: budgetItem.id })
-		.from(budgetItem)
-		.where(eq(budgetItem.income_source_id, id))
-		.limit(1);
+): Promise<{ blocked: boolean }> {
+	const db = await getDatabase();
+	const hasItems = await db.getFirstAsync<{ count: number }>(
+		'SELECT COUNT(*) as count FROM budget_item WHERE income_source_id = ?',
+		[id],
+	);
 
-	if (usedIn.length > 0) return { blocked: true };
+	if (hasItems && hasItems.count > 0) {
+		return { blocked: true };
+	}
 
-	await db.delete(incomeSource).where(eq(incomeSource.id, id));
+	await db.runAsync('DELETE FROM income_source WHERE id = ?', [id]);
 	return { blocked: false };
-};
+}

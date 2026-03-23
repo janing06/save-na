@@ -1,4 +1,2 @@
-export { db } from './client';
-export { seedDefaultCategories } from './seed';
-export * from './schema';
+export { getDatabase } from './client';
 export { listIncomeSources, listCategories, getPreferences } from './queries';

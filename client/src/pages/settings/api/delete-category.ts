@@ -1,7 +1,18 @@
-import { eq } from 'drizzle-orm';
-import { db } from '@shared/db';
-import { category } from '@shared/db';
+import { getDatabase } from '@shared/db';
 
-export const deleteCategory = async (id: number): Promise<void> => {
-	await db.delete(category).where(eq(category.id, id));
-};
+export async function deleteCategory(
+	id: number,
+): Promise<{ blocked: boolean }> {
+	const db = await getDatabase();
+	const hasItems = await db.getFirstAsync<{ count: number }>(
+		'SELECT COUNT(*) as count FROM budget_item WHERE category_id = ?',
+		[id],
+	);
+
+	if (hasItems && hasItems.count > 0) {
+		return { blocked: true };
+	}
+
+	await db.runAsync('DELETE FROM category WHERE id = ?', [id]);
+	return { blocked: false };
+}

@@ -1,10 +1,18 @@
 import * as SQLite from 'expo-sqlite';
-import { drizzle } from 'drizzle-orm/expo-sqlite';
-import * as schema from './schema';
+import { createTables } from './schema';
+import { seedDefaultCategories } from './seed';
 
-// DEV-PHASE: use savena_v2.db to start fresh with Drizzle migrations.
-// Rename back to savena.db before shipping to production.
-const expoDb = SQLite.openDatabaseSync('savena_v2.db');
-expoDb.execSync('PRAGMA foreign_keys = ON;');
+let db: SQLite.SQLiteDatabase | null = null;
 
-export const db = drizzle(expoDb, { schema });
+export async function getDatabase(): Promise<SQLite.SQLiteDatabase> {
+	if (db) return db;
+
+	db = await SQLite.openDatabaseAsync('savena.db');
+
+	await db.execAsync('PRAGMA journal_mode = WAL;');
+	await db.execAsync('PRAGMA foreign_keys = ON;');
+	await db.execAsync(createTables);
+	await seedDefaultCategories(db);
+
+	return db;
+}

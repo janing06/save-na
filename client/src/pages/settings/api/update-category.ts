@@ -1,13 +1,9 @@
-import { eq, sql } from 'drizzle-orm';
-import { db } from '@shared/db';
-import { category } from '@shared/db';
+import { getDatabase } from '@shared/db';
 
-export const updateCategory = async (
-	id: number,
-	name: string,
-): Promise<void> => {
-	await db
-		.update(category)
-		.set({ name, updated_at: sql`(datetime('now'))` })
-		.where(eq(category.id, id));
-};
+export async function updateCategory(id: number, name: string): Promise<void> {
+	const db = await getDatabase();
+	await db.runAsync(
+		`UPDATE category SET name = ?, updated_at = datetime('now') WHERE id = ?`,
+		[name, id],
+	);
+}

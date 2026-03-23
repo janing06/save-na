@@ -1,10 +1,4 @@
-import { and, asc, eq } from 'drizzle-orm';
-import { db } from '@shared/db';
-import {
-	budgetItem,
-	budgetItemAllocation,
-	category,
-} from '@shared/db';
+import { getDatabase } from '@shared/db';
 import type { BudgetItem, BudgetItemAllocation } from '@shared/lib';
 
 export type BudgetItemWithAllocations = BudgetItem & {
@@ -12,43 +6,44 @@ export type BudgetItemWithAllocations = BudgetItem & {
 	category_name: string;
 };
 
-export const listBudgetItems = async (
+/**
+ * Lists budget items for a month, optionally filtered by income source.
+ * Includes allocations and category name.
+ */
+export async function listBudgetItems(
 	budgetMonthId: number,
 	incomeSourceId?: number,
-): Promise<BudgetItemWithAllocations[]> => {
-	const conditions = [eq(budgetItem.budget_month_id, budgetMonthId)];
-	if (incomeSourceId !== undefined) {
-		conditions.push(eq(budgetItem.income_source_id, incomeSourceId));
+): Promise<BudgetItemWithAllocations[]> {
+	const db = await getDatabase();
+
+	let query = `
+		SELECT bi.*, c.name as category_name
+		FROM budget_item bi
+		JOIN category c ON c.id = bi.category_id
+		WHERE bi.budget_month_id = ?
+	`;
+	const params: (number | string)[] = [budgetMonthId];
+
+	if (incomeSourceId) {
+		query += ' AND bi.income_source_id = ?';
+		params.push(incomeSourceId);
 	}
 
-	const items = await db
-		.select({
-			id: budgetItem.id,
-			budget_month_id: budgetItem.budget_month_id,
-			income_source_id: budgetItem.income_source_id,
-			category_id: budgetItem.category_id,
-			name: budgetItem.name,
-			total_amount: budgetItem.total_amount,
-			split_type: budgetItem.split_type,
-			sort_order: budgetItem.sort_order,
-			created_at: budgetItem.created_at,
-			updated_at: budgetItem.updated_at,
-			category_name: category.name,
-		})
-		.from(budgetItem)
-		.innerJoin(category, eq(category.id, budgetItem.category_id))
-		.where(and(...conditions))
-		.orderBy(asc(category.sort_order), asc(budgetItem.sort_order));
+	query += ' ORDER BY c.sort_order ASC, bi.sort_order ASC';
+
+	const items = await db.getAllAsync<BudgetItem & { category_name: string }>(
+		query,
+		params,
+	);
 
 	const result: BudgetItemWithAllocations[] = [];
 	for (const item of items) {
-		const allocations = await db
-			.select()
-			.from(budgetItemAllocation)
-			.where(eq(budgetItemAllocation.budget_item_id, item.id))
-			.orderBy(asc(budgetItemAllocation.pay_period_index));
+		const allocations = await db.getAllAsync<BudgetItemAllocation>(
+			'SELECT * FROM budget_item_allocation WHERE budget_item_id = ? ORDER BY pay_period_index ASC',
+			[item.id],
+		);
 		result.push({ ...item, allocations });
 	}
 
 	return result;
-};
+}

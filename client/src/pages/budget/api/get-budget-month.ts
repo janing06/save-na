@@ -1,27 +1,27 @@
-import { eq } from 'drizzle-orm';
-import { db } from '@shared/db';
-import { budgetMonth } from '@shared/db';
+import { getDatabase } from '@shared/db';
 import type { BudgetMonth } from '@shared/lib';
 import { rolloverMonth } from './rollover-month';
 
-export const getBudgetMonth = async (
-	yearMonth: string,
-): Promise<BudgetMonth> => {
-	const existing = await db
-		.select()
-		.from(budgetMonth)
-		.where(eq(budgetMonth.year_month, yearMonth))
-		.limit(1);
+/**
+ * Gets or creates a budget month. If the month doesn't exist,
+ * triggers auto-rollover from the most recent existing month.
+ */
+export async function getBudgetMonth(yearMonth: string): Promise<BudgetMonth> {
+	const db = await getDatabase();
 
-	if (existing.length > 0) return existing[0];
+	const existing = await db.getFirstAsync<BudgetMonth>(
+		'SELECT * FROM budget_month WHERE year_month = ?',
+		[yearMonth],
+	);
+
+	if (existing) return existing;
 
 	await rolloverMonth(yearMonth);
 
-	const created = await db
-		.select()
-		.from(budgetMonth)
-		.where(eq(budgetMonth.year_month, yearMonth))
-		.limit(1);
+	const created = await db.getFirstAsync<BudgetMonth>(
+		'SELECT * FROM budget_month WHERE year_month = ?',
+		[yearMonth],
+	);
 
-	return created[0];
-};
+	return created!;
+}

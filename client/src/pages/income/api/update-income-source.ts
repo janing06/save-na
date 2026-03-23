@@ -1,6 +1,4 @@
-import { eq, sql } from 'drizzle-orm';
-import { db } from '@shared/db';
-import { incomeSource } from '@shared/db';
+import { getDatabase } from '@shared/db';
 import type { PaySchedule } from '@shared/lib';
 
 type Input = {
@@ -11,15 +9,16 @@ type Input = {
 	payDates: number[];
 };
 
-export const updateIncomeSource = async (input: Input): Promise<void> => {
-	await db
-		.update(incomeSource)
-		.set({
-			name: input.name,
-			amount: input.amount,
-			pay_schedule: input.paySchedule,
-			pay_dates: JSON.stringify(input.payDates),
-			updated_at: sql`(datetime('now'))`,
-		})
-		.where(eq(incomeSource.id, input.id));
-};
+export async function updateIncomeSource(input: Input): Promise<void> {
+	const db = await getDatabase();
+	await db.runAsync(
+		`UPDATE income_source SET name = ?, amount = ?, pay_schedule = ?, pay_dates = ?, updated_at = datetime('now') WHERE id = ?`,
+		[
+			input.name,
+			input.amount,
+			input.paySchedule,
+			JSON.stringify(input.payDates),
+			input.id,
+		],
+	);
+}

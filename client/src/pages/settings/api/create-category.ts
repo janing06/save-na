@@ -1,12 +1,14 @@
-import { sql } from 'drizzle-orm';
-import { db } from '@shared/db';
-import { category } from '@shared/db';
+import { getDatabase } from '@shared/db';
 
-export const createCategory = async (name: string): Promise<void> => {
-	const maxResult = await db
-		.select({ maxOrder: sql<number>`MAX(${category.sort_order})` })
-		.from(category);
-	const sortOrder = (maxResult[0]?.maxOrder ?? -1) + 1;
+export async function createCategory(name: string): Promise<void> {
+	const db = await getDatabase();
+	const maxOrder = await db.getFirstAsync<{ max_order: number | null }>(
+		'SELECT MAX(sort_order) as max_order FROM category',
+	);
+	const sortOrder = (maxOrder?.max_order ?? -1) + 1;
 
-	await db.insert(category).values({ name, sort_order: sortOrder });
-};
+	await db.runAsync(
+		'INSERT INTO category (name, sort_order, is_default) VALUES (?, ?, 0)',
+		[name, sortOrder],
+	);
+}
