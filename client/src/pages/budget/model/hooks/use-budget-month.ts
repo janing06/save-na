@@ -12,7 +12,13 @@ export const useBudgetMonth = () => {
 	const [hasPrevMonth, setHasPrevMonth] = useState(false);
 
 	useEffect(() => {
-		budgetMonthExists(prevMonth(yearMonth)).then(setHasPrevMonth);
+		let cancelled = false;
+		budgetMonthExists(prevMonth(yearMonth)).then((exists) => {
+			if (!cancelled) setHasPrevMonth(exists);
+		});
+		return () => {
+			cancelled = true;
+		};
 	}, [yearMonth]);
 
 	const isCurrentMonth = yearMonth === currentYearMonth();

@@ -235,10 +235,13 @@ export const IncomeSourceModal = ({
 							className={`bg-slate-50 rounded-xl px-4 py-3 text-base text-slate-900 border ${focusedField === 'firstPayDay' ? 'border-teal-600' : 'border-slate-200'}`}
 							placeholderTextColor="#94a3b8"
 							value={firstPayDay}
-							onChangeText={(v) => clampDay(v, setFirstPayDay)}
+							onChangeText={setFirstPayDay}
 							keyboardType="numeric"
 							onFocus={() => setFocusedField('firstPayDay')}
-							onBlur={() => setFocusedField(null)}
+							onBlur={() => {
+								clampDay(firstPayDay, setFirstPayDay);
+								setFocusedField(null);
+							}}
 						/>
 					</View>
 				)}
@@ -257,7 +260,10 @@ export const IncomeSourceModal = ({
 								onChangeText={setFirstPayDay}
 								keyboardType="numeric"
 								onFocus={() => setFocusedField('firstPayDay')}
-								onBlur={() => setFocusedField(null)}
+								onBlur={() => {
+									clampDay(firstPayDay, setFirstPayDay);
+									setFocusedField(null);
+								}}
 							/>
 							<Text className="text-slate-400 text-sm">day</Text>
 							<TextInput
@@ -280,7 +286,10 @@ export const IncomeSourceModal = ({
 								onChangeText={setSecondPayDay}
 								keyboardType="numeric"
 								onFocus={() => setFocusedField('secondPayDay')}
-								onBlur={() => setFocusedField(null)}
+								onBlur={() => {
+									clampDay(secondPayDay, setSecondPayDay);
+									setFocusedField(null);
+								}}
 							/>
 							<Text className="text-slate-400 text-sm">day</Text>
 							<TextInput

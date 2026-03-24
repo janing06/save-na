@@ -156,10 +156,13 @@ export const IncomeSourcePage = ({ onFinish, isPending }: Props) => {
 						placeholder="e.g., 15"
 						placeholderTextColor="#94a3b8"
 						value={firstPayDay}
-						onChangeText={(v) => clampDay(v, setFirstPayDay)}
+						onChangeText={setFirstPayDay}
 						keyboardType="numeric"
 						onFocus={() => setFocusedField('firstPayDay')}
-						onBlur={() => setFocusedField(null)}
+						onBlur={() => {
+							clampDay(firstPayDay, setFirstPayDay);
+							setFocusedField(null);
+						}}
 					/>
 				</View>
 			)}
@@ -175,10 +178,13 @@ export const IncomeSourcePage = ({ onFinish, isPending }: Props) => {
 							placeholder="15"
 							placeholderTextColor="#94a3b8"
 							value={firstPayDay}
-							onChangeText={(v) => clampDay(v, setFirstPayDay)}
+							onChangeText={setFirstPayDay}
 							keyboardType="numeric"
 							onFocus={() => setFocusedField('firstPayDay')}
-							onBlur={() => setFocusedField(null)}
+							onBlur={() => {
+								clampDay(firstPayDay, setFirstPayDay);
+								setFocusedField(null);
+							}}
 						/>
 						<Text className="text-slate-400 text-sm">day</Text>
 						<TextInput
@@ -198,10 +204,13 @@ export const IncomeSourcePage = ({ onFinish, isPending }: Props) => {
 							placeholder="30"
 							placeholderTextColor="#94a3b8"
 							value={secondPayDay}
-							onChangeText={(v) => clampDay(v, setSecondPayDay)}
+							onChangeText={setSecondPayDay}
 							keyboardType="numeric"
 							onFocus={() => setFocusedField('secondPayDay')}
-							onBlur={() => setFocusedField(null)}
+							onBlur={() => {
+								clampDay(secondPayDay, setSecondPayDay);
+								setFocusedField(null);
+							}}
 						/>
 						<Text className="text-slate-400 text-sm">day</Text>
 						<TextInput

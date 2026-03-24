@@ -21,7 +21,7 @@ export const BudgetPageContainer = () => {
 		switcher.selectedSource,
 		month.yearMonth,
 	);
-	const { items, budgetMonthId, isLoading } = useBudgetItems(
+	const { items, budgetMonthId } = useBudgetItems(
 		month.yearMonth,
 		switcher.selectedSourceId,
 	);
