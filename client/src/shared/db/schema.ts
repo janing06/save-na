@@ -12,6 +12,7 @@ export const createTables = `
     amount REAL NOT NULL,
     pay_schedule TEXT NOT NULL CHECK (pay_schedule IN ('monthly', 'bi-monthly', 'bi-weekly', 'weekly')),
     pay_dates TEXT NOT NULL,
+    pay_amounts TEXT,
     sort_order INTEGER NOT NULL DEFAULT 0,
     created_at TEXT NOT NULL DEFAULT (datetime('now')),
     updated_at TEXT NOT NULL DEFAULT (datetime('now'))

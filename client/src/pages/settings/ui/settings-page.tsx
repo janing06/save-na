@@ -1,4 +1,4 @@
-import { ScrollView, Text, View } from 'react-native';
+import { Pressable, ScrollView, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { currencies } from '@shared/config';
 import type { Category, UserPreferences } from '@shared/lib';
@@ -21,6 +21,7 @@ type Props = {
 	createCategory: ReturnType<typeof useCreateCategory>;
 	updateCategory: ReturnType<typeof useUpdateCategory>;
 	deleteCategory: ReturnType<typeof useDeleteCategory>;
+	onClearData: () => void;
 };
 
 export const SettingsPage = ({
@@ -30,6 +31,7 @@ export const SettingsPage = ({
 	createCategory,
 	updateCategory,
 	deleteCategory,
+	onClearData,
 }: Props) => {
 	const currencyInfo = currencies.find((c) => c.code === preferences?.currency);
 
@@ -63,6 +65,21 @@ export const SettingsPage = ({
 						onAdd={createCategory.onShow}
 						onCurrencyPress={currencyPicker.onShow}
 					/>
+
+					<Text className="text-xs font-bold tracking-widest text-slate-400 uppercase mx-4 mt-6 mb-1.5">
+						Danger Zone
+					</Text>
+					<View className="mx-4 bg-white rounded-2xl overflow-hidden">
+						<Pressable
+							onPress={onClearData}
+							className="px-4 py-4 active:opacity-60"
+						>
+							<Text className="text-red-500 font-medium">Clear All Data</Text>
+							<Text className="text-xs text-slate-400 mt-0.5">
+								Delete all budget items, income sources, and preferences
+							</Text>
+						</Pressable>
+					</View>
 
 					<View className="mt-6 mb-4">
 						<Text className="text-xs text-slate-300 text-center">

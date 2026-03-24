@@ -1,9 +1,9 @@
-import { useState } from 'react';
+import type { IncomeSource, PaySchedule } from '@shared/lib';
+import { queryKeys } from '@shared/lib';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { useState } from 'react';
 import { Alert } from 'react-native';
 import { updateIncomeSource } from '../../api/update-income-source';
-import { queryKeys } from '@shared/lib';
-import type { IncomeSource, PaySchedule } from '@shared/lib';
 
 export const useUpdateIncomeSource = () => {
 	const queryClient = useQueryClient();
@@ -29,6 +29,7 @@ export const useUpdateIncomeSource = () => {
 			amount: number;
 			paySchedule: PaySchedule;
 			payDates: number[];
+			payAmounts?: number[];
 		}) => {
 			if (!editingSource) return;
 			mutation.mutate({ id: editingSource.id, ...input });

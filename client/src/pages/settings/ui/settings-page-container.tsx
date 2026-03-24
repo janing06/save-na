@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import {
 	useCategories,
+	useClearData,
 	useCreateCategory,
 	useDeleteCategory,
 	usePreferences,
@@ -16,6 +17,7 @@ export const SettingsPageContainer = () => {
 	const createCat = useCreateCategory();
 	const updateCat = useUpdateCategory();
 	const deleteCat = useDeleteCategory();
+	const clearData = useClearData();
 
 	const [currencyPickerVisible, setCurrencyPickerVisible] = useState(false);
 
@@ -37,6 +39,7 @@ export const SettingsPageContainer = () => {
 			createCategory={createCat}
 			updateCategory={updateCat}
 			deleteCategory={deleteCat}
+			onClearData={clearData.onClear}
 		/>
 	);
 };

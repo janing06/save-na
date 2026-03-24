@@ -13,7 +13,8 @@ export type IncomeSource = {
 	name: string;
 	amount: number;
 	pay_schedule: PaySchedule;
-	pay_dates: string; // JSON array
+	pay_dates: string; // JSON array of day numbers
+	pay_amounts: string | null; // JSON array of amounts per pay day (bi-monthly only)
 	sort_order: number;
 	created_at: string;
 	updated_at: string;

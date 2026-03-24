@@ -6,6 +6,7 @@ type Input = {
 	amount: number;
 	paySchedule: PaySchedule;
 	payDates: number[];
+	payAmounts?: number[];
 };
 
 export async function createIncomeSource(input: Input): Promise<void> {
@@ -16,12 +17,13 @@ export async function createIncomeSource(input: Input): Promise<void> {
 	const sortOrder = (maxOrder?.max_order ?? -1) + 1;
 
 	await db.runAsync(
-		'INSERT INTO income_source (name, amount, pay_schedule, pay_dates, sort_order) VALUES (?, ?, ?, ?, ?)',
+		'INSERT INTO income_source (name, amount, pay_schedule, pay_dates, pay_amounts, sort_order) VALUES (?, ?, ?, ?, ?, ?)',
 		[
 			input.name,
 			input.amount,
 			input.paySchedule,
 			JSON.stringify(input.payDates),
+			input.payAmounts ? JSON.stringify(input.payAmounts) : null,
 			sortOrder,
 		],
 	);
