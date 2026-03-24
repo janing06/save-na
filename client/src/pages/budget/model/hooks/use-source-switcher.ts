@@ -1,22 +1,24 @@
 import { listIncomeSources } from '@shared/db';
 import type { IncomeSource } from '@shared/lib';
 import { useFocusEffect } from 'expo-router';
-import { useCallback, useRef, useState } from 'react';
+import { useCallback, useState } from 'react';
 
 export const useSourceSwitcher = () => {
 	const [sources, setSources] = useState<IncomeSource[]>([]);
 	const [selectedSourceId, setSelectedSourceId] = useState<
 		number | 'total' | null
 	>(null);
-	const hasInitialized = useRef(false);
 
 	const refresh = useCallback(async () => {
 		const data = await listIncomeSources();
 		setSources(data);
-		if (!hasInitialized.current && data.length > 0) {
-			setSelectedSourceId(data[0].id);
-			hasInitialized.current = true;
-		}
+		setSelectedSourceId((current) => {
+			if (data.length === 0) return null;
+			const isValid =
+				current === 'total' ||
+				(typeof current === 'number' && data.some((s) => s.id === current));
+			return isValid ? current : data[0].id;
+		});
 	}, []);
 
 	useFocusEffect(
@@ -39,6 +41,5 @@ export const useSourceSwitcher = () => {
 		selectedSource,
 		showSwitcher,
 		onSelect,
-		refresh,
 	};
 }

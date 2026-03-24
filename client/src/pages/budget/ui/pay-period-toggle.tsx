@@ -16,8 +16,8 @@ export const PayPeriodToggle = ({
 		<ScrollView
 			horizontal
 			showsHorizontalScrollIndicator={false}
-			className="px-4 mb-3"
-			contentContainerStyle={{ gap: 8 }}
+			className="mb-3"
+			contentContainerStyle={{ gap: 8, paddingHorizontal: 16 }}
 		>
 			<Pressable
 				className={`px-4 py-1.5 rounded-full ${
