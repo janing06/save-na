@@ -6,6 +6,7 @@ type CreateIncomeSourceInput = {
 	amount: number;
 	paySchedule: PaySchedule;
 	payDates: number[];
+	payAmounts?: number[];
 };
 
 export async function saveIncomeSource(
@@ -14,12 +15,13 @@ export async function saveIncomeSource(
 	const db = await getDatabase();
 
 	await db.runAsync(
-		'INSERT INTO income_source (name, amount, pay_schedule, pay_dates, sort_order) VALUES (?, ?, ?, ?, 0)',
+		'INSERT INTO income_source (name, amount, pay_schedule, pay_dates, pay_amounts, sort_order) VALUES (?, ?, ?, ?, ?, 0)',
 		[
 			input.name,
 			input.amount,
 			input.paySchedule,
 			JSON.stringify(input.payDates),
+			input.payAmounts ? JSON.stringify(input.payAmounts) : null,
 		],
 	);
 }

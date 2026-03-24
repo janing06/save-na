@@ -1,7 +1,7 @@
-import { useState } from 'react';
+import type { PaySchedule } from '@shared/lib';
 import { useRouter } from 'expo-router';
 import { atom, useAtom } from 'jotai';
-import type { PaySchedule } from '@shared/lib';
+import { useState } from 'react';
 import { completeOnboarding } from '../../api/complete-onboarding';
 import { saveIncomeSource } from '../../api/save-income-source';
 
@@ -25,6 +25,7 @@ export const useOnboarding = () => {
 		amount: number;
 		paySchedule: PaySchedule;
 		payDates: number[];
+		payAmounts?: number[];
 	}) => {
 		setIsPending(true);
 		try {
@@ -43,4 +44,4 @@ export const useOnboarding = () => {
 		onFinish,
 		isPending,
 	};
-}
+};

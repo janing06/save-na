@@ -1,6 +1,6 @@
+import type { PaySchedule } from '@shared/lib';
 import { useState } from 'react';
 import { Pressable, ScrollView, Text, TextInput, View } from 'react-native';
-import type { PaySchedule } from '@shared/lib';
 
 type Props = {
 	onFinish: (income: {
@@ -8,6 +8,7 @@ type Props = {
 		amount: number;
 		paySchedule: PaySchedule;
 		payDates: number[];
+		payAmounts?: number[];
 	}) => void;
 	isPending: boolean;
 };
@@ -29,39 +30,57 @@ const dayOfWeekOptions = [
 	{ value: 6, label: 'Saturday' },
 ];
 
+const clampDay = (val: string, setter: (v: string) => void) => {
+	if (val === '') {
+		setter('');
+		return;
+	}
+	const n = Number(val);
+	if (!Number.isInteger(n) || Number.isNaN(n)) return;
+	setter(String(Math.min(31, Math.max(1, n))));
+};
+
 export const IncomeSourcePage = ({ onFinish, isPending }: Props) => {
 	const [name, setName] = useState('');
 	const [amount, setAmount] = useState('');
 	const [paySchedule, setPaySchedule] = useState<PaySchedule>('bi-monthly');
 	const [firstPayDay, setFirstPayDay] = useState('15');
 	const [secondPayDay, setSecondPayDay] = useState('30');
+	const [firstPayAmount, setFirstPayAmount] = useState('');
+	const [secondPayAmount, setSecondPayAmount] = useState('');
 	const [dayOfWeek, setDayOfWeek] = useState(5); // Friday
 	const [focusedField, setFocusedField] = useState<string | null>(null);
 
-	const getPayDates = (): number[] => {
-		switch (paySchedule) {
-			case 'monthly':
-				return [Number(firstPayDay)];
-			case 'bi-monthly':
-				return [Number(firstPayDay), Number(secondPayDay)];
-			case 'weekly':
-			case 'bi-weekly':
-				return [dayOfWeek];
-		}
-	};
+	const isBiMonthly = paySchedule === 'bi-monthly';
+	const firstAmt = Number(firstPayAmount);
+	const secondAmt = Number(secondPayAmount);
+	const biMonthlyTotal = firstAmt + secondAmt;
 
-	const isValid = name.trim() !== '' && Number(amount) > 0;
+	const isValid = isBiMonthly
+		? name.trim() !== '' && firstAmt > 0 && secondAmt > 0
+		: name.trim() !== '' && Number(amount) > 0;
 
 	const canSubmit = isValid && !isPending;
 
 	const handleFinish = () => {
 		if (!isValid) return;
-		onFinish({
-			name: name.trim(),
-			amount: Number(amount),
-			paySchedule,
-			payDates: getPayDates(),
-		});
+		if (isBiMonthly) {
+			onFinish({
+				name: name.trim(),
+				amount: biMonthlyTotal,
+				paySchedule,
+				payDates: [Number(firstPayDay), Number(secondPayDay)],
+				payAmounts: [firstAmt, secondAmt],
+			});
+		} else {
+			onFinish({
+				name: name.trim(),
+				amount: Number(amount),
+				paySchedule,
+				payDates:
+					paySchedule === 'monthly' ? [Number(firstPayDay)] : [dayOfWeek],
+			});
+		}
 	};
 
 	return (
@@ -84,17 +103,23 @@ export const IncomeSourcePage = ({ onFinish, isPending }: Props) => {
 				onBlur={() => setFocusedField(null)}
 			/>
 
-			<Text className="text-sm font-medium text-slate-700 mb-1">Net Salary</Text>
-			<TextInput
-				className={`bg-slate-50 rounded-xl px-4 py-3 text-base text-slate-900 mb-4 border ${focusedField === 'amount' ? 'border-teal-600' : 'border-slate-200'}`}
-				placeholder="e.g., 53392"
-				placeholderTextColor="#94a3b8"
-				value={amount}
-				onChangeText={setAmount}
-				keyboardType="numeric"
-				onFocus={() => setFocusedField('amount')}
-				onBlur={() => setFocusedField(null)}
-			/>
+			{!isBiMonthly && (
+				<>
+					<Text className="text-sm font-medium text-slate-700 mb-1">
+						Net Salary
+					</Text>
+					<TextInput
+						className={`bg-slate-50 rounded-xl px-4 py-3 text-base text-slate-900 mb-4 border ${focusedField === 'amount' ? 'border-teal-600' : 'border-slate-200'}`}
+						placeholder="e.g., 15000"
+						placeholderTextColor="#94a3b8"
+						value={amount}
+						onChangeText={setAmount}
+						keyboardType="numeric"
+						onFocus={() => setFocusedField('amount')}
+						onBlur={() => setFocusedField(null)}
+					/>
+				</>
+			)}
 
 			<Text className="text-sm font-medium text-slate-700 mb-2">
 				Pay Schedule
@@ -121,37 +146,79 @@ export const IncomeSourcePage = ({ onFinish, isPending }: Props) => {
 				))}
 			</View>
 
-			{(paySchedule === 'monthly' || paySchedule === 'bi-monthly') && (
+			{paySchedule === 'monthly' && (
 				<View className="mb-4">
 					<Text className="text-sm font-medium text-slate-700 mb-1">
-						{paySchedule === 'monthly' ? 'Pay day' : 'First pay day'}
+						Pay day
 					</Text>
 					<TextInput
-						className={`bg-slate-50 rounded-xl px-4 py-3 text-base text-slate-900 mb-2 border ${focusedField === 'firstPayDay' ? 'border-teal-600' : 'border-slate-200'}`}
+						className={`bg-slate-50 rounded-xl px-4 py-3 text-base text-slate-900 border ${focusedField === 'firstPayDay' ? 'border-teal-600' : 'border-slate-200'}`}
 						placeholder="e.g., 15"
 						placeholderTextColor="#94a3b8"
 						value={firstPayDay}
-						onChangeText={setFirstPayDay}
+						onChangeText={(v) => clampDay(v, setFirstPayDay)}
 						keyboardType="numeric"
 						onFocus={() => setFocusedField('firstPayDay')}
 						onBlur={() => setFocusedField(null)}
 					/>
-					{paySchedule === 'bi-monthly' && (
-						<>
-							<Text className="text-sm font-medium text-slate-700 mb-1">
-								Second pay day
-							</Text>
-							<TextInput
-								className={`bg-slate-50 rounded-xl px-4 py-3 text-base text-slate-900 border ${focusedField === 'secondPayDay' ? 'border-teal-600' : 'border-slate-200'}`}
-								placeholder="e.g., 30"
-								placeholderTextColor="#94a3b8"
-								value={secondPayDay}
-								onChangeText={setSecondPayDay}
-								keyboardType="numeric"
-								onFocus={() => setFocusedField('secondPayDay')}
-								onBlur={() => setFocusedField(null)}
-							/>
-						</>
+				</View>
+			)}
+
+			{isBiMonthly && (
+				<View className="mb-4">
+					<Text className="text-sm font-medium text-slate-700 mb-2">
+						Pay days &amp; amounts
+					</Text>
+					<View className="flex-row items-center gap-2 mb-2">
+						<TextInput
+							className={`w-16 bg-slate-50 rounded-xl px-3 py-3 text-base text-slate-900 border text-center ${focusedField === 'firstPayDay' ? 'border-teal-600' : 'border-slate-200'}`}
+							placeholder="15"
+							placeholderTextColor="#94a3b8"
+							value={firstPayDay}
+							onChangeText={(v) => clampDay(v, setFirstPayDay)}
+							keyboardType="numeric"
+							onFocus={() => setFocusedField('firstPayDay')}
+							onBlur={() => setFocusedField(null)}
+						/>
+						<Text className="text-slate-400 text-sm">day</Text>
+						<TextInput
+							className={`flex-1 bg-slate-50 rounded-xl px-4 py-3 text-base text-slate-900 border ${focusedField === 'firstPayAmount' ? 'border-teal-600' : 'border-slate-200'}`}
+							placeholder="e.g., 8000"
+							placeholderTextColor="#94a3b8"
+							value={firstPayAmount}
+							onChangeText={setFirstPayAmount}
+							keyboardType="numeric"
+							onFocus={() => setFocusedField('firstPayAmount')}
+							onBlur={() => setFocusedField(null)}
+						/>
+					</View>
+					<View className="flex-row items-center gap-2 mb-2">
+						<TextInput
+							className={`w-16 bg-slate-50 rounded-xl px-3 py-3 text-base text-slate-900 border text-center ${focusedField === 'secondPayDay' ? 'border-teal-600' : 'border-slate-200'}`}
+							placeholder="30"
+							placeholderTextColor="#94a3b8"
+							value={secondPayDay}
+							onChangeText={(v) => clampDay(v, setSecondPayDay)}
+							keyboardType="numeric"
+							onFocus={() => setFocusedField('secondPayDay')}
+							onBlur={() => setFocusedField(null)}
+						/>
+						<Text className="text-slate-400 text-sm">day</Text>
+						<TextInput
+							className={`flex-1 bg-slate-50 rounded-xl px-4 py-3 text-base text-slate-900 border ${focusedField === 'secondPayAmount' ? 'border-teal-600' : 'border-slate-200'}`}
+							placeholder="e.g., 12000"
+							placeholderTextColor="#94a3b8"
+							value={secondPayAmount}
+							onChangeText={setSecondPayAmount}
+							keyboardType="numeric"
+							onFocus={() => setFocusedField('secondPayAmount')}
+							onBlur={() => setFocusedField(null)}
+						/>
+					</View>
+					{biMonthlyTotal > 0 && (
+						<Text className="text-xs text-teal-600 mt-1">
+							Total: {biMonthlyTotal.toLocaleString()} / month
+						</Text>
 					)}
 				</View>
 			)}
@@ -192,10 +259,12 @@ export const IncomeSourcePage = ({ onFinish, isPending }: Props) => {
 				onPress={handleFinish}
 				disabled={!canSubmit}
 			>
-				<Text className={`text-base font-bold ${canSubmit ? 'text-white' : 'text-slate-400'}`}>
+				<Text
+					className={`text-base font-bold ${canSubmit ? 'text-white' : 'text-slate-400'}`}
+				>
 					{isPending ? 'Setting up...' : 'Start Budgeting'}
 				</Text>
 			</Pressable>
 		</ScrollView>
 	);
-}
+};
