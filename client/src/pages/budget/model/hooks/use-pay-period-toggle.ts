@@ -21,4 +21,4 @@ export const usePayPeriodToggle = (
 	const onSelect = (index: number | 'full') => setSelectedIndex(index);
 
 	return { periods, selectedIndex, onSelect };
-}
+};

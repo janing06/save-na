@@ -16,7 +16,9 @@ export const useCreateBudgetItem = (
 	const mutation = useMutation({
 		mutationFn: createBudgetItem,
 		onSuccess: () => {
-			queryClient.invalidateQueries({ queryKey: queryKeys.budgetItemsPrefix(yearMonth) });
+			queryClient.invalidateQueries({
+				queryKey: queryKeys.budgetItemsPrefix(yearMonth),
+			});
 			setShowModal(false);
 		},
 		onError: () => {

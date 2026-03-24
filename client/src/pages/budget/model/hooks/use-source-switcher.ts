@@ -42,4 +42,4 @@ export const useSourceSwitcher = () => {
 		showSwitcher,
 		onSelect,
 	};
-}
+};

@@ -31,9 +31,7 @@ export const CategoryList = ({
 				<Text className="text-sm text-slate-900">Currency</Text>
 				<View className="flex-row items-center gap-1">
 					<Text className="text-sm font-semibold text-teal-600">
-						{currencyInfo
-							? currencyInfo.code
-							: '—'}
+						{currencyInfo ? currencyInfo.code : '—'}
 					</Text>
 					<Ionicons name="chevron-forward" size={14} color="#94a3b8" />
 				</View>
@@ -71,8 +69,10 @@ export const CategoryList = ({
 				<View className="bg-teal-50 w-6 h-6 rounded-full items-center justify-center">
 					<Ionicons name="add" size={16} color="#0d9488" />
 				</View>
-				<Text className="text-sm font-semibold text-teal-600">Add Category</Text>
+				<Text className="text-sm font-semibold text-teal-600">
+					Add Category
+				</Text>
 			</Pressable>
 		</View>
 	);
-}
+};
