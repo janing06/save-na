@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { Alert } from 'react-native';
 import { createCategory } from '../../api/create-category';
 import { queryKeys } from '@shared/lib';
 
@@ -12,6 +13,9 @@ export const useCreateCategory = () => {
 		onSuccess: () => {
 			queryClient.invalidateQueries({ queryKey: queryKeys.categories });
 			setShowModal(false);
+		},
+		onError: () => {
+			Alert.alert('Error', 'Failed to create category. Please try again.');
 		},
 	});
 

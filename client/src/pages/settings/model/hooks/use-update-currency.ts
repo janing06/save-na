@@ -1,4 +1,5 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { Alert } from 'react-native';
 import { updateCurrency } from '../../api/update-currency';
 import { queryKeys } from '@shared/lib';
 
@@ -9,6 +10,9 @@ export const useUpdateCurrency = () => {
 		mutationFn: updateCurrency,
 		onSuccess: () => {
 			queryClient.invalidateQueries({ queryKey: queryKeys.preferences });
+		},
+		onError: () => {
+			Alert.alert('Error', 'Failed to update currency. Please try again.');
 		},
 	});
 

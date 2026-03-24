@@ -1,14 +1,14 @@
-import { type ReactNode, Suspense } from 'react';
+import { type ReactNode, Suspense, useState } from 'react';
 import { ActivityIndicator, View } from 'react-native';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-
-const queryClient = new QueryClient();
 
 type Props = {
 	children: ReactNode;
 };
 
 export const Providers = ({ children }: Props) => {
+	const [queryClient] = useState(() => new QueryClient());
+
 	return (
 		<QueryClientProvider client={queryClient}>
 			<Suspense

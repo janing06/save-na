@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { Alert } from 'react-native';
 import { updateIncomeSource } from '../../api/update-income-source';
 import { queryKeys } from '@shared/lib';
 import type { IncomeSource, PaySchedule } from '@shared/lib';
@@ -13,6 +14,9 @@ export const useUpdateIncomeSource = () => {
 		onSuccess: () => {
 			queryClient.invalidateQueries({ queryKey: queryKeys.incomeSources });
 			setEditingSource(null);
+		},
+		onError: () => {
+			Alert.alert('Error', 'Failed to update income source. Please try again.');
 		},
 	});
 

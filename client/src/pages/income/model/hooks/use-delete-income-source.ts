@@ -19,6 +19,9 @@ export const useDeleteIncomeSource = (onSuccess?: () => void) => {
 			queryClient.invalidateQueries({ queryKey: queryKeys.incomeSources });
 			onSuccess?.();
 		},
+		onError: () => {
+			Alert.alert('Error', 'Failed to delete income source. Please try again.');
+		},
 	});
 
 	const onDelete = (id: number) => {

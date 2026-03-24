@@ -1,5 +1,7 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { Alert } from 'react-native';
 import { togglePaid } from '../../api/toggle-paid';
+import { queryKeys } from '@shared/lib';
 
 export const useTogglePaid = (yearMonth: string) => {
 	const queryClient = useQueryClient();
@@ -7,8 +9,10 @@ export const useTogglePaid = (yearMonth: string) => {
 	const mutation = useMutation({
 		mutationFn: togglePaid,
 		onSuccess: () => {
-			// Partial key — invalidates all incomeSourceId variants for this month
-			queryClient.invalidateQueries({ queryKey: ['budget-items', yearMonth] });
+			queryClient.invalidateQueries({ queryKey: queryKeys.budgetItemsPrefix(yearMonth) });
+		},
+		onError: () => {
+			Alert.alert('Error', 'Failed to update payment status. Please try again.');
 		},
 	});
 

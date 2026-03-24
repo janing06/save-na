@@ -1,17 +1,24 @@
+import { getPreferences } from '@shared/db';
+import { Redirect } from 'expo-router';
 import { useEffect, useState } from 'react';
 import { ActivityIndicator, View } from 'react-native';
-import { Redirect } from 'expo-router';
-import { getPreferences } from '@shared/db';
 
 const Index = () => {
 	const [isLoading, setIsLoading] = useState(true);
 	const [hasOnboarded, setHasOnboarded] = useState(false);
 
 	useEffect(() => {
-		getPreferences().then((prefs) => {
-			setHasOnboarded(!!prefs);
-			setIsLoading(false);
-		});
+		const check = async () => {
+			try {
+				const prefs = await getPreferences();
+				setHasOnboarded(!!prefs);
+			} catch {
+				// DB failure — default to onboarding
+			} finally {
+				setIsLoading(false);
+			}
+		};
+		check();
 	}, []);
 
 	if (isLoading) {

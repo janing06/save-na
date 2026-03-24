@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { Alert } from 'react-native';
 import { updateBudgetItem } from '../../api/update-budget-item';
 import type { BudgetItemWithAllocations } from '../../api/list-budget-items';
 import { queryKeys } from '@shared/lib';
@@ -15,9 +16,11 @@ export const useUpdateBudgetItem = (
 	const mutation = useMutation({
 		mutationFn: updateBudgetItem,
 		onSuccess: () => {
-			// Partial key — invalidates all incomeSourceId variants for this month
-			queryClient.invalidateQueries({ queryKey: ['budget-items', yearMonth] });
+			queryClient.invalidateQueries({ queryKey: queryKeys.budgetItemsPrefix(yearMonth) });
 			setEditingItem(null);
+		},
+		onError: () => {
+			Alert.alert('Error', 'Failed to update budget item. Please try again.');
 		},
 	});
 

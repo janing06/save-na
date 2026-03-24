@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { Alert } from 'react-native';
 import { updateCategory } from '../../api/update-category';
 import { queryKeys } from '@shared/lib';
 import type { Category } from '@shared/lib';
@@ -14,6 +15,9 @@ export const useUpdateCategory = () => {
 		onSuccess: () => {
 			queryClient.invalidateQueries({ queryKey: queryKeys.categories });
 			setEditingCategory(null);
+		},
+		onError: () => {
+			Alert.alert('Error', 'Failed to update category. Please try again.');
 		},
 	});
 

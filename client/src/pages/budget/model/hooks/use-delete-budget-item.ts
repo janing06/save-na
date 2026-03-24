@@ -1,6 +1,7 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { Alert } from 'react-native';
 import { deleteBudgetItem } from '../../api/delete-budget-item';
+import { queryKeys } from '@shared/lib';
 
 export const useDeleteBudgetItem = (yearMonth: string, onSuccess?: () => void) => {
 	const queryClient = useQueryClient();
@@ -8,9 +9,11 @@ export const useDeleteBudgetItem = (yearMonth: string, onSuccess?: () => void) =
 	const mutation = useMutation({
 		mutationFn: deleteBudgetItem,
 		onSuccess: () => {
-			// Partial key — invalidates all incomeSourceId variants for this month
-			queryClient.invalidateQueries({ queryKey: ['budget-items', yearMonth] });
+			queryClient.invalidateQueries({ queryKey: queryKeys.budgetItemsPrefix(yearMonth) });
 			onSuccess?.();
+		},
+		onError: () => {
+			Alert.alert('Error', 'Failed to delete budget item. Please try again.');
 		},
 	});
 

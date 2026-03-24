@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { Alert } from 'react-native';
 import { createBudgetItem } from '../../api/create-budget-item';
 import { queryKeys } from '@shared/lib';
 import type { IncomeSource, SplitType } from '@shared/lib';
@@ -15,10 +16,11 @@ export const useCreateBudgetItem = (
 	const mutation = useMutation({
 		mutationFn: createBudgetItem,
 		onSuccess: () => {
-			// Partial key ['budget-items', yearMonth] intentionally invalidates ALL
-			// incomeSourceId variants for this month (TanStack Query prefix match)
-			queryClient.invalidateQueries({ queryKey: ['budget-items', yearMonth] });
+			queryClient.invalidateQueries({ queryKey: queryKeys.budgetItemsPrefix(yearMonth) });
 			setShowModal(false);
+		},
+		onError: () => {
+			Alert.alert('Error', 'Failed to create budget item. Please try again.');
 		},
 	});
 

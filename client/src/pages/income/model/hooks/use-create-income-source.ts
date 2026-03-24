@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { Alert } from 'react-native';
 import { createIncomeSource } from '../../api/create-income-source';
 import { queryKeys } from '@shared/lib';
 import type { PaySchedule } from '@shared/lib';
@@ -13,6 +14,9 @@ export const useCreateIncomeSource = () => {
 		onSuccess: () => {
 			queryClient.invalidateQueries({ queryKey: queryKeys.incomeSources });
 			setShowModal(false);
+		},
+		onError: () => {
+			Alert.alert('Error', 'Failed to create income source. Please try again.');
 		},
 	});
 
