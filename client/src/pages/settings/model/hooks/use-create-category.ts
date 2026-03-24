@@ -1,23 +1,29 @@
 import { useState } from 'react';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { Alert } from 'react-native';
 import { createCategory } from '../../api/create-category';
+import { queryKeys } from '@shared/lib';
 
-export const useCreateCategory = (onSuccess: () => void) => {
+export const useCreateCategory = () => {
+	const queryClient = useQueryClient();
 	const [showModal, setShowModal] = useState(false);
-	const [isPending, setIsPending] = useState(false);
 
-	const onShow = () => setShowModal(true);
-	const onHide = () => setShowModal(false);
-
-	const onSubmit = async (name: string) => {
-		setIsPending(true);
-		try {
-			await createCategory(name);
+	const mutation = useMutation({
+		mutationFn: createCategory,
+		onSuccess: () => {
+			queryClient.invalidateQueries({ queryKey: queryKeys.categories });
 			setShowModal(false);
-			onSuccess();
-		} finally {
-			setIsPending(false);
-		}
-	};
+		},
+		onError: () => {
+			Alert.alert('Error', 'Failed to create category. Please try again.');
+		},
+	});
 
-	return { showModal, onShow, onHide, onSubmit, isPending };
-}
+	return {
+		showModal,
+		onShow: () => setShowModal(true),
+		onHide: () => setShowModal(false),
+		onSubmit: (name: string) => mutation.mutate(name),
+		isPending: mutation.isPending,
+	};
+};

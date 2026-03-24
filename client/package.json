@@ -17,6 +17,7 @@
     "check-all": "npm run ts:check && npm run lint && npm run fsd && npm run knip"
   },
   "dependencies": {
+    "@tanstack/react-query": "^5.95.0",
     "expo": "~54.0.33",
     "expo-constants": "~18.0.13",
     "expo-linking": "~8.0.11",

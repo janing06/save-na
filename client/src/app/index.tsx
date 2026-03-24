@@ -1,21 +1,23 @@
+import { getPreferences } from '@shared/db';
+import { Redirect } from 'expo-router';
 import { useEffect, useState } from 'react';
 import { ActivityIndicator, View } from 'react-native';
-import { Redirect } from 'expo-router';
-import { getDatabase } from '@shared/db';
 
 const Index = () => {
 	const [isLoading, setIsLoading] = useState(true);
 	const [hasOnboarded, setHasOnboarded] = useState(false);
 
 	useEffect(() => {
-		async function check() {
-			const db = await getDatabase();
-			const prefs = await db.getFirstAsync<{ id: number }>(
-				'SELECT id FROM user_preferences WHERE id = 1',
-			);
-			setHasOnboarded(!!prefs);
-			setIsLoading(false);
-		}
+		const check = async () => {
+			try {
+				const prefs = await getPreferences();
+				setHasOnboarded(!!prefs);
+			} catch {
+				// DB failure — default to onboarding
+			} finally {
+				setIsLoading(false);
+			}
+		};
 		check();
 	}, []);
 

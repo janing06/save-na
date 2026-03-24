@@ -1,21 +1,12 @@
-import { useCallback, useEffect, useState } from 'react';
-import type { Category } from '@shared/lib';
+import { useQuery } from '@tanstack/react-query';
 import { listCategories } from '../../api/list-categories';
+import { queryKeys } from '@shared/lib';
 
 export const useCategories = () => {
-	const [categories, setCategories] = useState<Category[]>([]);
-	const [isLoading, setIsLoading] = useState(true);
+	const { data, isLoading } = useQuery({
+		queryKey: queryKeys.categories,
+		queryFn: listCategories,
+	});
 
-	const refresh = useCallback(async () => {
-		setIsLoading(true);
-		const data = await listCategories();
-		setCategories(data);
-		setIsLoading(false);
-	}, []);
-
-	useEffect(() => {
-		refresh();
-	}, [refresh]);
-
-	return { categories, isLoading, refresh };
-}
+	return { categories: data ?? [], isLoading };
+};

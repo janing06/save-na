@@ -1,9 +1,21 @@
-import { useState } from 'react';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { Alert } from 'react-native';
 import { deleteBudgetItem } from '../../api/delete-budget-item';
+import { queryKeys } from '@shared/lib';
 
-export const useDeleteBudgetItem = (onSuccess: () => void) => {
-	const [isPending, setIsPending] = useState(false);
+export const useDeleteBudgetItem = (yearMonth: string, onSuccess?: () => void) => {
+	const queryClient = useQueryClient();
+
+	const mutation = useMutation({
+		mutationFn: deleteBudgetItem,
+		onSuccess: () => {
+			queryClient.invalidateQueries({ queryKey: queryKeys.budgetItemsPrefix(yearMonth) });
+			onSuccess?.();
+		},
+		onError: () => {
+			Alert.alert('Error', 'Failed to delete budget item. Please try again.');
+		},
+	});
 
 	const onDelete = (id: number) => {
 		Alert.alert(
@@ -14,19 +26,11 @@ export const useDeleteBudgetItem = (onSuccess: () => void) => {
 				{
 					text: 'Delete',
 					style: 'destructive',
-					onPress: async () => {
-						setIsPending(true);
-						try {
-							await deleteBudgetItem(id);
-							onSuccess();
-						} finally {
-							setIsPending(false);
-						}
-					},
+					onPress: () => mutation.mutate(id),
 				},
 			],
 		);
 	};
 
-	return { onDelete, isPending };
-}
+	return { onDelete, isPending: mutation.isPending };
+};

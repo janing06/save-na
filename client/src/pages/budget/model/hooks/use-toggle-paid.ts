@@ -1,18 +1,20 @@
-import { useState } from 'react';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { Alert } from 'react-native';
 import { togglePaid } from '../../api/toggle-paid';
+import { queryKeys } from '@shared/lib';
 
-export const useTogglePaid = (onSuccess: () => void) => {
-	const [isPending, setIsPending] = useState(false);
+export const useTogglePaid = (yearMonth: string) => {
+	const queryClient = useQueryClient();
 
-	const onToggle = async (allocationId: number) => {
-		setIsPending(true);
-		try {
-			await togglePaid(allocationId);
-			onSuccess();
-		} finally {
-			setIsPending(false);
-		}
-	};
+	const mutation = useMutation({
+		mutationFn: togglePaid,
+		onSuccess: () => {
+			queryClient.invalidateQueries({ queryKey: queryKeys.budgetItemsPrefix(yearMonth) });
+		},
+		onError: () => {
+			Alert.alert('Error', 'Failed to update payment status. Please try again.');
+		},
+	});
 
-	return { onToggle, isPending };
-}
+	return { onToggle: (id: number) => mutation.mutate(id), isPending: mutation.isPending };
+};

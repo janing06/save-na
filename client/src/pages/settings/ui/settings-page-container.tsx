@@ -10,12 +10,12 @@ import {
 import { SettingsPage } from './settings-page';
 
 export const SettingsPageContainer = () => {
-	const { preferences, refresh: refreshPrefs } = usePreferences();
-	const { categories, refresh: refreshCats } = useCategories();
-	const { onUpdate } = useUpdateCurrency(refreshPrefs);
-	const createCat = useCreateCategory(refreshCats);
-	const updateCat = useUpdateCategory(refreshCats);
-	const deleteCat = useDeleteCategory(refreshCats);
+	const { preferences } = usePreferences();
+	const { categories } = useCategories();
+	const { onUpdate } = useUpdateCurrency();
+	const createCat = useCreateCategory();
+	const updateCat = useUpdateCategory();
+	const deleteCat = useDeleteCategory();
 
 	const [currencyPickerVisible, setCurrencyPickerVisible] = useState(false);
 
@@ -39,4 +39,4 @@ export const SettingsPageContainer = () => {
 			deleteCategory={deleteCat}
 		/>
 	);
-}
+};

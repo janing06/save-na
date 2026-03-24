@@ -1,21 +1,12 @@
-import { useCallback, useEffect, useState } from 'react';
-import type { IncomeSource } from '@shared/lib';
+import { useQuery } from '@tanstack/react-query';
 import { listIncomeSources } from '../../api/list-income-sources';
+import { queryKeys } from '@shared/lib';
 
 export const useIncomeSources = () => {
-	const [sources, setSources] = useState<IncomeSource[]>([]);
-	const [isLoading, setIsLoading] = useState(true);
+	const { data, isLoading } = useQuery({
+		queryKey: queryKeys.incomeSources,
+		queryFn: listIncomeSources,
+	});
 
-	const refresh = useCallback(async () => {
-		setIsLoading(true);
-		const data = await listIncomeSources();
-		setSources(data);
-		setIsLoading(false);
-	}, []);
-
-	useEffect(() => {
-		refresh();
-	}, [refresh]);
-
-	return { sources, isLoading, refresh };
-}
+	return { sources: data ?? [], isLoading };
+};

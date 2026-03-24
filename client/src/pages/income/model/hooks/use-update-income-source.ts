@@ -1,30 +1,38 @@
 import { useState } from 'react';
-import type { IncomeSource, PaySchedule } from '@shared/lib';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { Alert } from 'react-native';
 import { updateIncomeSource } from '../../api/update-income-source';
+import { queryKeys } from '@shared/lib';
+import type { IncomeSource, PaySchedule } from '@shared/lib';
 
-export const useUpdateIncomeSource = (onSuccess: () => void) => {
+export const useUpdateIncomeSource = () => {
+	const queryClient = useQueryClient();
 	const [editingSource, setEditingSource] = useState<IncomeSource | null>(null);
-	const [isPending, setIsPending] = useState(false);
 
-	const onEdit = (source: IncomeSource) => setEditingSource(source);
-	const onCancel = () => setEditingSource(null);
-
-	const onSubmit = async (input: {
-		name: string;
-		amount: number;
-		paySchedule: PaySchedule;
-		payDates: number[];
-	}) => {
-		if (!editingSource) return;
-		setIsPending(true);
-		try {
-			await updateIncomeSource({ id: editingSource.id, ...input });
+	const mutation = useMutation({
+		mutationFn: updateIncomeSource,
+		onSuccess: () => {
+			queryClient.invalidateQueries({ queryKey: queryKeys.incomeSources });
 			setEditingSource(null);
-			onSuccess();
-		} finally {
-			setIsPending(false);
-		}
-	};
+		},
+		onError: () => {
+			Alert.alert('Error', 'Failed to update income source. Please try again.');
+		},
+	});
 
-	return { editingSource, onEdit, onCancel, onSubmit, isPending };
-}
+	return {
+		editingSource,
+		onEdit: (source: IncomeSource) => setEditingSource(source),
+		onCancel: () => setEditingSource(null),
+		onSubmit: (input: {
+			name: string;
+			amount: number;
+			paySchedule: PaySchedule;
+			payDates: number[];
+		}) => {
+			if (!editingSource) return;
+			mutation.mutate({ id: editingSource.id, ...input });
+		},
+		isPending: mutation.isPending,
+	};
+};

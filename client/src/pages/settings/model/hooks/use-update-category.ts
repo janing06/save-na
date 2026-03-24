@@ -1,25 +1,34 @@
 import { useState } from 'react';
-import type { Category } from '@shared/lib';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { Alert } from 'react-native';
 import { updateCategory } from '../../api/update-category';
+import { queryKeys } from '@shared/lib';
+import type { Category } from '@shared/lib';
 
-export const useUpdateCategory = (onSuccess: () => void) => {
+export const useUpdateCategory = () => {
+	const queryClient = useQueryClient();
 	const [editingCategory, setEditingCategory] = useState<Category | null>(null);
-	const [isPending, setIsPending] = useState(false);
 
-	const onEdit = (category: Category) => setEditingCategory(category);
-	const onCancel = () => setEditingCategory(null);
-
-	const onSubmit = async (name: string) => {
-		if (!editingCategory) return;
-		setIsPending(true);
-		try {
-			await updateCategory(editingCategory.id, name);
+	const mutation = useMutation({
+		mutationFn: ({ id, name }: { id: number; name: string }) =>
+			updateCategory(id, name),
+		onSuccess: () => {
+			queryClient.invalidateQueries({ queryKey: queryKeys.categories });
 			setEditingCategory(null);
-			onSuccess();
-		} finally {
-			setIsPending(false);
-		}
-	};
+		},
+		onError: () => {
+			Alert.alert('Error', 'Failed to update category. Please try again.');
+		},
+	});
 
-	return { editingCategory, onEdit, onCancel, onSubmit, isPending };
-}
+	return {
+		editingCategory,
+		onEdit: (cat: Category) => setEditingCategory(cat),
+		onCancel: () => setEditingCategory(null),
+		onSubmit: (name: string) => {
+			if (!editingCategory) return;
+			mutation.mutate({ id: editingCategory.id, name });
+		},
+		isPending: mutation.isPending,
+	};
+};
