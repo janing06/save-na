@@ -8,14 +8,7 @@ export const useDeleteIncomeSource = (onSuccess?: () => void) => {
 
 	const mutation = useMutation({
 		mutationFn: deleteIncomeSource,
-		onSuccess: (result) => {
-			if (result.blocked) {
-				Alert.alert(
-					'Cannot Delete',
-					'This income source has budget items. Remove or reassign them first.',
-				);
-				return;
-			}
+		onSuccess: () => {
 			queryClient.invalidateQueries({ queryKey: queryKeys.incomeSources });
 			onSuccess?.();
 		},
@@ -27,7 +20,7 @@ export const useDeleteIncomeSource = (onSuccess?: () => void) => {
 	const onDelete = (id: number) => {
 		Alert.alert(
 			'Delete Income Source',
-			'Are you sure you want to delete this income source?',
+			'This will permanently delete the income source and all its budget items across all months.',
 			[
 				{ text: 'Cancel', style: 'cancel' },
 				{

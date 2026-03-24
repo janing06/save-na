@@ -1,18 +1,8 @@
 import { getDatabase } from '@shared/db';
 
-export async function deleteIncomeSource(
-	id: number,
-): Promise<{ blocked: boolean }> {
+export async function deleteIncomeSource(id: number): Promise<void> {
 	const db = await getDatabase();
-	const hasItems = await db.getFirstAsync<{ count: number }>(
-		'SELECT COUNT(*) as count FROM budget_item WHERE income_source_id = ?',
-		[id],
-	);
-
-	if (hasItems && hasItems.count > 0) {
-		return { blocked: true };
-	}
-
+	// Delete budget items first (allocations cascade via FK ON DELETE CASCADE)
+	await db.runAsync('DELETE FROM budget_item WHERE income_source_id = ?', [id]);
 	await db.runAsync('DELETE FROM income_source WHERE id = ?', [id]);
-	return { blocked: false };
 }
