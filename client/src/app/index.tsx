@@ -1,5 +1,6 @@
 import { getPreferences } from '@shared/db';
 import { Redirect } from 'expo-router';
+import * as SplashScreen from 'expo-splash-screen';
 import { useEffect, useState } from 'react';
 import { ActivityIndicator, View } from 'react-native';
 
@@ -16,6 +17,7 @@ const Index = () => {
 				// DB failure — default to onboarding
 			} finally {
 				setIsLoading(false);
+				await SplashScreen.hideAsync();
 			}
 		};
 		check();
