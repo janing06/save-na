@@ -14,7 +14,7 @@ import { SourceSwitcher } from './source-switcher';
 import { SummaryCard } from './summary-card';
 
 type Props = {
-	month: { label: string; onPrev: () => void; onNext: () => void };
+	month: { label: string; onPrev: () => void; onNext: () => void; isCurrentMonth: boolean; hasPrevMonth: boolean };
 	sourceSwitcher: {
 		sources: IncomeSource[];
 		selectedSourceId: number | 'total' | null;
@@ -61,6 +61,8 @@ export const BudgetPage = ({
 					label={month.label}
 					onPrev={month.onPrev}
 					onNext={month.onNext}
+					isCurrentMonth={month.isCurrentMonth}
+					hasPrevMonth={month.hasPrevMonth}
 				/>
 
 				{sourceSwitcher.showSwitcher && (
@@ -128,6 +130,7 @@ export const BudgetPage = ({
 				visible={modalVisible}
 				editingItem={update.editingItem}
 				categories={categories}
+				payPeriods={payPeriod.periods}
 				onSubmit={update.editingItem ? update.onSubmit : create.onSubmit}
 				onDelete={update.editingItem ? remove.onDelete : undefined}
 				onClose={update.editingItem ? update.onCancel : create.onHide}
