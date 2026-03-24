@@ -47,7 +47,7 @@ export const computePayPeriods = (
 				date,
 			}));
 	}
-}
+};
 
 /** Returns the number of pay periods for a schedule in a given month */
 export const getPayPeriodCount = (
@@ -56,7 +56,7 @@ export const getPayPeriodCount = (
 	yearMonth: string,
 ): number => {
 	return computePayPeriods(paySchedule, payDatesJson, yearMonth).length;
-}
+};
 
 /** Computes all dates for a given day-of-week in a month */
 const computeWeeklyDates = (
@@ -75,7 +75,7 @@ const computeWeeklyDates = (
 	}
 
 	return dates;
-}
+};
 
 /** Computes bi-weekly dates (every other occurrence of a day-of-week) */
 const computeBiWeeklyDates = (
@@ -85,11 +85,11 @@ const computeBiWeeklyDates = (
 ): number[] => {
 	const allDates = computeWeeklyDates(dayOfWeek, year, month);
 	return allDates.filter((_, i) => i % 2 === 0);
-}
+};
 
 /** Returns ordinal suffix for a number, e.g. 1 → "1st", 15 → "15th" */
 const ordinal = (n: number): string => {
 	const s = ['th', 'st', 'nd', 'rd'];
 	const v = n % 100;
 	return n + (s[(v - 20) % 10] || s[v] || s[0]);
-}
+};

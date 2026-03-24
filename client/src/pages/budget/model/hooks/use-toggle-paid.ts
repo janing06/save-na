@@ -9,12 +9,20 @@ export const useTogglePaid = (yearMonth: string) => {
 	const mutation = useMutation({
 		mutationFn: togglePaid,
 		onSuccess: () => {
-			queryClient.invalidateQueries({ queryKey: queryKeys.budgetItemsPrefix(yearMonth) });
+			queryClient.invalidateQueries({
+				queryKey: queryKeys.budgetItemsPrefix(yearMonth),
+			});
 		},
 		onError: () => {
-			Alert.alert('Error', 'Failed to update payment status. Please try again.');
+			Alert.alert(
+				'Error',
+				'Failed to update payment status. Please try again.',
+			);
 		},
 	});
 
-	return { onToggle: (id: number) => mutation.mutate(id), isPending: mutation.isPending };
+	return {
+		onToggle: (id: number) => mutation.mutate(id),
+		isPending: mutation.isPending,
+	};
 };

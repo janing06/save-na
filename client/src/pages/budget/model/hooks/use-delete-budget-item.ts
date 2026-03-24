@@ -3,13 +3,18 @@ import { Alert } from 'react-native';
 import { deleteBudgetItem } from '../../api/delete-budget-item';
 import { queryKeys } from '@shared/lib';
 
-export const useDeleteBudgetItem = (yearMonth: string, onSuccess?: () => void) => {
+export const useDeleteBudgetItem = (
+	yearMonth: string,
+	onSuccess?: () => void,
+) => {
 	const queryClient = useQueryClient();
 
 	const mutation = useMutation({
 		mutationFn: deleteBudgetItem,
 		onSuccess: () => {
-			queryClient.invalidateQueries({ queryKey: queryKeys.budgetItemsPrefix(yearMonth) });
+			queryClient.invalidateQueries({
+				queryKey: queryKeys.budgetItemsPrefix(yearMonth),
+			});
 			onSuccess?.();
 		},
 		onError: () => {

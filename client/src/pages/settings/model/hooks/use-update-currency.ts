@@ -18,5 +18,8 @@ export const useUpdateCurrency = () => {
 
 	// mutateAsync returns a Promise — callers can await it to sequence UI actions
 	// (e.g. SettingsPageContainer awaits it before closing the currency picker)
-	return { onUpdate: (currency: string) => mutation.mutateAsync(currency), isPending: mutation.isPending };
+	return {
+		onUpdate: (currency: string) => mutation.mutateAsync(currency),
+		isPending: mutation.isPending,
+	};
 };

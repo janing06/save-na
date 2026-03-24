@@ -16,5 +16,8 @@ export const useDeleteCategory = () => {
 		},
 	});
 
-	return { onDelete: (id: number) => mutation.mutate(id), isPending: mutation.isPending };
+	return {
+		onDelete: (id: number) => mutation.mutate(id),
+		isPending: mutation.isPending,
+	};
 };

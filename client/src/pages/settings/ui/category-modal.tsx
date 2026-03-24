@@ -1,7 +1,14 @@
-import { useEffect, useState } from 'react';
-import { Modal, Pressable, Text, TextInput, View } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import type { Category } from '@shared/lib';
+import { useEffect, useState } from 'react';
+import {
+	Modal,
+	Platform,
+	Pressable,
+	Text,
+	TextInput,
+	View,
+} from 'react-native';
 
 type Props = {
 	visible: boolean;
@@ -32,7 +39,7 @@ export const CategoryModal = ({
 		<Modal
 			visible={visible}
 			animationType="slide"
-			presentationStyle="pageSheet"
+			presentationStyle={Platform.OS === 'android' ? 'fullScreen' : 'pageSheet'}
 		>
 			<View className="flex-1 bg-white pt-6 px-6">
 				<View className="flex-row justify-between items-center mb-6">
@@ -63,11 +70,13 @@ export const CategoryModal = ({
 					onPress={() => isValid && onSubmit(name.trim())}
 					disabled={!isValid || isPending}
 				>
-					<Text className={`text-base font-bold ${isValid && !isPending ? 'text-white' : 'text-slate-400'}`}>
+					<Text
+						className={`text-base font-bold ${isValid && !isPending ? 'text-white' : 'text-slate-400'}`}
+					>
 						{isPending ? 'Saving...' : 'Save'}
 					</Text>
 				</Pressable>
 			</View>
 		</Modal>
 	);
-}
+};

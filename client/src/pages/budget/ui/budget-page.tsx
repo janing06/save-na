@@ -14,7 +14,13 @@ import { SourceSwitcher } from './source-switcher';
 import { SummaryCard } from './summary-card';
 
 type Props = {
-	month: { label: string; onPrev: () => void; onNext: () => void; isCurrentMonth: boolean; hasPrevMonth: boolean };
+	month: {
+		label: string;
+		onPrev: () => void;
+		onNext: () => void;
+		isCurrentMonth: boolean;
+		hasPrevMonth: boolean;
+	};
 	sourceSwitcher: {
 		sources: IncomeSource[];
 		selectedSourceId: number | 'total' | null;

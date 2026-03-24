@@ -1,6 +1,9 @@
 import { currencies } from '@shared/config';
 
-export const formatCurrency = (amount: number, currencyCode: string): string => {
+export const formatCurrency = (
+	amount: number,
+	currencyCode: string,
+): string => {
 	const currency = currencies.find((c) => c.code === currencyCode);
 	const symbol = currency?.symbol ?? currencyCode;
 
@@ -10,4 +13,4 @@ export const formatCurrency = (amount: number, currencyCode: string): string => 
 	});
 
 	return `${symbol}${formatted}`;
-}
+};

@@ -11,12 +11,15 @@ export const useUpdateBudgetItem = (
 	yearMonth: string,
 ) => {
 	const queryClient = useQueryClient();
-	const [editingItem, setEditingItem] = useState<BudgetItemWithAllocations | null>(null);
+	const [editingItem, setEditingItem] =
+		useState<BudgetItemWithAllocations | null>(null);
 
 	const mutation = useMutation({
 		mutationFn: updateBudgetItem,
 		onSuccess: () => {
-			queryClient.invalidateQueries({ queryKey: queryKeys.budgetItemsPrefix(yearMonth) });
+			queryClient.invalidateQueries({
+				queryKey: queryKeys.budgetItemsPrefix(yearMonth),
+			});
 			setEditingItem(null);
 		},
 		onError: () => {

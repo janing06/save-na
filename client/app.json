@@ -1,60 +1,60 @@
 {
-  "expo": {
-    "name": "SaveNa",
-    "slug": "save-na",
-    "version": "1.0.0",
-    "orientation": "portrait",
-    "icon": "./assets/images/icon.png",
-    "scheme": "save-na",
-    "userInterfaceStyle": "automatic",
-    "newArchEnabled": true,
-    "ios": {
-      "supportsTablet": true,
-      "bundleIdentifier": "com.savena.app"
-    },
-    "android": {
-      "adaptiveIcon": {
-        "backgroundColor": "#0d9488",
-        "foregroundImage": "./assets/images/android-icon-foreground.png",
-        "backgroundImage": "./assets/images/android-icon-background.png",
-        "monochromeImage": "./assets/images/android-icon-monochrome.png"
-      },
-      "package": "com.savena.app",
-      "edgeToEdgeEnabled": true,
-      "predictiveBackGestureEnabled": false
-    },
-    "plugins": [
-      [
-        "expo-router",
-        {
-          "root": "src/app"
-        }
-      ],
-      [
-        "expo-splash-screen",
-        {
-          "image": "./assets/images/splash-icon.png",
-          "imageWidth": 200,
-          "resizeMode": "contain",
-          "backgroundColor": "#0d9488",
-          "dark": {
-            "backgroundColor": "#0d9488"
-          }
-        }
-      ],
-      "expo-sqlite"
-    ],
-    "experiments": {
-      "typedRoutes": true,
-      "reactCompiler": true
-    },
-    "extra": {
-      "router": {
-        "root": "src/app"
-      },
-      "eas": {
-        "projectId": "85911051-68fa-4e9c-a6fe-f824510f0061"
-      }
-    }
-  }
+	"expo": {
+		"name": "SaveNa",
+		"slug": "save-na",
+		"version": "1.0.0",
+		"orientation": "portrait",
+		"icon": "./assets/images/icon.png",
+		"scheme": "save-na",
+		"userInterfaceStyle": "automatic",
+		"newArchEnabled": true,
+		"ios": {
+			"supportsTablet": true,
+			"bundleIdentifier": "com.savena.app"
+		},
+		"android": {
+			"adaptiveIcon": {
+				"backgroundColor": "#0d9488",
+				"foregroundImage": "./assets/images/android-icon-foreground.png",
+				"backgroundImage": "./assets/images/android-icon-background.png",
+				"monochromeImage": "./assets/images/android-icon-monochrome.png"
+			},
+			"package": "com.savena.app",
+			"edgeToEdgeEnabled": true,
+			"predictiveBackGestureEnabled": false
+		},
+		"plugins": [
+			[
+				"expo-router",
+				{
+					"root": "src/app"
+				}
+			],
+			[
+				"expo-splash-screen",
+				{
+					"image": "./assets/images/splash-icon.png",
+					"imageWidth": 200,
+					"resizeMode": "contain",
+					"backgroundColor": "#0d9488",
+					"dark": {
+						"backgroundColor": "#0d9488"
+					}
+				}
+			],
+			"expo-sqlite"
+		],
+		"experiments": {
+			"typedRoutes": true,
+			"reactCompiler": true
+		},
+		"extra": {
+			"router": {
+				"root": "src/app"
+			},
+			"eas": {
+				"projectId": "85911051-68fa-4e9c-a6fe-f824510f0061"
+			}
+		}
+	}
 }

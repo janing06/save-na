@@ -3,6 +3,7 @@ import type { IncomeSource, PaySchedule } from '@shared/lib';
 import { useEffect, useState } from 'react';
 import {
 	Modal,
+	Platform,
 	Pressable,
 	ScrollView,
 	Text,
@@ -160,7 +161,7 @@ export const IncomeSourceModal = ({
 		<Modal
 			visible={visible}
 			animationType="slide"
-			presentationStyle="pageSheet"
+			presentationStyle={Platform.OS === 'android' ? 'fullScreen' : 'pageSheet'}
 		>
 			<ScrollView className="flex-1 bg-white pt-6 px-6">
 				<View className="flex-row justify-between items-center mb-6">
