@@ -2,6 +2,7 @@ import { getDatabase } from '@shared/db';
 import type { BudgetItem, BudgetItemAllocation } from '@shared/lib';
 import type { BudgetItemWithAllocations } from './list-budget-items';
 
+/** Fetches a single budget item by ID, including its category name and allocations. */
 export async function getBudgetItemById(
 	id: number,
 ): Promise<BudgetItemWithAllocations | null> {
