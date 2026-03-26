@@ -7,7 +7,6 @@ import { IncomeSourceCard } from './income-source-card';
 
 type Props = {
 	sources: IncomeSource[];
-	isLoading: boolean;
 	currency: string;
 	onAdd: () => void;
 	onEdit: (source: IncomeSource) => void;

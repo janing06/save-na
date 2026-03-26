@@ -8,7 +8,7 @@ import { IncomePage } from './income-page';
 
 export const IncomePageContainer = () => {
 	const router = useRouter();
-	const { sources, isLoading } = useIncomeSources();
+	const { sources } = useIncomeSources();
 	const { onDelete } = useDeleteIncomeSource();
 
 	const { data: prefs } = useQuery({
@@ -28,7 +28,6 @@ export const IncomePageContainer = () => {
 	return (
 		<IncomePage
 			sources={sources}
-			isLoading={isLoading}
 			currency={currency}
 			onAdd={onAdd}
 			onEdit={onEdit}
