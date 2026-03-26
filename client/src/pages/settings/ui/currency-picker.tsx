@@ -63,4 +63,4 @@ export const CurrencyPicker = ({
 			</View>
 		</Modal>
 	);
-}
+};
