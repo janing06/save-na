@@ -14,7 +14,7 @@
 		"ts:check": "tsc --noEmit",
 		"fsd": "steiger ./src",
 		"knip": "knip -c knip.config.jsonc --no-config-hints",
-		"check-all": "npm run ts:check && npm run lint && npm run fsd && npm run knip"
+		"check-all": "npm run ts:check && npm run lint && npm run format && npm run fsd && npm run knip"
 	},
 	"dependencies": {
 		"@tanstack/react-query": "^5.95.0",
@@ -25,6 +25,7 @@
 		"expo-splash-screen": "~31.0.13",
 		"expo-sqlite": "~16.0.10",
 		"expo-system-ui": "~6.0.9",
+		"expo-updates": "~29.0.16",
 		"jotai": "^2.18.1",
 		"nativewind": "^4.2.3",
 		"react": "19.1.0",
