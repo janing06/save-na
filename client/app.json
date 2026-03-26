@@ -3,6 +3,12 @@
 		"name": "SaveNa",
 		"slug": "save-na",
 		"version": "1.0.0",
+		"runtimeVersion": {
+			"policy": "appVersion"
+		},
+		"updates": {
+			"url": "https://u.expo.dev/85911051-68fa-4e9c-a6fe-f824510f0061"
+		},
 		"orientation": "portrait",
 		"icon": "./assets/images/icon.png",
 		"scheme": "save-na",
