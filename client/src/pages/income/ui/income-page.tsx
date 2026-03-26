@@ -1,31 +1,26 @@
 import { Ionicons } from '@expo/vector-icons';
-import { FlatList, Pressable, Text, View } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
 import type { IncomeSource } from '@shared/lib';
 import { formatCurrency } from '@shared/lib';
-import type { useCreateIncomeSource } from '../model/hooks/use-create-income-source';
-import type { useDeleteIncomeSource } from '../model/hooks/use-delete-income-source';
-import type { useUpdateIncomeSource } from '../model/hooks/use-update-income-source';
+import { FlatList, Pressable, Text, View } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { IncomeSourceCard } from './income-source-card';
-import { IncomeSourceModal } from './income-source-modal';
 
 type Props = {
 	sources: IncomeSource[];
 	isLoading: boolean;
 	currency: string;
-	create: ReturnType<typeof useCreateIncomeSource>;
-	update: ReturnType<typeof useUpdateIncomeSource>;
-	remove: ReturnType<typeof useDeleteIncomeSource>;
+	onAdd: () => void;
+	onEdit: (source: IncomeSource) => void;
+	onDelete: (id: number) => void;
 };
 
 export const IncomePage = ({
 	sources,
 	currency,
-	create,
-	update,
-	remove,
+	onAdd,
+	onEdit,
+	onDelete,
 }: Props) => {
-	const modalVisible = create.showModal || !!update.editingSource;
 	const totalIncome = sources.reduce((sum, s) => sum + s.amount, 0);
 
 	return (
@@ -52,8 +47,8 @@ export const IncomePage = ({
 						<IncomeSourceCard
 							source={item}
 							currency={currency}
-							onEdit={update.onEdit}
-							onDelete={remove.onDelete}
+							onEdit={onEdit}
+							onDelete={onDelete}
 						/>
 					)}
 					ListEmptyComponent={
@@ -66,20 +61,11 @@ export const IncomePage = ({
 				<Pressable
 					className="absolute bottom-6 right-6 bg-teal-600 w-12 h-12 rounded-full items-center justify-center shadow-lg"
 					style={{ shadowColor: '#0d9488' }}
-					onPress={create.onShow}
+					onPress={onAdd}
 				>
 					<Ionicons name="add" size={28} color="white" />
 				</Pressable>
 			</View>
-
-			<IncomeSourceModal
-				visible={modalVisible}
-				editingSource={update.editingSource}
-				onSubmit={update.editingSource ? update.onSubmit : create.onSubmit}
-				onDelete={update.editingSource ? remove.onDelete : undefined}
-				onClose={update.editingSource ? update.onCancel : create.onHide}
-				isPending={create.isPending || update.isPending}
-			/>
 		</View>
 	);
-}
+};
