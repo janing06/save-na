@@ -53,7 +53,7 @@ export const CategoryFormPage = ({
 				className={`rounded-xl px-8 py-4 items-center ${
 					isValid && !isPending ? 'bg-teal-600' : 'bg-slate-200'
 				}`}
-				onPress={() => isValid && onSubmit(name.trim())}
+				onPress={() => onSubmit(name.trim())}
 				disabled={!isValid || isPending}
 			>
 				<Text
