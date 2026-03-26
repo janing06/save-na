@@ -1,21 +1,20 @@
 import { useState } from 'react';
+import { useRouter } from 'expo-router';
+import type { Category } from '@shared/lib';
 import {
 	useCategories,
 	useClearData,
-	useCreateCategory,
 	useDeleteCategory,
 	usePreferences,
-	useUpdateCategory,
 	useUpdateCurrency,
 } from '../model/hooks';
 import { SettingsPage } from './settings-page';
 
 export const SettingsPageContainer = () => {
+	const router = useRouter();
 	const { preferences } = usePreferences();
 	const { categories } = useCategories();
 	const { onUpdate } = useUpdateCurrency();
-	const createCat = useCreateCategory();
-	const updateCat = useUpdateCategory();
 	const deleteCat = useDeleteCategory();
 	const clearData = useClearData();
 
@@ -31,14 +30,22 @@ export const SettingsPageContainer = () => {
 		},
 	};
 
+	const categoryActions = {
+		onAdd: () => router.push('/(tabs)/settings/category-form'),
+		onEdit: (cat: Category) =>
+			router.push({
+				pathname: '/(tabs)/settings/category-form',
+				params: { categoryId: String(cat.id) },
+			}),
+		onDelete: deleteCat.onDelete,
+	};
+
 	return (
 		<SettingsPage
 			preferences={preferences}
 			categories={categories}
 			currencyPicker={currencyPicker}
-			createCategory={createCat}
-			updateCategory={updateCat}
-			deleteCategory={deleteCat}
+			categoryActions={categoryActions}
 			onClearData={clearData.onClear}
 		/>
 	);

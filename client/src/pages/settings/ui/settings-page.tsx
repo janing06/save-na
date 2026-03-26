@@ -2,11 +2,7 @@ import { Pressable, ScrollView, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { currencies } from '@shared/config';
 import type { Category, UserPreferences } from '@shared/lib';
-import type { useCreateCategory } from '../model/hooks/use-create-category';
-import type { useDeleteCategory } from '../model/hooks/use-delete-category';
-import type { useUpdateCategory } from '../model/hooks/use-update-category';
 import { CategoryList } from './category-list';
-import { CategoryModal } from './category-modal';
 import { CurrencyPicker } from './currency-picker';
 
 type Props = {
@@ -18,9 +14,11 @@ type Props = {
 		onHide: () => void;
 		onUpdate: (currency: string) => void;
 	};
-	createCategory: ReturnType<typeof useCreateCategory>;
-	updateCategory: ReturnType<typeof useUpdateCategory>;
-	deleteCategory: ReturnType<typeof useDeleteCategory>;
+	categoryActions: {
+		onAdd: () => void;
+		onEdit: (cat: Category) => void;
+		onDelete: (id: number) => void;
+	};
 	onClearData: () => void;
 };
 
@@ -28,15 +26,10 @@ export const SettingsPage = ({
 	preferences,
 	categories,
 	currencyPicker,
-	createCategory,
-	updateCategory,
-	deleteCategory,
+	categoryActions,
 	onClearData,
 }: Props) => {
 	const currencyInfo = currencies.find((c) => c.code === preferences?.currency);
-
-	const categoryModalVisible =
-		createCategory.showModal || !!updateCategory.editingCategory;
 
 	return (
 		<View className="flex-1 bg-teal-600">
@@ -60,9 +53,9 @@ export const SettingsPage = ({
 					<CategoryList
 						categories={categories}
 						currencyInfo={currencyInfo}
-						onEdit={updateCategory.onEdit}
-						onDelete={deleteCategory.onDelete}
-						onAdd={createCategory.onShow}
+						onEdit={categoryActions.onEdit}
+						onDelete={categoryActions.onDelete}
+						onAdd={categoryActions.onAdd}
 						onCurrencyPress={currencyPicker.onShow}
 					/>
 
@@ -94,22 +87,6 @@ export const SettingsPage = ({
 				selectedCurrency={preferences?.currency ?? 'PHP'}
 				onSelect={currencyPicker.onUpdate}
 				onClose={currencyPicker.onHide}
-			/>
-
-			<CategoryModal
-				visible={categoryModalVisible}
-				editingCategory={updateCategory.editingCategory}
-				onSubmit={
-					updateCategory.editingCategory
-						? updateCategory.onSubmit
-						: createCategory.onSubmit
-				}
-				onClose={
-					updateCategory.editingCategory
-						? updateCategory.onCancel
-						: createCategory.onHide
-				}
-				isPending={createCategory.isPending || updateCategory.isPending}
 			/>
 		</View>
 	);

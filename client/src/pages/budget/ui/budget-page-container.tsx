@@ -1,49 +1,33 @@
-import { getPreferences, listCategories } from '@shared/db';
+import { getPreferences } from '@shared/db';
 import { queryKeys } from '@shared/lib';
 import { useQuery } from '@tanstack/react-query';
+import { useRouter } from 'expo-router';
 import { useMemo } from 'react';
+import type { BudgetItemWithAllocations } from '../api/list-budget-items';
 import {
 	useBudgetItems,
 	useBudgetMonth,
-	useCreateBudgetItem,
-	useDeleteBudgetItem,
 	usePayPeriodToggle,
 	useSourceSwitcher,
 	useTogglePaid,
-	useUpdateBudgetItem,
 } from '../model/hooks';
 import { BudgetPage } from './budget-page';
 
 export const BudgetPageContainer = () => {
+	const router = useRouter();
 	const month = useBudgetMonth();
 	const switcher = useSourceSwitcher();
 	const payPeriod = usePayPeriodToggle(
 		switcher.selectedSource,
 		month.yearMonth,
 	);
-	const { items, budgetMonthId } = useBudgetItems(
-		month.yearMonth,
-		switcher.selectedSourceId,
-	);
-
-	const create = useCreateBudgetItem(
-		budgetMonthId,
-		switcher.selectedSource,
-		month.yearMonth,
-	);
-	const update = useUpdateBudgetItem(switcher.selectedSource, month.yearMonth);
-	const remove = useDeleteBudgetItem(month.yearMonth, update.onCancel);
+	const { items } = useBudgetItems(month.yearMonth, switcher.selectedSourceId);
 	const { onToggle } = useTogglePaid(month.yearMonth);
 
 	const { data: prefs } = useQuery({
 		queryKey: queryKeys.preferences,
 		queryFn: getPreferences,
 	});
-	const { data: categories } = useQuery({
-		queryKey: queryKeys.categories,
-		queryFn: listCategories,
-	});
-
 	const currency = prefs?.currency ?? 'PHP';
 
 	const itemsByCategory = useMemo(() => {
@@ -98,6 +82,29 @@ export const BudgetPageContainer = () => {
 		}, 0);
 	}, [items, periodIndex, isTotal]);
 
+	const onAdd = () => {
+		if (!switcher.selectedSource) return;
+		router.push({
+			pathname: '/(tabs)/budget/budget-item-form',
+			params: {
+				incomeSourceId: String(switcher.selectedSource.id),
+				yearMonth: month.yearMonth,
+			},
+		});
+	};
+
+	const onEdit = (item: BudgetItemWithAllocations) => {
+		if (!switcher.selectedSource) return;
+		router.push({
+			pathname: '/(tabs)/budget/budget-item-form',
+			params: {
+				incomeSourceId: String(switcher.selectedSource.id),
+				yearMonth: month.yearMonth,
+				itemId: String(item.id),
+			},
+		});
+	};
+
 	return (
 		<BudgetPage
 			month={{
@@ -111,10 +118,8 @@ export const BudgetPageContainer = () => {
 			payPeriod={payPeriod}
 			summary={{ income: totalIncome, allocated: totalAllocated, currency }}
 			itemsByCategory={itemsByCategory}
-			categories={categories ?? []}
-			create={create}
-			update={update}
-			remove={remove}
+			onAdd={onAdd}
+			onEdit={onEdit}
 			onTogglePaid={onToggle}
 		/>
 	);

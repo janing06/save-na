@@ -1,30 +1,8 @@
 import { Ionicons } from '@expo/vector-icons';
 import type { IncomeSource, PaySchedule } from '@shared/lib';
 import { useEffect, useState } from 'react';
-import {
-	Modal,
-	Platform,
-	Pressable,
-	ScrollView,
-	Text,
-	TextInput,
-	View,
-} from 'react-native';
-
-type Props = {
-	visible: boolean;
-	editingSource: IncomeSource | null;
-	onSubmit: (input: {
-		name: string;
-		amount: number;
-		paySchedule: PaySchedule;
-		payDates: number[];
-		payAmounts?: number[];
-	}) => void;
-	onDelete?: (id: number) => void;
-	onClose: () => void;
-	isPending: boolean;
-};
+import { Pressable, ScrollView, Text, TextInput, View } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 const scheduleOptions: { value: PaySchedule; label: string }[] = [
 	{ value: 'monthly', label: 'Monthly' },
@@ -53,8 +31,21 @@ const dayOfWeekOptions = [
 	{ value: 6, label: 'Sat' },
 ];
 
-export const IncomeSourceModal = ({
-	visible,
+type Props = {
+	editingSource: IncomeSource | null;
+	onSubmit: (input: {
+		name: string;
+		amount: number;
+		paySchedule: PaySchedule;
+		payDates: number[];
+		payAmounts?: number[];
+	}) => void;
+	onDelete?: () => void;
+	onClose: () => void;
+	isPending: boolean;
+};
+
+export const IncomeSourceFormPage = ({
 	editingSource,
 	onSubmit,
 	onDelete,
@@ -71,7 +62,6 @@ export const IncomeSourceModal = ({
 	const [dayOfWeek, setDayOfWeek] = useState(5);
 	const [focusedField, setFocusedField] = useState<string | null>(null);
 
-	// biome-ignore lint/correctness/useExhaustiveDependencies: visible is a prop that triggers form reset when the modal opens
 	useEffect(() => {
 		if (editingSource) {
 			setName(editingSource.name);
@@ -118,7 +108,7 @@ export const IncomeSourceModal = ({
 			setSecondPayAmount('');
 			setDayOfWeek(5);
 		}
-	}, [editingSource, visible]);
+	}, [editingSource]);
 
 	const isBiMonthly = paySchedule === 'bi-monthly';
 	const firstAmt = Number(firstPayAmount);
@@ -158,12 +148,8 @@ export const IncomeSourceModal = ({
 	};
 
 	return (
-		<Modal
-			visible={visible}
-			animationType="slide"
-			presentationStyle={Platform.OS === 'android' ? 'fullScreen' : 'pageSheet'}
-		>
-			<ScrollView className="flex-1 bg-white pt-6 px-6">
+		<SafeAreaView edges={['top']} className="flex-1 bg-white">
+			<ScrollView className="flex-1 px-6 pt-6">
 				<View className="flex-row justify-between items-center mb-6">
 					<Text className="text-xl font-bold text-slate-900">
 						{editingSource ? 'Edit Income' : 'Add Income'}
@@ -354,17 +340,15 @@ export const IncomeSourceModal = ({
 						{submitLabel}
 					</Text>
 				</Pressable>
+
 				{editingSource && onDelete && (
-					<Pressable
-						className="items-center py-3 mb-12"
-						onPress={() => onDelete(editingSource.id)}
-					>
+					<Pressable className="items-center py-3 mb-12" onPress={onDelete}>
 						<Text className="text-red-500 text-sm font-semibold">
 							Delete Income Source
 						</Text>
 					</Pressable>
 				)}
 			</ScrollView>
-		</Modal>
+		</SafeAreaView>
 	);
 };

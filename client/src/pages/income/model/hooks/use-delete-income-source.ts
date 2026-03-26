@@ -3,14 +3,13 @@ import { Alert } from 'react-native';
 import { deleteIncomeSource } from '../../api/delete-income-source';
 import { queryKeys } from '@shared/lib';
 
-export const useDeleteIncomeSource = (onSuccess?: () => void) => {
+export const useDeleteIncomeSource = () => {
 	const queryClient = useQueryClient();
 
 	const mutation = useMutation({
 		mutationFn: deleteIncomeSource,
 		onSuccess: () => {
 			queryClient.invalidateQueries({ queryKey: queryKeys.incomeSources });
-			onSuccess?.();
 		},
 		onError: () => {
 			Alert.alert('Error', 'Failed to delete income source. Please try again.');

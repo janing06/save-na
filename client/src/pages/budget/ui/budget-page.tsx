@@ -1,12 +1,8 @@
 import { Ionicons } from '@expo/vector-icons';
-import type { Category, IncomeSource, PayPeriod } from '@shared/lib';
+import type { IncomeSource, PayPeriod } from '@shared/lib';
 import { Pressable, ScrollView, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import type { BudgetItemWithAllocations } from '../api/list-budget-items';
-import type { useCreateBudgetItem } from '../model/hooks/use-create-budget-item';
-import type { useDeleteBudgetItem } from '../model/hooks/use-delete-budget-item';
-import type { useUpdateBudgetItem } from '../model/hooks/use-update-budget-item';
-import { BudgetItemModal } from './budget-item-modal';
 import { CategoryAccordion } from './category-accordion';
 import { MonthSelector } from './month-selector';
 import { PayPeriodToggle } from './pay-period-toggle';
@@ -37,10 +33,8 @@ type Props = {
 		categoryName: string;
 		items: BudgetItemWithAllocations[];
 	}[];
-	categories: Category[];
-	create: ReturnType<typeof useCreateBudgetItem>;
-	update: ReturnType<typeof useUpdateBudgetItem>;
-	remove: ReturnType<typeof useDeleteBudgetItem>;
+	onAdd: () => void;
+	onEdit: (item: BudgetItemWithAllocations) => void;
 	onTogglePaid: (allocationId: number) => void;
 };
 
@@ -50,13 +44,10 @@ export const BudgetPage = ({
 	payPeriod,
 	summary,
 	itemsByCategory,
-	categories,
-	create,
-	update,
-	remove,
+	onAdd,
+	onEdit,
 	onTogglePaid,
 }: Props) => {
-	const modalVisible = create.showModal || !!update.editingItem;
 	const isTotal = sourceSwitcher.selectedSourceId === 'total';
 
 	return (
@@ -107,7 +98,7 @@ export const BudgetPage = ({
 							items={group.items}
 							selectedPeriodIndex={isTotal ? 'full' : payPeriod.selectedIndex}
 							currency={summary.currency}
-							onEditItem={update.onEdit}
+							onEditItem={onEdit}
 							onTogglePaid={onTogglePaid}
 						/>
 					))}
@@ -125,23 +116,12 @@ export const BudgetPage = ({
 					<Pressable
 						className="absolute bottom-6 right-6 bg-teal-600 w-12 h-12 rounded-full items-center justify-center shadow-lg"
 						style={{ shadowColor: '#0d9488' }}
-						onPress={create.onShow}
+						onPress={onAdd}
 					>
 						<Ionicons name="add" size={28} color="white" />
 					</Pressable>
 				)}
 			</View>
-
-			<BudgetItemModal
-				visible={modalVisible}
-				editingItem={update.editingItem}
-				categories={categories}
-				payPeriods={payPeriod.periods}
-				onSubmit={update.editingItem ? update.onSubmit : create.onSubmit}
-				onDelete={update.editingItem ? remove.onDelete : undefined}
-				onClose={update.editingItem ? update.onCancel : create.onHide}
-				isPending={create.isPending || update.isPending}
-			/>
 		</View>
 	);
 };

@@ -1,3 +1,5 @@
+import Entypo from '@expo/vector-icons/Entypo';
+import FontAwesome6 from '@expo/vector-icons/FontAwesome6';
 import { Ionicons } from '@expo/vector-icons';
 import { Tabs } from 'expo-router';
 
@@ -19,7 +21,7 @@ const TabLayout = () => {
 				options={{
 					title: 'Budget',
 					tabBarIcon: ({ color }) => (
-						<Ionicons name="bar-chart" size={22} color={color} />
+						<FontAwesome6 name="chart-simple" size={22} color={color} />
 					),
 				}}
 			/>
@@ -28,7 +30,7 @@ const TabLayout = () => {
 				options={{
 					title: 'Income',
 					tabBarIcon: ({ color }) => (
-						<Ionicons name="cash" size={22} color={color} />
+						<Entypo name="wallet" size={22} color={color} />
 					),
 				}}
 			/>

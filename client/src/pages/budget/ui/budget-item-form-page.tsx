@@ -1,19 +1,11 @@
 import { Ionicons } from '@expo/vector-icons';
 import type { Category, PayPeriod, SplitType } from '@shared/lib';
 import { useEffect, useState } from 'react';
-import {
-	Modal,
-	Platform,
-	Pressable,
-	ScrollView,
-	Text,
-	TextInput,
-	View,
-} from 'react-native';
+import { Pressable, ScrollView, Text, TextInput, View } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import type { BudgetItemWithAllocations } from '../api/list-budget-items';
 
 type Props = {
-	visible: boolean;
 	editingItem: BudgetItemWithAllocations | null;
 	categories: Category[];
 	payPeriods: PayPeriod[];
@@ -24,13 +16,12 @@ type Props = {
 		splitType: SplitType;
 		customAllocations?: { payPeriodIndex: number; amount: number }[];
 	}) => void;
-	onDelete?: (id: number) => void;
+	onDelete?: () => void;
 	onClose: () => void;
 	isPending: boolean;
 };
 
-export const BudgetItemModal = ({
-	visible,
+export const BudgetItemFormPage = ({
 	editingItem,
 	categories,
 	payPeriods,
@@ -46,7 +37,6 @@ export const BudgetItemModal = ({
 	const [allocations, setAllocations] = useState<string[]>([]);
 	const [focusedField, setFocusedField] = useState<string | null>(null);
 
-	// biome-ignore lint/correctness/useExhaustiveDependencies: visible is a prop that triggers form reset when the modal opens
 	useEffect(() => {
 		if (editingItem) {
 			setName(editingItem.name);
@@ -69,7 +59,7 @@ export const BudgetItemModal = ({
 			setCustomSplit(false);
 			setAllocations([]);
 		}
-	}, [editingItem, visible, categories]);
+	}, [editingItem, categories]);
 
 	const totalNum = Number(amount);
 	const showSplitSection = payPeriods.length > 1;
@@ -117,12 +107,8 @@ export const BudgetItemModal = ({
 	};
 
 	return (
-		<Modal
-			visible={visible}
-			animationType="slide"
-			presentationStyle={Platform.OS === 'android' ? 'fullScreen' : 'pageSheet'}
-		>
-			<ScrollView className="flex-1 bg-white pt-6 px-6">
+		<SafeAreaView edges={['top']} className="flex-1 bg-white">
+			<ScrollView className="flex-1 px-6 pt-6">
 				<View className="flex-row justify-between items-center mb-6">
 					<Text className="text-xl font-bold text-slate-900">
 						{editingItem ? 'Edit Item' : 'Add Item'}
@@ -252,16 +238,13 @@ export const BudgetItemModal = ({
 				</Pressable>
 
 				{editingItem && onDelete && (
-					<Pressable
-						className="items-center py-3 mb-12"
-						onPress={() => onDelete(editingItem.id)}
-					>
+					<Pressable className="items-center py-3 mb-12" onPress={onDelete}>
 						<Text className="text-red-500 text-sm font-semibold">
 							Delete Item
 						</Text>
 					</Pressable>
 				)}
 			</ScrollView>
-		</Modal>
+		</SafeAreaView>
 	);
 };
