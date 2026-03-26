@@ -21,10 +21,7 @@ export const BudgetPageContainer = () => {
 		switcher.selectedSource,
 		month.yearMonth,
 	);
-	const { items, budgetMonthId: _budgetMonthId } = useBudgetItems(
-		month.yearMonth,
-		switcher.selectedSourceId,
-	);
+	const { items } = useBudgetItems(month.yearMonth, switcher.selectedSourceId);
 	const { onToggle } = useTogglePaid(month.yearMonth);
 
 	const { data: prefs } = useQuery({
