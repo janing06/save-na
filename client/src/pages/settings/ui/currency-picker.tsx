@@ -29,6 +29,7 @@ export const CurrencyPicker = ({
 			visible={visible}
 			animationType="slide"
 			presentationStyle="pageSheet"
+			onRequestClose={onClose}
 		>
 			<SafeAreaView edges={['top']} className="flex-1 bg-white pt-6 px-6">
 				{Platform.OS === 'android' && <StatusBar barStyle="dark-content" />}
