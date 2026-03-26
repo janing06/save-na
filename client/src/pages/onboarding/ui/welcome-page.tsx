@@ -19,4 +19,4 @@ export const WelcomePage = ({ onNext }: Props) => {
 			</Pressable>
 		</View>
 	);
-}
+};

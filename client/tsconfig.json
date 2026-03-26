@@ -1,37 +1,23 @@
 {
-  "extends": "expo/tsconfig.base",
-  "compilerOptions": {
-    "strict": true,
-    "baseUrl": ".",
-    "paths": {
-      "@/*": [
-        "./src/*"
-      ],
-      "@core/*": [
-        "./src/core/*"
-      ],
-      "@entities/*": [
-        "./src/entities/*"
-      ],
-      "@features/*": [
-        "./src/features/*"
-      ],
-      "@pages/*": [
-        "./src/pages/*"
-      ],
-      "@shared/*": [
-        "./src/shared/*"
-      ],
-      "@widgets/*": [
-        "./src/widgets/*"
-      ]
-    }
-  },
-  "include": [
-    "**/*.ts",
-    "**/*.tsx",
-    ".expo/types/**/*.ts",
-    "expo-env.d.ts",
-    "nativewind-env.d.ts"
-  ]
+	"extends": "expo/tsconfig.base",
+	"compilerOptions": {
+		"strict": true,
+		"baseUrl": ".",
+		"paths": {
+			"@/*": ["./src/*"],
+			"@core/*": ["./src/core/*"],
+			"@entities/*": ["./src/entities/*"],
+			"@features/*": ["./src/features/*"],
+			"@pages/*": ["./src/pages/*"],
+			"@shared/*": ["./src/shared/*"],
+			"@widgets/*": ["./src/widgets/*"]
+		}
+	},
+	"include": [
+		"**/*.ts",
+		"**/*.tsx",
+		".expo/types/**/*.ts",
+		"expo-env.d.ts",
+		"nativewind-env.d.ts"
+	]
 }
