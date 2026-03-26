@@ -1,6 +1,14 @@
 import { Ionicons } from '@expo/vector-icons';
 import { currencies } from '@shared/config';
-import { FlatList, Modal, Pressable, Text, View } from 'react-native';
+import {
+	FlatList,
+	Modal,
+	Platform,
+	Pressable,
+	StatusBar,
+	Text,
+	View,
+} from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 type Props = {
@@ -23,6 +31,7 @@ export const CurrencyPicker = ({
 			presentationStyle="pageSheet"
 		>
 			<SafeAreaView edges={['top']} className="flex-1 bg-white pt-6 px-6">
+				{Platform.OS === 'android' && <StatusBar barStyle="dark-content" />}
 				<View className="flex-row justify-between items-center mb-6">
 					<Text className="text-xl font-bold text-slate-900">Currency</Text>
 					<Pressable onPress={onClose}>
