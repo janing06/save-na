@@ -2,7 +2,6 @@ import { Pressable, ScrollView, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { currencies } from '@shared/config';
 import type { Category, UserPreferences } from '@shared/lib';
-import type { useDeleteCategory } from '../model/hooks/use-delete-category';
 import { CategoryList } from './category-list';
 import { CurrencyPicker } from './currency-picker';
 
@@ -18,7 +17,7 @@ type Props = {
 	categoryActions: {
 		onAdd: () => void;
 		onEdit: (cat: Category) => void;
-		onDelete: ReturnType<typeof useDeleteCategory>['onDelete'];
+		onDelete: (id: number) => void;
 	};
 	onClearData: () => void;
 };
