@@ -1,4 +1,3 @@
-import * as Notifications from 'expo-notifications';
 import { getDatabase } from './client';
 import { seedDefaultCategories } from './seed';
 
@@ -15,6 +14,14 @@ export async function clearAllData(): Promise<void> {
 		await db.runAsync('DELETE FROM user_preferences');
 	});
 
-	await Notifications.cancelAllScheduledNotificationsAsync();
+	// expo-notifications is not supported in Expo Go since SDK 53
+	const Constants = (await import('expo-constants')).default;
+	if (Constants.appOwnership !== 'expo') {
+		try {
+			const Notifications = await import('expo-notifications');
+			await Notifications.cancelAllScheduledNotificationsAsync();
+		} catch {}
+	}
+
 	await seedDefaultCategories(db);
 }
