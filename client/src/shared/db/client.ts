@@ -1,4 +1,5 @@
 import * as SQLite from 'expo-sqlite';
+import { defaultCategories } from '@shared/config';
 import { createTables } from './schema';
 import { seedDefaultCategories } from './seed';
 
@@ -33,15 +34,18 @@ async function runMigrations(database: SQLite.SQLiteDatabase): Promise<void> {
 		);
 	}
 
-	// Migration 3: insert "Others" default category if it doesn't exist
-	const othersExists = await database.getFirstAsync<{ count: number }>(
-		"SELECT COUNT(*) as count FROM category WHERE name = 'Others' AND is_default = 1",
-	);
-	if (!othersExists || othersExists.count === 0) {
-		await database.runAsync(
-			'INSERT INTO category (name, sort_order, is_default) VALUES (?, ?, 1)',
-			['Others', 4],
+	// Migration 3: ensure all default categories exist (restores any that were deleted)
+	for (const cat of defaultCategories) {
+		const exists = await database.getFirstAsync<{ count: number }>(
+			'SELECT COUNT(*) as count FROM category WHERE name = ? AND is_default = 1',
+			[cat.name],
 		);
+		if (!exists || exists.count === 0) {
+			await database.runAsync(
+				'INSERT INTO category (name, sort_order, is_default) VALUES (?, ?, 1)',
+				[cat.name, cat.sort_order],
+			);
+		}
 	}
 }
 
