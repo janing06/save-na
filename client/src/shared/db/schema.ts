@@ -58,4 +58,13 @@ export const createTables = `
     updated_at TEXT NOT NULL DEFAULT (datetime('now')),
     UNIQUE(budget_item_id, pay_period_index)
   );
+
+  CREATE TABLE IF NOT EXISTS notification_config (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    income_source_id INTEGER NOT NULL REFERENCES income_source(id) ON DELETE CASCADE,
+    type TEXT NOT NULL CHECK (type IN ('payday', 'budget_reminder')),
+    enabled INTEGER NOT NULL DEFAULT 1,
+    time TEXT NOT NULL DEFAULT '10:00',
+    UNIQUE(income_source_id, type)
+  );
 `;
