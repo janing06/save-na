@@ -31,7 +31,7 @@ export async function listBudgetItems(
 		params.push(incomeSourceId);
 	}
 
-	query += ' ORDER BY c.sort_order ASC, bi.sort_order ASC';
+	query += ' ORDER BY c.sort_order ASC, is2.sort_order ASC, bi.sort_order ASC';
 
 	const items = await db.getAllAsync<
 		BudgetItem & { category_name: string; income_source_name: string | null }
