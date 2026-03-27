@@ -7,15 +7,19 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 type Props = {
 	editingCategory: Category | null;
 	onSubmit: (name: string) => void;
+	onDelete: () => void;
 	onClose: () => void;
 	isPending: boolean;
+	isDeleting: boolean;
 };
 
 export const CategoryFormPage = ({
 	editingCategory,
 	onSubmit,
+	onDelete,
 	onClose,
 	isPending,
+	isDeleting,
 }: Props) => {
 	const [name, setName] = useState('');
 	const [nameFocused, setNameFocused] = useState(false);
@@ -25,6 +29,9 @@ export const CategoryFormPage = ({
 	}, [editingCategory]);
 
 	const isValid = name.trim() !== '';
+	const isBusy = isPending || isDeleting;
+	const showDelete =
+		editingCategory !== null && editingCategory.is_default === 0;
 
 	return (
 		<SafeAreaView edges={['top']} className="flex-1 bg-white px-6 pt-6">
@@ -50,18 +57,32 @@ export const CategoryFormPage = ({
 			/>
 
 			<Pressable
-				className={`rounded-xl px-8 py-4 items-center ${
-					isValid && !isPending ? 'bg-teal-600' : 'bg-slate-200'
+				className={`rounded-xl px-8 py-4 items-center mb-3 ${
+					isValid && !isBusy ? 'bg-teal-600' : 'bg-slate-200'
 				}`}
 				onPress={() => onSubmit(name.trim())}
-				disabled={!isValid || isPending}
+				disabled={!isValid || isBusy}
 			>
 				<Text
-					className={`text-base font-bold ${isValid && !isPending ? 'text-white' : 'text-slate-400'}`}
+					className={`text-base font-bold ${isValid && !isBusy ? 'text-white' : 'text-slate-400'}`}
 				>
 					{isPending ? 'Saving...' : 'Save'}
 				</Text>
 			</Pressable>
+
+			{showDelete && (
+				<Pressable
+					className="rounded-xl px-8 py-4 items-center"
+					onPress={onDelete}
+					disabled={isBusy}
+				>
+					<Text
+						className={`text-base font-semibold ${isBusy ? 'text-slate-300' : 'text-red-500'}`}
+					>
+						{isDeleting ? 'Deleting...' : 'Delete Category'}
+					</Text>
+				</Pressable>
+			)}
 		</SafeAreaView>
 	);
 };
