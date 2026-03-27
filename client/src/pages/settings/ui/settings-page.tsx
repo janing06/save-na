@@ -17,7 +17,6 @@ type Props = {
 	categoryActions: {
 		onAdd: () => void;
 		onEdit: (cat: Category) => void;
-		onDelete: (id: number) => void;
 	};
 	onClearData: () => void;
 };
@@ -54,7 +53,6 @@ export const SettingsPage = ({
 						categories={categories}
 						currencyInfo={currencyInfo}
 						onEdit={categoryActions.onEdit}
-						onDelete={categoryActions.onDelete}
 						onAdd={categoryActions.onAdd}
 						onCurrencyPress={currencyPicker.onShow}
 					/>

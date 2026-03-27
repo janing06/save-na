@@ -8,7 +8,6 @@ type Props = {
 	categories: Category[];
 	currencyInfo: CurrencyInfo;
 	onEdit: (category: Category) => void;
-	onDelete: (id: number) => void;
 	onAdd: () => void;
 	onCurrencyPress: () => void;
 };
@@ -17,7 +16,6 @@ export const CategoryList = ({
 	categories,
 	currencyInfo,
 	onEdit,
-	onDelete,
 	onAdd,
 	onCurrencyPress,
 }: Props) => {
@@ -45,19 +43,30 @@ export const CategoryList = ({
 			{/* Categories grouped card */}
 			{categories.length > 0 && (
 				<View className="bg-white rounded-2xl shadow-sm mx-4 mb-3 overflow-hidden">
-					{categories.map((cat, index) => (
-						<Pressable
-							key={cat.id}
-							className={`flex-row justify-between items-center px-4 py-3 ${
-								index < categories.length - 1 ? 'border-b border-slate-100' : ''
-							}`}
-							onPress={() => onEdit(cat)}
-							onLongPress={() => onDelete(cat.id)}
-						>
-							<Text className="text-sm text-slate-900">{cat.name}</Text>
-							<Ionicons name="chevron-forward" size={14} color="#94a3b8" />
-						</Pressable>
-					))}
+					{categories.map((cat, index) => {
+						const isDefault = cat.is_default === 1;
+						return (
+							<Pressable
+								key={cat.id}
+								className={`flex-row justify-between items-center px-4 py-3 ${
+									index < categories.length - 1
+										? 'border-b border-slate-100'
+										: ''
+								}`}
+								onPress={isDefault ? undefined : () => onEdit(cat)}
+								disabled={isDefault}
+							>
+								<Text
+									className={`text-sm ${isDefault ? 'text-slate-400' : 'text-slate-900'}`}
+								>
+									{cat.name}
+								</Text>
+								{!isDefault && (
+									<Ionicons name="chevron-forward" size={14} color="#94a3b8" />
+								)}
+							</Pressable>
+						);
+					})}
 				</View>
 			)}
 
