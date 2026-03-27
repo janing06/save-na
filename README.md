@@ -28,6 +28,8 @@ A personal budgeting app for Filipinos built with React Native and Expo, designe
 - **Month Navigation** — Browse past months; forward navigation locked at current month
 - **Multiple Currency Support** — Choose your preferred currency during onboarding
 - **Categories** — Organize budget items by category; create and manage custom categories in Settings
+- **Payday Notifications** — Get notified on payday and reminded 2 days later to check off budget items; configurable per income source with custom times
+- **Total Tab Source Labels** — Budget items in the Total tab show which income source they belong to, grouped by source for easy comparison
 - **Clear All Data** — Reset the app to a clean state from Settings
 
 ---
