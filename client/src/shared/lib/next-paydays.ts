@@ -32,6 +32,10 @@ function getCandidatesForMonth(
 				(day) => new Date(year, month - 1, day),
 			);
 		}
+		default: {
+			const _exhaustive: never = source.pay_schedule;
+			return _exhaustive;
+		}
 	}
 }
 
@@ -44,7 +48,11 @@ export function getNextPaydays(source: IncomeSource, count: number): Date[] {
 	let year = today.getFullYear();
 	let month = today.getMonth() + 1; // 1-indexed
 
+	const maxMonths = Math.max(count * 12, 24);
+	let monthsScanned = 0;
+
 	while (results.length < count) {
+		if (monthsScanned >= maxMonths) break;
 		const candidates = getCandidatesForMonth(source, payDates, year, month);
 		for (const date of candidates) {
 			if (date >= today) {
@@ -57,6 +65,7 @@ export function getNextPaydays(source: IncomeSource, count: number): Date[] {
 			month = 1;
 			year++;
 		}
+		monthsScanned++;
 	}
 
 	return results;
