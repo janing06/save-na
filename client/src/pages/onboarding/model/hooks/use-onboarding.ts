@@ -36,9 +36,11 @@ export const useOnboarding = () => {
 			await completeOnboarding(currency);
 			await saveIncomeSource(income);
 			router.replace('/(tabs)/budget');
-			requestNotificationPermission().then((granted) => {
-				if (granted) rescheduleAllNotifications().catch(() => {});
-			});
+			requestNotificationPermission()
+				.then((granted) => {
+					if (granted) rescheduleAllNotifications().catch(() => {});
+				})
+				.catch(() => {});
 		} finally {
 			setIsPending(false);
 		}
