@@ -1,0 +1,11 @@
+# macOS
+.DS_Store
+
+# Claude Code / Superpowers
+.claude/
+.superpowers/
+
+# Planning and research artifacts
+.plan/
+.research/
+.gotstuck/
