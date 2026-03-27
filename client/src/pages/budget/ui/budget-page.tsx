@@ -100,6 +100,7 @@ export const BudgetPage = ({
 							currency={summary.currency}
 							onEditItem={onEdit}
 							onTogglePaid={onTogglePaid}
+							showSourceLabel={isTotal}
 						/>
 					))}
 
