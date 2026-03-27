@@ -1,10 +1,23 @@
-import * as Notifications from 'expo-notifications';
+import Constants from 'expo-constants';
 import { Platform } from 'react-native';
 import { listAllNotificationConfigs, listIncomeSources } from '@shared/db';
 import type { IncomeSource, NotificationConfig } from './types';
 import { getNextPaydays } from './next-paydays';
 
+async function getNotifications() {
+	// expo-notifications is not supported in Expo Go since SDK 53
+	if (Constants.appOwnership === 'expo') return null;
+	try {
+		return await import('expo-notifications');
+	} catch {
+		return null;
+	}
+}
+
 export async function requestNotificationPermission(): Promise<boolean> {
+	const Notifications = await getNotifications();
+	if (!Notifications) return false;
+
 	if (Platform.OS === 'android') {
 		await Notifications.setNotificationChannelAsync('default', {
 			name: 'Default',
@@ -18,6 +31,9 @@ export async function requestNotificationPermission(): Promise<boolean> {
 export async function cancelNotificationsForSource(
 	sourceId: number,
 ): Promise<void> {
+	const Notifications = await getNotifications();
+	if (!Notifications) return;
+
 	const scheduled = await Notifications.getAllScheduledNotificationsAsync();
 	const toCancel = scheduled.filter(
 		(n) =>
@@ -35,6 +51,9 @@ async function scheduleNotificationsForSource(
 	source: IncomeSource,
 	configs: NotificationConfig[],
 ): Promise<void> {
+	const Notifications = await getNotifications();
+	if (!Notifications) return;
+
 	const paydayConfig = configs.find((c) => c.type === 'payday');
 	const reminderConfig = configs.find((c) => c.type === 'budget_reminder');
 
@@ -96,6 +115,9 @@ async function scheduleNotificationsForSource(
 }
 
 export async function rescheduleAllNotifications(): Promise<void> {
+	const Notifications = await getNotifications();
+	if (!Notifications) return;
+
 	const hasPermission = await Notifications.getPermissionsAsync().then(
 		({ status }) => status === 'granted',
 	);
