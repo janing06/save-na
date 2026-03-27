@@ -65,6 +65,8 @@ export const createTables = `
     type TEXT NOT NULL CHECK (type IN ('payday', 'budget_reminder')),
     enabled INTEGER NOT NULL DEFAULT 1,
     time TEXT NOT NULL DEFAULT '10:00',
+    created_at TEXT NOT NULL DEFAULT (datetime('now')),
+    updated_at TEXT NOT NULL DEFAULT (datetime('now')),
     UNIQUE(income_source_id, type)
   );
 `;
