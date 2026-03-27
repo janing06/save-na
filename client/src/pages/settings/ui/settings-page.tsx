@@ -67,7 +67,7 @@ export const SettingsPage = ({
 						</Text>
 						<Image
 							source={require('../../../../assets/images/instapay-qr.jpg')}
-							style={{ width: 220, height: 220 }}
+							className="w-[220px] h-[220px]"
 							resizeMode="contain"
 							accessible
 							accessibilityLabel="InstaPay QR code for tipping the developer"
