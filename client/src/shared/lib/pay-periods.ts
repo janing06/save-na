@@ -59,7 +59,7 @@ export const getPayPeriodCount = (
 };
 
 /** Computes all dates for a given day-of-week in a month */
-const computeWeeklyDates = (
+export const computeWeeklyDates = (
 	dayOfWeek: number,
 	year: number,
 	month: number,
@@ -78,7 +78,7 @@ const computeWeeklyDates = (
 };
 
 /** Computes bi-weekly dates (every other occurrence of a day-of-week) */
-const computeBiWeeklyDates = (
+export const computeBiWeeklyDates = (
 	dayOfWeek: number,
 	year: number,
 	month: number,
