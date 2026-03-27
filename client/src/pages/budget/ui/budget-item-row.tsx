@@ -1,7 +1,7 @@
 import { Ionicons } from '@expo/vector-icons';
 import type { BudgetItemAllocation } from '@shared/lib';
 import { formatCurrency } from '@shared/lib';
-import { Pressable, Text } from 'react-native';
+import { Pressable, Text, View } from 'react-native';
 
 type Props = {
 	name: string;
@@ -11,6 +11,7 @@ type Props = {
 	onPress: () => void;
 	onTogglePaid: (allocationId: number) => void;
 	showCheckbox: boolean;
+	sourceLabel?: string;
 };
 
 export const BudgetItemRow = ({
@@ -21,6 +22,7 @@ export const BudgetItemRow = ({
 	onPress,
 	onTogglePaid,
 	showCheckbox,
+	sourceLabel,
 }: Props) => {
 	const isPaid = allocation?.is_paid === 1;
 
@@ -35,11 +37,16 @@ export const BudgetItemRow = ({
 					/>
 				</Pressable>
 			)}
-			<Text
-				className={`flex-1 text-xs ${isPaid ? 'text-slate-400 line-through' : 'text-slate-700'}`}
-			>
-				{name}
-			</Text>
+			<View className="flex-1">
+				<Text
+					className={`text-xs ${isPaid ? 'text-slate-400 line-through' : 'text-slate-700'}`}
+				>
+					{name}
+				</Text>
+				{sourceLabel && (
+					<Text className="text-xs text-slate-400">{sourceLabel}</Text>
+				)}
+			</View>
 			<Text
 				className={`text-xs font-semibold ${isPaid ? 'text-slate-400' : 'text-slate-700'}`}
 			>
