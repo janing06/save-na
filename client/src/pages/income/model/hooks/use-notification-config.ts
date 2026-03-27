@@ -1,6 +1,7 @@
 import { getNotificationConfigsForSource } from '@shared/db';
 import { queryKeys } from '@shared/lib';
 import type { NotificationConfig } from '@shared/lib';
+import { useMemo } from 'react';
 import { useQuery } from '@tanstack/react-query';
 
 export const useNotificationConfig = (incomeSourceId: number | null) => {
@@ -15,12 +16,15 @@ export const useNotificationConfig = (incomeSourceId: number | null) => {
 	const paydayConfig = configs.find((c) => c.type === 'payday');
 	const reminderConfig = configs.find((c) => c.type === 'budget_reminder');
 
-	return {
-		initialNotifications: {
-			paydayEnabled: (paydayConfig?.enabled ?? 1) === 1,
-			paydayTime: paydayConfig?.time ?? '10:00',
-			budgetReminderEnabled: (reminderConfig?.enabled ?? 1) === 1,
-			budgetReminderTime: reminderConfig?.time ?? '10:00',
-		},
-	};
+	return useMemo(
+		() => ({
+			initialNotifications: {
+				paydayEnabled: (paydayConfig?.enabled ?? 1) === 1,
+				paydayTime: paydayConfig?.time ?? '10:00',
+				budgetReminderEnabled: (reminderConfig?.enabled ?? 1) === 1,
+				budgetReminderTime: reminderConfig?.time ?? '10:00',
+			},
+		}),
+		[paydayConfig, reminderConfig],
+	);
 };
