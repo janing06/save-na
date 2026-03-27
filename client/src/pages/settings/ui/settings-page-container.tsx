@@ -4,7 +4,6 @@ import type { Category } from '@shared/lib';
 import {
 	useCategories,
 	useClearData,
-	useDeleteCategory,
 	usePreferences,
 	useUpdateCurrency,
 } from '../model/hooks';
@@ -15,7 +14,6 @@ export const SettingsPageContainer = () => {
 	const { preferences } = usePreferences();
 	const { categories } = useCategories();
 	const { onUpdate } = useUpdateCurrency();
-	const deleteCat = useDeleteCategory();
 	const clearData = useClearData();
 
 	const [currencyPickerVisible, setCurrencyPickerVisible] = useState(false);
@@ -37,7 +35,6 @@ export const SettingsPageContainer = () => {
 				pathname: '/(tabs)/settings/category-form',
 				params: { categoryId: String(cat.id) },
 			}),
-		onDelete: deleteCat.onDelete,
 	};
 
 	return (
