@@ -2,7 +2,7 @@
 	"expo": {
 		"name": "SaveNa",
 		"slug": "save-na",
-		"version": "1.0.0",
+		"version": "1.1.0",
 		"runtimeVersion": {
 			"policy": "appVersion"
 		},
@@ -48,7 +48,15 @@
 					}
 				}
 			],
-			"expo-sqlite"
+			"expo-sqlite",
+			[
+				"expo-notifications",
+				{
+					"icon": "./assets/images/icon.png",
+					"color": "#0d9488",
+					"defaultChannel": "default"
+				}
+			]
 		],
 		"experiments": {
 			"typedRoutes": true,
