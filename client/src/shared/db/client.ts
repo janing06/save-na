@@ -32,6 +32,17 @@ async function runMigrations(database: SQLite.SQLiteDatabase): Promise<void> {
 			[source.id],
 		);
 	}
+
+	// Migration 3: insert "Others" default category if it doesn't exist
+	const othersExists = await database.getFirstAsync<{ count: number }>(
+		"SELECT COUNT(*) as count FROM category WHERE name = 'Others' AND is_default = 1",
+	);
+	if (!othersExists || othersExists.count === 0) {
+		await database.runAsync(
+			'INSERT INTO category (name, sort_order, is_default) VALUES (?, ?, 1)',
+			['Others', 4],
+		);
+	}
 }
 
 export async function getDatabase(): Promise<SQLite.SQLiteDatabase> {
