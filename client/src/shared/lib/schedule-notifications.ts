@@ -24,7 +24,7 @@ export async function cancelNotificationsForSource(
 			n.identifier.startsWith(`payday-${sourceId}-`) ||
 			n.identifier.startsWith(`budget-reminder-${sourceId}-`),
 	);
-	await Promise.all(
+	await Promise.allSettled(
 		toCancel.map((n) =>
 			Notifications.cancelScheduledNotificationAsync(n.identifier),
 		),
@@ -45,9 +45,13 @@ async function scheduleNotificationsForSource(
 		const dateKey = payday.toISOString().split('T')[0];
 
 		if (paydayConfig?.enabled === 1) {
-			const [hour, minute] = paydayConfig.time.split(':').map(Number);
+			const [hourStr = '10', minuteStr = '00'] = paydayConfig.time.split(':');
+			const hour = Number(hourStr);
+			const minute = Number(minuteStr);
+			const safeHour = Number.isNaN(hour) ? 10 : hour;
+			const safeMinute = Number.isNaN(minute) ? 0 : minute;
 			const triggerDate = new Date(payday);
-			triggerDate.setHours(hour, minute, 0, 0);
+			triggerDate.setHours(safeHour, safeMinute, 0, 0);
 
 			if (triggerDate > now) {
 				await Notifications.scheduleNotificationAsync({
@@ -65,10 +69,14 @@ async function scheduleNotificationsForSource(
 		}
 
 		if (reminderConfig?.enabled === 1) {
-			const [hour, minute] = reminderConfig.time.split(':').map(Number);
+			const [hourStr = '10', minuteStr = '00'] = reminderConfig.time.split(':');
+			const hour = Number(hourStr);
+			const minute = Number(minuteStr);
+			const safeHour = Number.isNaN(hour) ? 10 : hour;
+			const safeMinute = Number.isNaN(minute) ? 0 : minute;
 			const reminderDate = new Date(payday);
 			reminderDate.setDate(reminderDate.getDate() + 2);
-			reminderDate.setHours(hour, minute, 0, 0);
+			reminderDate.setHours(safeHour, safeMinute, 0, 0);
 
 			if (reminderDate > now) {
 				await Notifications.scheduleNotificationAsync({
