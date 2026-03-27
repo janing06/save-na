@@ -1,4 +1,4 @@
-import { Pressable, ScrollView, Text, View } from 'react-native';
+import { Image, Pressable, ScrollView, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { currencies } from '@shared/config';
 import type { Category, UserPreferences } from '@shared/lib';
@@ -57,6 +57,26 @@ export const SettingsPage = ({
 						onCurrencyPress={currencyPicker.onShow}
 					/>
 
+					{/* Support section */}
+					<Text className="text-xs font-bold tracking-widest text-slate-400 uppercase mx-4 mt-6 mb-1.5">
+						Support
+					</Text>
+					<View className="mx-4 bg-white rounded-2xl px-4 py-5 items-center">
+						<Text className="text-sm text-slate-700 text-center mb-4">
+							If you find SaveNa useful, consider buying me a coffee ☕
+						</Text>
+						<Image
+							source={require('../../../../assets/images/instapay-qr.jpg')}
+							className="w-[220px] h-[220px]"
+							resizeMode="contain"
+							accessible
+							accessibilityLabel="InstaPay QR code for tipping the developer"
+						/>
+						<Text className="text-xs text-slate-400 text-center mt-3">
+							Screenshot this QR and scan it in your banking app
+						</Text>
+					</View>
+
 					<Text className="text-xs font-bold tracking-widest text-slate-400 uppercase mx-4 mt-6 mb-1.5">
 						Danger Zone
 					</Text>
@@ -74,7 +94,7 @@ export const SettingsPage = ({
 
 					<View className="mt-6 mb-4">
 						<Text className="text-xs text-slate-300 text-center">
-							SaveNa v1.0.0
+							SaveNa v1.1.0
 						</Text>
 					</View>
 				</ScrollView>
