@@ -7,6 +7,7 @@ import { Alert } from 'react-native';
 import { createIncomeSource } from '../api/create-income-source';
 import { deleteIncomeSource } from '../api/delete-income-source';
 import { updateIncomeSource } from '../api/update-income-source';
+import { useNotificationConfig } from '../model/hooks';
 import { IncomeSourceFormPage } from './income-source-form-page';
 
 export const IncomeSourceFormContainer = () => {
@@ -21,6 +22,10 @@ export const IncomeSourceFormContainer = () => {
 	const editingSource = sourceId
 		? (sources.find((s) => s.id === Number(sourceId)) ?? null)
 		: null;
+
+	const { initialNotifications } = useNotificationConfig(
+		editingSource?.id ?? null,
+	);
 
 	const invalidate = () => {
 		queryClient.invalidateQueries({ queryKey: queryKeys.incomeSources });
@@ -56,28 +61,21 @@ export const IncomeSourceFormContainer = () => {
 			Alert.alert('Error', 'Failed to delete income source. Please try again.'),
 	});
 
-	const defaultNotifications: NotificationSettings = {
-		paydayEnabled: false,
-		paydayTime: '10:00',
-		budgetReminderEnabled: false,
-		budgetReminderTime: '10:00',
-	};
-
 	const onSubmit = (input: {
 		name: string;
 		amount: number;
 		paySchedule: PaySchedule;
 		payDates: number[];
 		payAmounts?: number[];
+		notifications: NotificationSettings;
 	}) => {
 		if (editingSource) {
 			updateMutation.mutate({
 				id: editingSource.id,
 				...input,
-				notifications: defaultNotifications,
 			});
 		} else {
-			createMutation.mutate({ ...input, notifications: defaultNotifications });
+			createMutation.mutate({ ...input });
 		}
 	};
 
@@ -101,6 +99,7 @@ export const IncomeSourceFormContainer = () => {
 	return (
 		<IncomeSourceFormPage
 			editingSource={editingSource}
+			initialNotifications={initialNotifications}
 			onSubmit={onSubmit}
 			onDelete={onDelete}
 			onClose={() => router.back()}

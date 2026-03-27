@@ -1,8 +1,13 @@
 import { Ionicons } from '@expo/vector-icons';
-import type { IncomeSource, PaySchedule } from '@shared/lib';
+import type {
+	IncomeSource,
+	NotificationSettings,
+	PaySchedule,
+} from '@shared/lib';
 import { useEffect, useState } from 'react';
 import { Pressable, ScrollView, Text, TextInput, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { TimePickerModal } from './time-picker-modal';
 
 const scheduleOptions: { value: PaySchedule; label: string }[] = [
 	{ value: 'monthly', label: 'Monthly' },
@@ -33,12 +38,14 @@ const dayOfWeekOptions = [
 
 type Props = {
 	editingSource: IncomeSource | null;
+	initialNotifications: NotificationSettings;
 	onSubmit: (input: {
 		name: string;
 		amount: number;
 		paySchedule: PaySchedule;
 		payDates: number[];
 		payAmounts?: number[];
+		notifications: NotificationSettings;
 	}) => void;
 	onDelete?: () => void;
 	onClose: () => void;
@@ -47,6 +54,7 @@ type Props = {
 
 export const IncomeSourceFormPage = ({
 	editingSource,
+	initialNotifications,
 	onSubmit,
 	onDelete,
 	onClose,
@@ -61,8 +69,20 @@ export const IncomeSourceFormPage = ({
 	const [secondPayAmount, setSecondPayAmount] = useState('');
 	const [dayOfWeek, setDayOfWeek] = useState(5);
 	const [focusedField, setFocusedField] = useState<string | null>(null);
+	const [paydayEnabled, setPaydayEnabled] = useState(true);
+	const [paydayTime, setPaydayTime] = useState('10:00');
+	const [budgetReminderEnabled, setBudgetReminderEnabled] = useState(true);
+	const [budgetReminderTime, setBudgetReminderTime] = useState('10:00');
+	const [timePickerTarget, setTimePickerTarget] = useState<
+		'payday' | 'budget_reminder' | null
+	>(null);
 
 	useEffect(() => {
+		setPaydayEnabled(initialNotifications.paydayEnabled);
+		setPaydayTime(initialNotifications.paydayTime);
+		setBudgetReminderEnabled(initialNotifications.budgetReminderEnabled);
+		setBudgetReminderTime(initialNotifications.budgetReminderTime);
+
 		if (editingSource) {
 			setName(editingSource.name);
 			setPaySchedule(editingSource.pay_schedule);
@@ -108,7 +128,15 @@ export const IncomeSourceFormPage = ({
 			setSecondPayAmount('');
 			setDayOfWeek(5);
 		}
-	}, [editingSource]);
+	}, [editingSource, initialNotifications]);
+
+	const formatTime = (time: string): string => {
+		const [hourStr] = time.split(':');
+		const hour = Number(hourStr);
+		const period = hour < 12 ? 'AM' : 'PM';
+		const display = hour === 12 ? 12 : hour % 12;
+		return `${display}:00 ${period}`;
+	};
 
 	const isBiMonthly = paySchedule === 'bi-monthly';
 	const firstAmt = Number(firstPayAmount);
@@ -128,6 +156,12 @@ export const IncomeSourceFormPage = ({
 
 	const handleSubmit = () => {
 		if (!isValid) return;
+		const notifications: NotificationSettings = {
+			paydayEnabled,
+			paydayTime,
+			budgetReminderEnabled,
+			budgetReminderTime,
+		};
 		if (isBiMonthly) {
 			onSubmit({
 				name: name.trim(),
@@ -135,6 +169,7 @@ export const IncomeSourceFormPage = ({
 				paySchedule,
 				payDates: [Number(firstPayDay), Number(secondPayDay)],
 				payAmounts: [firstAmt, secondAmt],
+				notifications,
 			});
 		} else {
 			onSubmit({
@@ -143,6 +178,7 @@ export const IncomeSourceFormPage = ({
 				paySchedule,
 				payDates:
 					paySchedule === 'monthly' ? [Number(firstPayDay)] : [dayOfWeek],
+				notifications,
 			});
 		}
 	};
@@ -326,6 +362,89 @@ export const IncomeSourceFormPage = ({
 						</View>
 					</View>
 				)}
+
+				{/* Notifications section */}
+				<Text className="text-xs font-bold tracking-widest text-slate-400 uppercase mt-6 mb-1.5">
+					Notifications
+				</Text>
+				<View className="bg-slate-50 rounded-2xl overflow-hidden mb-4">
+					{/* Payday row */}
+					<View className="flex-row items-center px-4 py-3 border-b border-slate-100">
+						<View className="flex-1">
+							<Text className="text-sm font-medium text-slate-900">
+								Payday alert
+							</Text>
+							<Text className="text-xs text-slate-400 mt-0.5">
+								Remind me on payday
+							</Text>
+						</View>
+						<Pressable
+							onPress={() => {
+								if (paydayEnabled) setTimePickerTarget('payday');
+							}}
+							className="mr-3"
+						>
+							<Text
+								className={`text-sm ${paydayEnabled ? 'text-teal-600' : 'text-slate-300'}`}
+							>
+								{formatTime(paydayTime)}
+							</Text>
+						</Pressable>
+						<Pressable
+							onPress={() => setPaydayEnabled((v) => !v)}
+							className={`w-10 h-6 rounded-full justify-center ${paydayEnabled ? 'bg-teal-600' : 'bg-slate-200'}`}
+						>
+							<View
+								className={`w-5 h-5 rounded-full bg-white mx-0.5 ${paydayEnabled ? 'self-end' : 'self-start'}`}
+							/>
+						</Pressable>
+					</View>
+					{/* Budget reminder row */}
+					<View className="flex-row items-center px-4 py-3">
+						<View className="flex-1">
+							<Text className="text-sm font-medium text-slate-900">
+								Budget reminder
+							</Text>
+							<Text className="text-xs text-slate-400 mt-0.5">
+								2 days after payday
+							</Text>
+						</View>
+						<Pressable
+							onPress={() => {
+								if (budgetReminderEnabled)
+									setTimePickerTarget('budget_reminder');
+							}}
+							className="mr-3"
+						>
+							<Text
+								className={`text-sm ${budgetReminderEnabled ? 'text-teal-600' : 'text-slate-300'}`}
+							>
+								{formatTime(budgetReminderTime)}
+							</Text>
+						</Pressable>
+						<Pressable
+							onPress={() => setBudgetReminderEnabled((v) => !v)}
+							className={`w-10 h-6 rounded-full justify-center ${budgetReminderEnabled ? 'bg-teal-600' : 'bg-slate-200'}`}
+						>
+							<View
+								className={`w-5 h-5 rounded-full bg-white mx-0.5 ${budgetReminderEnabled ? 'self-end' : 'self-start'}`}
+							/>
+						</Pressable>
+					</View>
+				</View>
+
+				{/* Time picker modal */}
+				<TimePickerModal
+					visible={timePickerTarget !== null}
+					selectedTime={
+						timePickerTarget === 'payday' ? paydayTime : budgetReminderTime
+					}
+					onSelect={(time) => {
+						if (timePickerTarget === 'payday') setPaydayTime(time);
+						else setBudgetReminderTime(time);
+					}}
+					onClose={() => setTimePickerTarget(null)}
+				/>
 
 				<Pressable
 					className={`rounded-xl px-8 py-4 items-center mb-3 ${
