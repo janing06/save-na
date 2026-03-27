@@ -4,6 +4,7 @@ export const queryKeys = {
 		['budget-items', yearMonth, incomeSourceId] as const,
 	budgetItemsPrefix: (yearMonth: string) =>
 		['budget-items', yearMonth] as const,
+	budgetItemsAll: ['budget-items'] as const,
 	budgetMonth: (yearMonth: string) => ['budget-month', yearMonth] as const,
 	budgetItemById: (id: number) => ['budget-item', id] as const,
 	categories: ['categories'] as const,
