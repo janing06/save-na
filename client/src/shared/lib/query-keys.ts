@@ -8,4 +8,6 @@ export const queryKeys = {
 	budgetItemById: (id: number) => ['budget-item', id] as const,
 	categories: ['categories'] as const,
 	preferences: ['preferences'] as const,
+	notificationConfigs: (incomeSourceId: number) =>
+		['notification-configs', incomeSourceId] as const,
 };

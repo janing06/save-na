@@ -1,4 +1,4 @@
-import { getDatabase } from '@shared/db';
+import { getDatabase, insertNotificationConfigs } from '@shared/db';
 import type { PaySchedule } from '@shared/lib';
 
 type CreateIncomeSourceInput = {
@@ -14,7 +14,7 @@ export async function saveIncomeSource(
 ): Promise<void> {
 	const db = await getDatabase();
 
-	await db.runAsync(
+	const result = await db.runAsync(
 		'INSERT INTO income_source (name, amount, pay_schedule, pay_dates, pay_amounts, sort_order) VALUES (?, ?, ?, ?, ?, 0)',
 		[
 			input.name,
@@ -24,4 +24,7 @@ export async function saveIncomeSource(
 			input.payAmounts ? JSON.stringify(input.payAmounts) : null,
 		],
 	);
+
+	// Insert default notification configs — scheduling happens after permission is granted at end of onboarding
+	await insertNotificationConfigs(result.lastInsertRowId);
 }

@@ -1,4 +1,8 @@
 import type { PaySchedule } from '@shared/lib';
+import {
+	requestNotificationPermission,
+	rescheduleAllNotifications,
+} from '@shared/lib';
 import { useRouter } from 'expo-router';
 import { atom, useAtom } from 'jotai';
 import { useState } from 'react';
@@ -32,6 +36,11 @@ export const useOnboarding = () => {
 			await completeOnboarding(currency);
 			await saveIncomeSource(income);
 			router.replace('/(tabs)/budget');
+			requestNotificationPermission()
+				.then((granted) => {
+					if (granted) rescheduleAllNotifications().catch(() => {});
+				})
+				.catch(() => {});
 		} finally {
 			setIsPending(false);
 		}

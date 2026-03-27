@@ -1,12 +1,13 @@
 import { listIncomeSources } from '@shared/db';
 import { queryKeys } from '@shared/lib';
-import type { PaySchedule } from '@shared/lib';
+import type { NotificationSettings, PaySchedule } from '@shared/lib';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { Alert } from 'react-native';
 import { createIncomeSource } from '../api/create-income-source';
 import { deleteIncomeSource } from '../api/delete-income-source';
 import { updateIncomeSource } from '../api/update-income-source';
+import { useNotificationConfig } from '../model/hooks';
 import { IncomeSourceFormPage } from './income-source-form-page';
 
 export const IncomeSourceFormContainer = () => {
@@ -21,6 +22,10 @@ export const IncomeSourceFormContainer = () => {
 	const editingSource = sourceId
 		? (sources.find((s) => s.id === Number(sourceId)) ?? null)
 		: null;
+
+	const { initialNotifications } = useNotificationConfig(
+		editingSource?.id ?? null,
+	);
 
 	const invalidate = () => {
 		queryClient.invalidateQueries({ queryKey: queryKeys.incomeSources });
@@ -62,11 +67,15 @@ export const IncomeSourceFormContainer = () => {
 		paySchedule: PaySchedule;
 		payDates: number[];
 		payAmounts?: number[];
+		notifications: NotificationSettings;
 	}) => {
 		if (editingSource) {
-			updateMutation.mutate({ id: editingSource.id, ...input });
+			updateMutation.mutate({
+				id: editingSource.id,
+				...input,
+			});
 		} else {
-			createMutation.mutate(input);
+			createMutation.mutate({ ...input });
 		}
 	};
 
@@ -90,6 +99,7 @@ export const IncomeSourceFormContainer = () => {
 	return (
 		<IncomeSourceFormPage
 			editingSource={editingSource}
+			initialNotifications={initialNotifications}
 			onSubmit={onSubmit}
 			onDelete={onDelete}
 			onClose={() => router.back()}

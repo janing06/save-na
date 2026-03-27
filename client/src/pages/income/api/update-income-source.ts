@@ -1,5 +1,6 @@
-import { getDatabase } from '@shared/db';
-import type { PaySchedule } from '@shared/lib';
+import { getDatabase, updateNotificationConfigs } from '@shared/db';
+import type { NotificationSettings, PaySchedule } from '@shared/lib';
+import { rescheduleAllNotifications } from '@shared/lib';
 
 type Input = {
 	id: number;
@@ -8,6 +9,7 @@ type Input = {
 	paySchedule: PaySchedule;
 	payDates: number[];
 	payAmounts?: number[];
+	notifications: NotificationSettings;
 };
 
 export async function updateIncomeSource(input: Input): Promise<void> {
@@ -23,4 +25,6 @@ export async function updateIncomeSource(input: Input): Promise<void> {
 			input.id,
 		],
 	);
+	await updateNotificationConfigs(input.id, input.notifications);
+	await rescheduleAllNotifications();
 }
