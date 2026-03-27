@@ -13,6 +13,7 @@ type Props = {
 	currency: string;
 	onEditItem: (item: BudgetItemWithAllocations) => void;
 	onTogglePaid: (allocationId: number) => void;
+	showSourceLabel: boolean;
 };
 
 const getCategoryAmountColor = (categoryName: string): string => {
@@ -26,6 +27,7 @@ export const CategoryAccordion = ({
 	currency,
 	onEditItem,
 	onTogglePaid,
+	showSourceLabel,
 }: Props) => {
 	const [expanded, setExpanded] = useState(true);
 
@@ -89,6 +91,11 @@ export const CategoryAccordion = ({
 								onPress={() => onEditItem(item)}
 								onTogglePaid={onTogglePaid}
 								showCheckbox={selectedPeriodIndex !== 'full'}
+								sourceLabel={
+									showSourceLabel
+										? (item.income_source_name ?? undefined)
+										: undefined
+								}
 							/>
 						))}
 					</View>
