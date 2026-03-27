@@ -4,6 +4,7 @@ import type { BudgetItem, BudgetItemAllocation } from '@shared/lib';
 export type BudgetItemWithAllocations = BudgetItem & {
 	allocations: BudgetItemAllocation[];
 	category_name: string;
+	income_source_name: string | null;
 };
 
 /**
@@ -17,9 +18,10 @@ export async function listBudgetItems(
 	const db = await getDatabase();
 
 	let query = `
-		SELECT bi.*, c.name as category_name
+		SELECT bi.*, c.name as category_name, is2.name as income_source_name
 		FROM budget_item bi
 		JOIN category c ON c.id = bi.category_id
+		LEFT JOIN income_source is2 ON is2.id = bi.income_source_id
 		WHERE bi.budget_month_id = ?
 	`;
 	const params: (number | string)[] = [budgetMonthId];
@@ -31,10 +33,9 @@ export async function listBudgetItems(
 
 	query += ' ORDER BY c.sort_order ASC, bi.sort_order ASC';
 
-	const items = await db.getAllAsync<BudgetItem & { category_name: string }>(
-		query,
-		params,
-	);
+	const items = await db.getAllAsync<
+		BudgetItem & { category_name: string; income_source_name: string | null }
+	>(query, params);
 
 	const result: BudgetItemWithAllocations[] = [];
 	for (const item of items) {

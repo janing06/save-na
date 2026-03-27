@@ -8,10 +8,13 @@ export async function getBudgetItemById(
 ): Promise<BudgetItemWithAllocations | null> {
 	const db = await getDatabase();
 
-	const item = await db.getFirstAsync<BudgetItem & { category_name: string }>(
-		`SELECT bi.*, c.name as category_name
+	const item = await db.getFirstAsync<
+		BudgetItem & { category_name: string; income_source_name: string | null }
+	>(
+		`SELECT bi.*, c.name as category_name, is2.name as income_source_name
 		 FROM budget_item bi
 		 JOIN category c ON c.id = bi.category_id
+		 LEFT JOIN income_source is2 ON is2.id = bi.income_source_id
 		 WHERE bi.id = ?`,
 		[id],
 	);
