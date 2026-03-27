@@ -63,7 +63,9 @@ export const SettingsPage = ({
 					</Text>
 					<View className="mx-4 bg-white rounded-2xl px-4 py-5 items-center">
 						<Text className="text-sm text-slate-700 text-center mb-4">
-							If you find SaveNa useful, consider buying me a coffee ☕
+							If you find{' '}
+							<Text className="text-teal-600 font-bold">SaveNa</Text> useful,
+							{'\n'}consider buying me a coffee ☕
 						</Text>
 						<Image
 							source={require('../../../../assets/images/instapay-qr.jpg')}
