@@ -49,7 +49,7 @@ export const CategoryFormContainer = () => {
 	const deleteMutation = useMutation({
 		mutationFn: deleteCategory,
 		onSuccess: () => {
-			queryClient.invalidateQueries({ queryKey: queryKeys.categories });
+			invalidateCategories();
 			queryClient.invalidateQueries({ queryKey: queryKeys.budgetItemsAll });
 			router.back();
 		},
@@ -70,7 +70,7 @@ export const CategoryFormContainer = () => {
 
 		Alert.alert(
 			'Delete Category',
-			'All budget items in this category will be moved to Others. This applies to all months.',
+			`All budget items in "${editingCategory.name}" will be moved to Others. This applies to all months.`,
 			[
 				{ text: 'Cancel', style: 'cancel' },
 				{
