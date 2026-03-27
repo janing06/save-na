@@ -59,3 +59,20 @@ export type BudgetItemAllocation = {
 	created_at: string;
 	updated_at: string;
 };
+
+export type NotificationType = 'payday' | 'budget_reminder';
+
+export type NotificationConfig = {
+	id: number;
+	income_source_id: number;
+	type: NotificationType;
+	enabled: number; // 0 or 1
+	time: string; // 'HH:MM'
+};
+
+export type NotificationSettings = {
+	paydayEnabled: boolean;
+	paydayTime: string;
+	budgetReminderEnabled: boolean;
+	budgetReminderTime: string;
+};
