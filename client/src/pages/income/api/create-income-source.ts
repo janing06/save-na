@@ -1,5 +1,6 @@
-import { getDatabase } from '@shared/db';
-import type { PaySchedule } from '@shared/lib';
+import { getDatabase, insertNotificationConfigs } from '@shared/db';
+import type { NotificationSettings, PaySchedule } from '@shared/lib';
+import { rescheduleAllNotifications } from '@shared/lib';
 
 type Input = {
 	name: string;
@@ -7,6 +8,7 @@ type Input = {
 	paySchedule: PaySchedule;
 	payDates: number[];
 	payAmounts?: number[];
+	notifications: NotificationSettings;
 };
 
 export async function createIncomeSource(input: Input): Promise<void> {
@@ -16,7 +18,7 @@ export async function createIncomeSource(input: Input): Promise<void> {
 	);
 	const sortOrder = (maxOrder?.max_order ?? -1) + 1;
 
-	await db.runAsync(
+	const result = await db.runAsync(
 		'INSERT INTO income_source (name, amount, pay_schedule, pay_dates, pay_amounts, sort_order) VALUES (?, ?, ?, ?, ?, ?)',
 		[
 			input.name,
@@ -27,4 +29,7 @@ export async function createIncomeSource(input: Input): Promise<void> {
 			sortOrder,
 		],
 	);
+
+	await insertNotificationConfigs(result.lastInsertRowId, input.notifications);
+	await rescheduleAllNotifications();
 }

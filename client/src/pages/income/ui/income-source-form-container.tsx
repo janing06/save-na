@@ -1,6 +1,6 @@
 import { listIncomeSources } from '@shared/db';
 import { queryKeys } from '@shared/lib';
-import type { PaySchedule } from '@shared/lib';
+import type { NotificationSettings, PaySchedule } from '@shared/lib';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { Alert } from 'react-native';
@@ -56,6 +56,13 @@ export const IncomeSourceFormContainer = () => {
 			Alert.alert('Error', 'Failed to delete income source. Please try again.'),
 	});
 
+	const defaultNotifications: NotificationSettings = {
+		paydayEnabled: false,
+		paydayTime: '10:00',
+		budgetReminderEnabled: false,
+		budgetReminderTime: '10:00',
+	};
+
 	const onSubmit = (input: {
 		name: string;
 		amount: number;
@@ -64,9 +71,13 @@ export const IncomeSourceFormContainer = () => {
 		payAmounts?: number[];
 	}) => {
 		if (editingSource) {
-			updateMutation.mutate({ id: editingSource.id, ...input });
+			updateMutation.mutate({
+				id: editingSource.id,
+				...input,
+				notifications: defaultNotifications,
+			});
 		} else {
-			createMutation.mutate(input);
+			createMutation.mutate({ ...input, notifications: defaultNotifications });
 		}
 	};
 
