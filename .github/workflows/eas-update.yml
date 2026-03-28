@@ -1,6 +1,11 @@
 name: '[client] EAS Update (OTA)'
 
 on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'client/**'
   workflow_dispatch:
     inputs:
       channel:
@@ -40,7 +45,7 @@ jobs:
           eas-version: latest
           token: ${{ secrets.EXPO_TOKEN }}
       - name: Publish update
-        run: eas update --channel ${{ inputs.channel }} --message "${{ inputs.message }}" --platform android
+        run: eas update --channel ${{ inputs.channel || 'preview' }} --message "${{ inputs.message || github.event.head_commit.message }}" --platform android
         env:
           CI: '1'
-          APP_ENV: ${{ inputs.channel }}
+          APP_ENV: ${{ inputs.channel || 'preview' }}
