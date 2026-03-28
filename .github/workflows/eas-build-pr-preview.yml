@@ -1,0 +1,58 @@
+name: '[client] EAS Build PR Preview'
+
+on:
+  pull_request:
+    paths:
+      - 'client/**'
+
+concurrency:
+  group: pr-preview-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+  pull-requests: write
+
+defaults:
+  run:
+    working-directory: ./client
+
+jobs:
+  build:
+    name: Build PR Preview APK
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install Node v22
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22.19.0'
+          cache: npm
+          cache-dependency-path: client/package-lock.json
+      - name: Install dependencies
+        run: npm ci
+      - name: Setup EAS
+        uses: expo/expo-github-action@v8
+        with:
+          eas-version: latest
+          token: ${{ secrets.EXPO_TOKEN }}
+      - name: Build preview APK
+        id: build
+        run: |
+          BUILD_OUTPUT=$(eas build --profile preview --platform android --non-interactive --json --wait)
+          # EAS Build JSON output is an array; download URL is at .[0].artifacts.buildUrl
+          DOWNLOAD_URL=$(echo "$BUILD_OUTPUT" | jq -r '.[0].artifacts.buildUrl')
+          echo "download_url=$DOWNLOAD_URL" >> $GITHUB_OUTPUT
+      - name: Comment on PR
+        run: |
+          gh pr comment ${{ github.event.pull_request.number }} --body "$(cat <<'EOF'
+          📦 **Preview APK ready**
+
+          [Download APK](${{ steps.build.outputs.download_url }})
+
+          Built from commit `${{ github.event.pull_request.head.sha }}`
+          EOF
+          )"
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
