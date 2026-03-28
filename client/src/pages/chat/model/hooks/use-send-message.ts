@@ -12,7 +12,7 @@ export const useSendMessage = (
 ) => {
 	const queryClient = useQueryClient();
 
-	const { mutateAsync: onSend, isPending: isSending } = useMutation({
+	const { mutate: onSend, isPending: isSending } = useMutation({
 		mutationFn: async (userMessage: string) => {
 			if (!apiKey) throw new Error('No API key');
 

@@ -20,6 +20,7 @@ type Props = {
 	};
 	onClearData: () => void;
 	apiKey: string | null;
+	onRemoveApiKey: () => void;
 };
 
 export const SettingsPage = ({
@@ -29,6 +30,7 @@ export const SettingsPage = ({
 	categoryActions,
 	onClearData,
 	apiKey,
+	onRemoveApiKey,
 }: Props) => {
 	const currencyInfo = currencies.find((c) => c.code === preferences?.currency);
 
@@ -85,13 +87,25 @@ export const SettingsPage = ({
 					<Text className="text-xs font-bold tracking-widest text-slate-400 uppercase mx-4 mt-6 mb-1.5">
 						AI Assistant
 					</Text>
-					<View className="mx-4 bg-white rounded-2xl px-4 py-4">
-						<Text className="text-sm font-medium text-slate-700">API Key</Text>
-						<Text className="text-xs text-slate-400 mt-0.5">
-							{apiKey
-								? `Configured: ${apiKey.slice(0, 8)}...${apiKey.slice(-4)}`
-								: 'Not configured — set up in the Chat tab'}
-						</Text>
+					<View className="mx-4 bg-white rounded-2xl overflow-hidden">
+						<View className="px-4 py-4">
+							<Text className="text-sm font-medium text-slate-700">
+								API Key
+							</Text>
+							<Text className="text-xs text-slate-400 mt-0.5">
+								{apiKey
+									? `Configured: ${apiKey.slice(0, 8)}...${apiKey.slice(-4)}`
+									: 'Not configured — set up in the Chat tab'}
+							</Text>
+						</View>
+						{apiKey && (
+							<Pressable
+								onPress={onRemoveApiKey}
+								className="px-4 py-3 border-t border-slate-100 active:opacity-60"
+							>
+								<Text className="text-sm text-red-500">Remove API Key</Text>
+							</Pressable>
+						)}
 					</View>
 
 					<Text className="text-xs font-bold tracking-widest text-slate-400 uppercase mx-4 mt-6 mb-1.5">

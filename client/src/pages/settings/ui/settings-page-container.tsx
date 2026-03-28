@@ -1,5 +1,6 @@
 import { useState } from 'react';
-import { useQuery } from '@tanstack/react-query';
+import { Alert } from 'react-native';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { useRouter } from 'expo-router';
 import { getDatabase } from '@shared/db';
 import type { Category } from '@shared/lib';
@@ -30,6 +31,35 @@ export const SettingsPageContainer = () => {
 		},
 	});
 
+	const queryClient = useQueryClient();
+
+	const { mutate: removeApiKey } = useMutation({
+		mutationFn: async () => {
+			const db = await getDatabase();
+			await db.runAsync(
+				"UPDATE user_preferences SET openrouter_api_key = NULL, updated_at = datetime('now') WHERE id = 1",
+			);
+		},
+		onSuccess: () => {
+			queryClient.invalidateQueries({ queryKey: queryKeys.apiKey });
+		},
+	});
+
+	const handleRemoveApiKey = () => {
+		Alert.alert(
+			'Remove API Key',
+			'This will remove your OpenRouter API key. You can re-enter it in the Chat tab.',
+			[
+				{ text: 'Cancel', style: 'cancel' },
+				{
+					text: 'Remove',
+					style: 'destructive',
+					onPress: () => removeApiKey(),
+				},
+			],
+		);
+	};
+
 	const [currencyPickerVisible, setCurrencyPickerVisible] = useState(false);
 
 	const currencyPicker = {
@@ -59,6 +89,7 @@ export const SettingsPageContainer = () => {
 			categoryActions={categoryActions}
 			onClearData={clearData.onClear}
 			apiKey={apiKey}
+			onRemoveApiKey={handleRemoveApiKey}
 		/>
 	);
 };

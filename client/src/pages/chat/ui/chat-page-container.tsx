@@ -20,11 +20,11 @@ export const ChatPageContainer = () => {
 		return <ChatSetupPrompt onSaveKey={onSaveKey} />;
 	}
 
-	const handleSend = async () => {
+	const handleSend = () => {
 		const text = inputText.trim();
 		if (!text) return;
 		setInputText('');
-		await onSend(text);
+		onSend(text);
 	};
 
 	const handleClearChat = () => {
@@ -42,6 +42,10 @@ export const ChatPageContainer = () => {
 		);
 	};
 
+	const handleSuggestionPress = (text: string) => {
+		onSend(text);
+	};
+
 	return (
 		<ChatPage
 			messages={messages}
@@ -49,6 +53,7 @@ export const ChatPageContainer = () => {
 			inputText={inputText}
 			onChangeText={setInputText}
 			onSend={handleSend}
+			onSuggestionPress={handleSuggestionPress}
 			onClearChat={handleClearChat}
 		/>
 	);

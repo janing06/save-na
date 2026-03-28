@@ -29,6 +29,7 @@ export async function sendToOpenRouter(
 	let lastError: Error | null = null;
 
 	for (const model of AI_MODELS) {
+		console.log(`[AI] Trying model: ${model}`);
 		try {
 			const response = await fetch(
 				'https://openrouter.ai/api/v1/chat/completions',
@@ -51,10 +52,12 @@ export async function sendToOpenRouter(
 				throw new Error('API key issue. Please check your OpenRouter account.');
 			}
 			if (response.status === 429) {
+				console.log(`[AI] ${model} → 429 rate limited, trying next...`);
 				lastError = new Error('Rate limited');
-				continue; // try next model
+				continue;
 			}
 			if (!response.ok) {
+				console.log(`[AI] ${model} → ${response.status} error, trying next...`);
 				lastError = new Error(`API error: ${response.status}`);
 				continue;
 			}
@@ -66,6 +69,7 @@ export async function sendToOpenRouter(
 				continue;
 			}
 
+			console.log(`[AI] ✓ Success with model: ${model}`);
 			return content;
 		} catch (error) {
 			if (
@@ -88,8 +92,5 @@ export async function sendToOpenRouter(
 		}
 	}
 
-	throw (
-		lastError ??
-		new Error('AI is temporarily unavailable. Please try again later.')
-	);
+	throw new Error('AI is temporarily unavailable. Please try again later.');
 }
