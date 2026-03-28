@@ -52,7 +52,9 @@ export const ChatBubble = ({ role, content }: Props) => {
 	const isUser = role === 'user';
 
 	return (
-		<View className={`mb-3 max-w-[85%] ${isUser ? 'self-end' : 'self-start'}`}>
+		<View
+			className={`mb-3 ${isUser ? 'self-end max-w-[85%]' : 'self-stretch'}`}
+		>
 			<View
 				className={`px-4 py-3 rounded-2xl ${
 					isUser ? 'bg-teal-600 rounded-br-sm' : 'bg-white rounded-bl-sm'

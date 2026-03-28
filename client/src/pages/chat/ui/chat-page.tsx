@@ -97,11 +97,11 @@ export const ChatPage = ({
 				contentContainerStyle={{ padding: 16, paddingBottom: 8 }}
 				ListEmptyComponent={
 					!isSending ? (
-						<View className="flex-1 items-center justify-center">
-							<Text className="text-slate-400 text-sm text-center">
-								Ask me anything about your budget!
-							</Text>
-						</View>
+						// biome-ignore lint/a11y/useValidAriaRole: role is a custom prop, not an ARIA role
+						<ChatBubble
+							role="assistant"
+							content={`Hi! I'm SaveNa, your personal budget assistant. 👋\n\nI can see your income sources, budget items, and spending history. Ask me anything — like how your budget is looking, where you can save more, or how this month compares to last month. 💸`}
+						/>
 					) : null
 				}
 			/>
