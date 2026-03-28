@@ -11,4 +11,6 @@ export const queryKeys = {
 	preferences: ['preferences'] as const,
 	notificationConfigs: (incomeSourceId: number) =>
 		['notification-configs', incomeSourceId] as const,
+	chatMessages: ['chat-messages'] as const,
+	apiKey: ['api-key'] as const,
 };

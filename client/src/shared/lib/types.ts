@@ -76,3 +76,10 @@ export type NotificationSettings = {
 	budgetReminderEnabled: boolean;
 	budgetReminderTime: string;
 };
+
+export type ChatMessage = {
+	id: number;
+	role: 'user' | 'assistant';
+	content: string;
+	created_at: string;
+};

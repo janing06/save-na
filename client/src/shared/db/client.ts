@@ -47,6 +47,17 @@ async function runMigrations(database: SQLite.SQLiteDatabase): Promise<void> {
 			);
 		}
 	}
+
+	// Migration 4: add openrouter_api_key column to user_preferences
+	const prefColumns = await database.getAllAsync<{ name: string }>(
+		"SELECT name FROM pragma_table_info('user_preferences')",
+	);
+	const hasApiKey = prefColumns.some((c) => c.name === 'openrouter_api_key');
+	if (!hasApiKey) {
+		await database.execAsync(
+			'ALTER TABLE user_preferences ADD COLUMN openrouter_api_key TEXT;',
+		);
+	}
 }
 
 export async function getDatabase(): Promise<SQLite.SQLiteDatabase> {

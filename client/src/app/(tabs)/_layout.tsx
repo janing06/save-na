@@ -35,6 +35,15 @@ const TabLayout = () => {
 				}}
 			/>
 			<Tabs.Screen
+				name="chat"
+				options={{
+					title: 'Chat',
+					tabBarIcon: ({ color }) => (
+						<Ionicons name="chatbubble-ellipses" size={22} color={color} />
+					),
+				}}
+			/>
+			<Tabs.Screen
 				name="settings"
 				options={{
 					title: 'Settings',

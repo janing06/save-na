@@ -69,4 +69,11 @@ export const createTables = `
     updated_at TEXT NOT NULL DEFAULT (datetime('now')),
     UNIQUE(income_source_id, type)
   );
+
+  CREATE TABLE IF NOT EXISTS chat_message (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    role TEXT NOT NULL CHECK (role IN ('user', 'assistant')),
+    content TEXT NOT NULL,
+    created_at TEXT NOT NULL DEFAULT (datetime('now'))
+  );
 `;
