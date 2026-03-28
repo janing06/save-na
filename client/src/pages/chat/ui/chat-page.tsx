@@ -107,9 +107,9 @@ export const ChatPage = ({
 			/>
 
 			{/* Bottom section: suggestions + input */}
-			<View className="bg-white">
+			<View>
 				{isSending && (
-					<View className="px-4 pb-2 flex-row items-center">
+					<View className="px-4 py-2 flex-row items-center">
 						<ActivityIndicator size="small" color="#0d9488" />
 						<Text className="text-xs text-slate-400 ml-2">Thinking...</Text>
 					</View>
@@ -123,8 +123,8 @@ export const ChatPage = ({
 						showsHorizontalScrollIndicator={false}
 						style={{
 							maxHeight: 52,
-							marginBlock: 4,
-							backgroundColor: 'transparent',
+							paddingBlock: 4,
+							backgroundColor: 'white',
 						}}
 						contentContainerStyle={{
 							paddingHorizontal: 16,
