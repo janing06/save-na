@@ -1,6 +1,6 @@
 import { Ionicons } from '@expo/vector-icons';
-import { FlatList, Pressable, Text, View } from 'react-native';
 import { currencies } from '@shared/config';
+import { FlatList, Pressable, Text, View } from 'react-native';
 
 type Props = {
 	selectedCurrency: string;

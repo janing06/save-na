@@ -1,10 +1,10 @@
-import { useState } from 'react';
-import { Alert } from 'react-native';
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { useRouter } from 'expo-router';
 import { getDatabase } from '@shared/db';
 import type { Category } from '@shared/lib';
 import { queryKeys } from '@shared/lib';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { useRouter } from 'expo-router';
+import { useState } from 'react';
+import { Alert } from 'react-native';
 import {
 	useCategories,
 	useClearData,

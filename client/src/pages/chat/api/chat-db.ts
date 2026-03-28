@@ -1,5 +1,5 @@
-import type { ChatMessage } from '@shared/lib';
 import { getDatabase } from '@shared/db';
+import type { ChatMessage } from '@shared/lib';
 
 export async function listChatMessages(limit = 50): Promise<ChatMessage[]> {
 	const db = await getDatabase();

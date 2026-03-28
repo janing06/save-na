@@ -1,8 +1,8 @@
 import {
 	getDatabase,
-	listIncomeSources,
-	listCategories,
 	getPreferences,
+	listCategories,
+	listIncomeSources,
 } from '@shared/db';
 
 export async function buildBudgetContext(): Promise<string> {

@@ -1,5 +1,5 @@
-import { useRouter } from 'expo-router';
 import { WelcomePage } from '@pages/onboarding';
+import { useRouter } from 'expo-router';
 
 const WelcomeScreen = () => {
 	const router = useRouter();

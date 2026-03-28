@@ -1,8 +1,8 @@
+import { listAllNotificationConfigs, listIncomeSources } from '@shared/db';
 import Constants from 'expo-constants';
 import { Platform } from 'react-native';
-import { listAllNotificationConfigs, listIncomeSources } from '@shared/db';
-import type { IncomeSource, NotificationConfig } from './types';
 import { getNextPaydays } from './next-paydays';
+import type { IncomeSource, NotificationConfig } from './types';
 
 async function getNotifications() {
 	// expo-notifications is not supported in Expo Go since SDK 53

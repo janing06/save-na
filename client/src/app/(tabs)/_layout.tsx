@@ -1,6 +1,6 @@
+import { Ionicons } from '@expo/vector-icons';
 import Entypo from '@expo/vector-icons/Entypo';
 import FontAwesome6 from '@expo/vector-icons/FontAwesome6';
-import { Ionicons } from '@expo/vector-icons';
 import { Tabs } from 'expo-router';
 
 const TabLayout = () => {

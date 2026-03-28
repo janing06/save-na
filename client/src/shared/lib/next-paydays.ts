@@ -1,5 +1,5 @@
-import type { IncomeSource } from './types';
 import { computeBiWeeklyDates, computeWeeklyDates } from './pay-periods';
+import type { IncomeSource } from './types';
 
 function clampToMonth(day: number, year: number, month: number): number {
 	const daysInMonth = new Date(year, month, 0).getDate();

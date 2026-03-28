@@ -1,5 +1,5 @@
-import { useQuery } from '@tanstack/react-query';
 import { queryKeys } from '@shared/lib';
+import { useQuery } from '@tanstack/react-query';
 import { getBudgetMonth } from '../../api/get-budget-month';
 import { listBudgetItems } from '../../api/list-budget-items';
 

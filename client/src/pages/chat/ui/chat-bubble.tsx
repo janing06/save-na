@@ -1,12 +1,12 @@
-import { StyleSheet, Text, View } from 'react-native';
 import Markdown from '@ronradtke/react-native-markdown-display';
+import { StyleSheet, Text, View } from 'react-native';
 
 type Props = {
 	role: 'user' | 'assistant';
 	content: string;
 };
 
-const userStyles = StyleSheet.create({
+const _userStyles = StyleSheet.create({
 	body: { color: '#ffffff', fontSize: 14, lineHeight: 20 },
 	strong: { color: '#ffffff', fontWeight: '700' },
 	em: { color: '#ffffff' },

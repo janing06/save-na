@@ -1,7 +1,7 @@
+import { queryKeys } from '@shared/lib';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { Alert } from 'react-native';
 import { togglePaid } from '../../api/toggle-paid';
-import { queryKeys } from '@shared/lib';
 
 export const useTogglePaid = (yearMonth: string) => {
 	const queryClient = useQueryClient();

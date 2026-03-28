@@ -1,5 +1,5 @@
-import type { SQLiteDatabase } from 'expo-sqlite';
 import { defaultCategories } from '@shared/config';
+import type { SQLiteDatabase } from 'expo-sqlite';
 
 export async function seedDefaultCategories(db: SQLiteDatabase): Promise<void> {
 	const existing = await db.getFirstAsync<{ count: number }>(

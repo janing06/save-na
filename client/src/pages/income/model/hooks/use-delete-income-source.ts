@@ -1,7 +1,7 @@
+import { queryKeys } from '@shared/lib';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { Alert } from 'react-native';
 import { deleteIncomeSource } from '../../api/delete-income-source';
-import { queryKeys } from '@shared/lib';
 
 export const useDeleteIncomeSource = () => {
 	const queryClient = useQueryClient();
