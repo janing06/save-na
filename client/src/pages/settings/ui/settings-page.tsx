@@ -19,6 +19,7 @@ type Props = {
 		onEdit: (cat: Category) => void;
 	};
 	onClearData: () => void;
+	apiKey: string | null;
 };
 
 export const SettingsPage = ({
@@ -27,6 +28,7 @@ export const SettingsPage = ({
 	currencyPicker,
 	categoryActions,
 	onClearData,
+	apiKey,
 }: Props) => {
 	const currencyInfo = currencies.find((c) => c.code === preferences?.currency);
 
@@ -76,6 +78,19 @@ export const SettingsPage = ({
 						/>
 						<Text className="text-xs text-slate-400 text-center mt-3">
 							Screenshot this QR and scan it in your banking app
+						</Text>
+					</View>
+
+					{/* AI Assistant section */}
+					<Text className="text-xs font-bold tracking-widest text-slate-400 uppercase mx-4 mt-6 mb-1.5">
+						AI Assistant
+					</Text>
+					<View className="mx-4 bg-white rounded-2xl px-4 py-4">
+						<Text className="text-sm font-medium text-slate-700">API Key</Text>
+						<Text className="text-xs text-slate-400 mt-0.5">
+							{apiKey
+								? `Configured: ${apiKey.slice(0, 8)}...${apiKey.slice(-4)}`
+								: 'Not configured — set up in the Chat tab'}
 						</Text>
 					</View>
 
