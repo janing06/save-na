@@ -1,4 +1,6 @@
-import { useRef, useEffect, useState } from 'react';
+import { Ionicons } from "@expo/vector-icons";
+import type { ChatMessage } from "@shared/lib";
+import { useEffect, useRef, useState } from "react";
 import {
 	ActivityIndicator,
 	FlatList,
@@ -9,18 +11,16 @@ import {
 	Text,
 	TextInput,
 	View,
-} from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
-import { Ionicons } from '@expo/vector-icons';
-import type { ChatMessage } from '@shared/lib';
-import { ChatBubble } from './chat-bubble';
+} from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
+import { ChatBubble } from "./chat-bubble";
 
 const SUGGESTIONS = [
-	'How is my budget looking?',
-	'Where can I cut expenses?',
-	'Am I saving enough?',
-	'Break down my spending',
-	'Tips to save more money',
+	"How is my budget looking?",
+	"Where can I cut expenses?",
+	"Am I saving enough?",
+	"Break down my spending",
+	"Tips to save more money",
 ];
 
 type Props = {
@@ -58,12 +58,12 @@ export const ChatPage = ({
 	}, [sortedMessages.length]);
 
 	useEffect(() => {
-		if (Platform.OS !== 'android') return;
+		if (Platform.OS !== "android") return;
 
-		const showSub = Keyboard.addListener('keyboardDidShow', (e) => {
+		const showSub = Keyboard.addListener("keyboardDidShow", (e) => {
 			setKeyboardHeight(e.endCoordinates.height);
 		});
-		const hideSub = Keyboard.addListener('keyboardDidHide', () => {
+		const hideSub = Keyboard.addListener("keyboardDidHide", () => {
 			setKeyboardHeight(0);
 		});
 
@@ -96,7 +96,7 @@ export const ChatPage = ({
 			/>
 
 			{/* Bottom section: suggestions + input */}
-			<View>
+			<View className="bg-white">
 				{isSending && (
 					<View className="px-4 pb-2 flex-row items-center">
 						<ActivityIndicator size="small" color="#0d9488" />
@@ -110,10 +110,14 @@ export const ChatPage = ({
 						data={SUGGESTIONS}
 						keyExtractor={(item) => item}
 						showsHorizontalScrollIndicator={false}
-						style={{ maxHeight: 52, marginBottom: 4 }}
+						style={{
+							maxHeight: 52,
+							marginBlock: 4,
+							backgroundColor: "transparent",
+						}}
 						contentContainerStyle={{
 							paddingHorizontal: 16,
-							alignItems: 'center',
+							alignItems: "center",
 						}}
 						renderItem={({ item }) => (
 							<Pressable
@@ -129,13 +133,13 @@ export const ChatPage = ({
 				)}
 
 				<SafeAreaView
-					edges={['bottom']}
+					edges={["bottom"]}
 					className="bg-white border-t border-slate-200"
 				>
 					<View
 						className="flex-row items-end px-4 py-2"
 						style={
-							Platform.OS === 'android'
+							Platform.OS === "android"
 								? { marginBottom: keyboardHeight }
 								: undefined
 						}
@@ -164,7 +168,7 @@ export const ChatPage = ({
 
 	return (
 		<View className="flex-1 bg-teal-600">
-			<SafeAreaView edges={['top']} className="bg-teal-600">
+			<SafeAreaView edges={["top"]} className="bg-teal-600">
 				<View className="px-5 py-4 flex-row items-center justify-between">
 					<Text className="text-xl font-bold text-white">Chat</Text>
 					{messages.length > 0 && (
@@ -175,7 +179,7 @@ export const ChatPage = ({
 				</View>
 			</SafeAreaView>
 
-			{Platform.OS === 'ios' ? (
+			{Platform.OS === "ios" ? (
 				<KeyboardAvoidingView
 					className="flex-1 bg-slate-100 rounded-t-3xl -mt-4 overflow-hidden"
 					behavior="padding"

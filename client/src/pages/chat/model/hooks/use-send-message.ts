@@ -1,10 +1,10 @@
-import type { ChatMessage } from "@shared/lib";
-import { queryKeys } from "@shared/lib";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { Alert } from "react-native";
-import { buildBudgetContext } from "../../api/build-budget-context";
-import { saveChatMessage } from "../../api/chat-db";
-import { sendToOpenRouter } from "../../api/send-message";
+import type { ChatMessage } from '@shared/lib';
+import { queryKeys } from '@shared/lib';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { Alert } from 'react-native';
+import { buildBudgetContext } from '../../api/build-budget-context';
+import { saveChatMessage } from '../../api/chat-db';
+import { sendToOpenRouter } from '../../api/send-message';
 
 export const useSendMessage = (
 	apiKey: string | null,
@@ -14,9 +14,9 @@ export const useSendMessage = (
 
 	const { mutate: onSend, isPending: isSending } = useMutation({
 		mutationFn: async (userMessage: string) => {
-			if (!apiKey) throw new Error("No API key");
+			if (!apiKey) throw new Error('No API key');
 
-			await saveChatMessage("user", userMessage);
+			await saveChatMessage('user', userMessage);
 			queryClient.invalidateQueries({ queryKey: queryKeys.chatMessages });
 
 			const context = await buildBudgetContext();
@@ -27,13 +27,13 @@ export const useSendMessage = (
 				userMessage,
 			);
 
-			await saveChatMessage("assistant", reply);
+			await saveChatMessage('assistant', reply);
 		},
 		onSuccess: () => {
 			queryClient.invalidateQueries({ queryKey: queryKeys.chatMessages });
 		},
 		onError: (error: Error) => {
-			Alert.alert("Error", error.message);
+			Alert.alert('Error', error.message);
 			queryClient.invalidateQueries({ queryKey: queryKeys.chatMessages });
 		},
 	});
