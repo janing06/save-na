@@ -1,6 +1,6 @@
 import { listCategories, listIncomeSources } from '@shared/db';
-import { computePayPeriods, queryKeys } from '@shared/lib';
 import type { SplitType } from '@shared/lib';
+import { computePayPeriods, queryKeys } from '@shared/lib';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { Alert } from 'react-native';

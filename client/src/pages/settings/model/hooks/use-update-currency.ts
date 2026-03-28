@@ -1,7 +1,7 @@
+import { queryKeys } from '@shared/lib';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { Alert } from 'react-native';
 import { updateCurrency } from '../../api/update-currency';
-import { queryKeys } from '@shared/lib';
 
 export const useUpdateCurrency = () => {
 	const queryClient = useQueryClient();

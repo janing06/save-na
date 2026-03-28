@@ -1,8 +1,8 @@
 import { getPreferences } from '@shared/db';
+import type { IncomeSource } from '@shared/lib';
 import { queryKeys } from '@shared/lib';
 import { useQuery } from '@tanstack/react-query';
 import { useRouter } from 'expo-router';
-import type { IncomeSource } from '@shared/lib';
 import { useDeleteIncomeSource, useIncomeSources } from '../model/hooks';
 import { IncomePage } from './income-page';
 

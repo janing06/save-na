@@ -1,6 +1,6 @@
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { type ReactNode, Suspense, useState } from 'react';
 import { ActivityIndicator, View } from 'react-native';
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 
 type Props = {
 	children: ReactNode;

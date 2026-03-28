@@ -1,9 +1,9 @@
-export { getDatabase } from './client';
-export { listIncomeSources, listCategories, getPreferences } from './queries';
 export { clearAllData } from './clear-data';
+export { getDatabase } from './client';
 export {
-	insertNotificationConfigs,
 	getNotificationConfigsForSource,
+	insertNotificationConfigs,
 	listAllNotificationConfigs,
 	updateNotificationConfigs,
 } from './notification-config';
+export { getPreferences, listCategories, listIncomeSources } from './queries';

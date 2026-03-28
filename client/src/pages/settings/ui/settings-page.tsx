@@ -1,7 +1,7 @@
-import { Image, Pressable, ScrollView, Text, View } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
 import { currencies } from '@shared/config';
 import type { Category, UserPreferences } from '@shared/lib';
+import { Image, Pressable, ScrollView, Text, View } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { CategoryList } from './category-list';
 import { CurrencyPicker } from './currency-picker';
 

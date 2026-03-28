@@ -1,5 +1,5 @@
-import * as SQLite from 'expo-sqlite';
 import { defaultCategories } from '@shared/config';
+import * as SQLite from 'expo-sqlite';
 import { createTables } from './schema';
 import { seedDefaultCategories } from './seed';
 

@@ -1,6 +1,6 @@
 import { Ionicons } from '@expo/vector-icons';
-import { Pressable, Text, View } from 'react-native';
 import type { Category } from '@shared/lib';
+import { Pressable, Text, View } from 'react-native';
 
 type CurrencyInfo = { symbol: string; code: string } | undefined;
 

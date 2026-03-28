@@ -1,13 +1,18 @@
 import { getNotificationConfigsForSource } from '@shared/db';
-import { queryKeys } from '@shared/lib';
 import type { NotificationConfig } from '@shared/lib';
-import { useMemo } from 'react';
+import { queryKeys } from '@shared/lib';
 import { useQuery } from '@tanstack/react-query';
+import { useMemo } from 'react';
 
 export const useNotificationConfig = (incomeSourceId: number | null) => {
 	const { data } = useQuery({
 		queryKey: queryKeys.notificationConfigs(incomeSourceId ?? 0),
-		queryFn: () => getNotificationConfigsForSource(incomeSourceId!),
+		queryFn: () => {
+			if (incomeSourceId === null) {
+				return Promise.resolve([]);
+			}
+			return getNotificationConfigsForSource(incomeSourceId);
+		},
 		enabled: incomeSourceId !== null,
 	});
 

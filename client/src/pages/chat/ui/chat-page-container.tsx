@@ -1,10 +1,10 @@
 import { useState } from 'react';
 import { Alert } from 'react-native';
 import {
-	useChatMessages,
-	useSendMessage,
 	useApiKey,
+	useChatMessages,
 	useClearChat,
+	useSendMessage,
 } from '../model/hooks';
 import { ChatPage } from './chat-page';
 import { ChatSetupPrompt } from './chat-setup-prompt';

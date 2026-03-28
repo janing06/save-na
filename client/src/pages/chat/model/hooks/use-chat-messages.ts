@@ -1,5 +1,5 @@
-import { useQuery } from '@tanstack/react-query';
 import { queryKeys } from '@shared/lib';
+import { useQuery } from '@tanstack/react-query';
 import { listChatMessages } from '../../api/chat-db';
 
 export const useChatMessages = () => {

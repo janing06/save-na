@@ -1,5 +1,5 @@
 import type { IncomeSource } from '@shared/lib';
-import { type PayPeriod, computePayPeriods } from '@shared/lib';
+import { computePayPeriods, type PayPeriod } from '@shared/lib';
 import { useEffect, useMemo, useState } from 'react';
 
 export const usePayPeriodToggle = (

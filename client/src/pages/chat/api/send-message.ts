@@ -26,10 +26,9 @@ export async function sendToOpenRouter(
 		{ role: 'user' as const, content: userMessage },
 	];
 
-	let lastError: Error | null = null;
+	let _lastError: Error | null = null;
 
 	for (const model of AI_MODELS) {
-		console.log(`[AI] Trying model: ${model}`);
 		try {
 			const response = await fetch(
 				'https://openrouter.ai/api/v1/chat/completions',
@@ -52,24 +51,20 @@ export async function sendToOpenRouter(
 				throw new Error('API key issue. Please check your OpenRouter account.');
 			}
 			if (response.status === 429) {
-				console.log(`[AI] ${model} → 429 rate limited, trying next...`);
-				lastError = new Error('Rate limited');
+				_lastError = new Error('Rate limited');
 				continue;
 			}
 			if (!response.ok) {
-				console.log(`[AI] ${model} → ${response.status} error, trying next...`);
-				lastError = new Error(`API error: ${response.status}`);
+				_lastError = new Error(`API error: ${response.status}`);
 				continue;
 			}
 
 			const data: OpenRouterResponse = await response.json();
 			const content = data.choices?.[0]?.message?.content;
 			if (!content) {
-				lastError = new Error('Empty response');
+				_lastError = new Error('Empty response');
 				continue;
 			}
-
-			console.log(`[AI] ✓ Success with model: ${model}`);
 			return content;
 		} catch (error) {
 			if (
@@ -87,8 +82,7 @@ export async function sendToOpenRouter(
 					'No internet connection. Please check your network and try again.',
 				);
 			}
-			lastError = error instanceof Error ? error : new Error(String(error));
-			continue;
+			_lastError = error instanceof Error ? error : new Error(String(error));
 		}
 	}
 
