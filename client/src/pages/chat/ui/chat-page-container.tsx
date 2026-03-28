@@ -11,7 +11,7 @@ import { ChatSetupPrompt } from './chat-setup-prompt';
 
 export const ChatPageContainer = () => {
 	const { apiKey, onSaveKey } = useApiKey();
-	const { messages } = useChatMessages();
+	const { messages, isLoading } = useChatMessages();
 	const { onSend, isSending } = useSendMessage(apiKey, messages);
 	const { onClearChat } = useClearChat();
 	const [inputText, setInputText] = useState('');
@@ -49,6 +49,7 @@ export const ChatPageContainer = () => {
 	return (
 		<ChatPage
 			messages={messages}
+			isLoading={isLoading}
 			isSending={isSending}
 			inputText={inputText}
 			onChangeText={setInputText}
