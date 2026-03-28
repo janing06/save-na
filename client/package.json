@@ -14,7 +14,7 @@
 		"ts:check": "tsc --noEmit",
 		"fsd": "steiger ./src",
 		"knip": "knip -c knip.config.jsonc --no-config-hints",
-		"check-all": "npm run ts:check && npm run lint && npm run format && npm run fsd && npm run knip"
+		"check-all": "npm run ts:check && npm run lint && npm run lint:fix && npm run format && npm run fsd && npm run knip"
 	},
 	"dependencies": {
 		"@ronradtke/react-native-markdown-display": "^8.1.0",
