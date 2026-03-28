@@ -5,7 +5,10 @@
 	"build": {
 		"development": {
 			"developmentClient": true,
-			"distribution": "internal"
+			"distribution": "internal",
+			"env": {
+				"APP_ENV": "development"
+			}
 		},
 		"preview": {
 			"android": {
@@ -15,14 +18,20 @@
 				"simulator": true
 			},
 			"distribution": "internal",
-			"channel": "preview"
+			"channel": "preview",
+			"env": {
+				"APP_ENV": "preview"
+			}
 		},
 		"production": {
 			"android": {
 				"buildType": "app-bundle"
 			},
 			"distribution": "store",
-			"channel": "production"
+			"channel": "production",
+			"env": {
+				"APP_ENV": "production"
+			}
 		}
 	}
 }
