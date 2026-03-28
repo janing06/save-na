@@ -87,7 +87,7 @@ export const BudgetItemFormPage = ({
 	};
 
 	const handleSubmit = () => {
-		if (!isValid) return;
+		if (!isValid || categoryId === null) return;
 		const splitType: SplitType =
 			customSplit && payPeriods.length > 1 ? 'custom' : 'even';
 		const customAllocations =
@@ -98,7 +98,7 @@ export const BudgetItemFormPage = ({
 					}))
 				: undefined;
 		onSubmit({
-			categoryId: categoryId!,
+			categoryId,
 			name: name.trim(),
 			totalAmount: totalNum,
 			splitType,

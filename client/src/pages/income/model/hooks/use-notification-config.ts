@@ -7,7 +7,12 @@ import { useMemo } from 'react';
 export const useNotificationConfig = (incomeSourceId: number | null) => {
 	const { data } = useQuery({
 		queryKey: queryKeys.notificationConfigs(incomeSourceId ?? 0),
-		queryFn: () => getNotificationConfigsForSource(incomeSourceId!),
+		queryFn: () => {
+			if (incomeSourceId === null) {
+				return Promise.resolve([]);
+			}
+			return getNotificationConfigsForSource(incomeSourceId);
+		},
 		enabled: incomeSourceId !== null,
 	});
 

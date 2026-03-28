@@ -11,6 +11,9 @@ export const useBudgetItems = (
 		queryKey: queryKeys.budgetItems(yearMonth, incomeSourceId),
 		queryFn: async () => {
 			const budgetMonthRecord = await getBudgetMonth(yearMonth);
+			if (!budgetMonthRecord) {
+				return { items: [], budgetMonthId: null };
+			}
 			const sourceId =
 				incomeSourceId === 'total' ? undefined : (incomeSourceId ?? undefined);
 			const items = await listBudgetItems(budgetMonthRecord.id, sourceId);

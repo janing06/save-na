@@ -6,7 +6,9 @@ import { rolloverMonth } from './rollover-month';
  * Gets or creates a budget month. If the month doesn't exist,
  * triggers auto-rollover from the most recent existing month.
  */
-export async function getBudgetMonth(yearMonth: string): Promise<BudgetMonth> {
+export async function getBudgetMonth(
+	yearMonth: string,
+): Promise<BudgetMonth | null> {
 	const db = await getDatabase();
 
 	const existing = await db.getFirstAsync<BudgetMonth>(
@@ -23,5 +25,9 @@ export async function getBudgetMonth(yearMonth: string): Promise<BudgetMonth> {
 		[yearMonth],
 	);
 
-	return created!;
+	if (!created) {
+		return null;
+	}
+
+	return created;
 }
