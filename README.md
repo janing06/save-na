@@ -13,7 +13,8 @@ A personal budgeting app for Filipinos built with React Native and Expo, designe
 ## Screenshots
 
 <p align="center">
-  <img src="screenshots/budget.jpg" width="300" alt="Budget screen" />
+  <img src="screenshots/budget.png" width="300" alt="Budget screen" />
+  <img src="screenshots/chat.png" width="300" alt="Chat screen" />
 </p>
 
 ---
@@ -30,6 +31,7 @@ A personal budgeting app for Filipinos built with React Native and Expo, designe
 - **Categories** — Organize budget items by category; create and manage custom categories in Settings
 - **Payday Notifications** — Get notified on payday and reminded 2 days later to check off budget items; configurable per income source with custom times
 - **Total Tab Source Labels** — Budget items in the Total tab show which income source they belong to, grouped by source for easy comparison
+- **AI Chat Assistant** — Ask questions about your budget and spending using an AI-powered chat via OpenRouter; requires your own OpenRouter API key
 - **Clear All Data** — Reset the app to a clean state from Settings
 
 ---
@@ -46,6 +48,7 @@ A personal budgeting app for Filipinos built with React Native and Expo, designe
 | [TanStack React Query](https://tanstack.com/query) | Server state, caching, and cache invalidation |
 | [Jotai](https://jotai.org) | Global atom state |
 | [NativeWind](https://www.nativewind.dev) | Tailwind CSS utility classes for React Native |
+| [OpenRouter](https://openrouter.ai) | AI chat via multiple LLM providers |
 | [Biome](https://biomejs.dev) | Linting and formatting |
 | [EAS Build](https://docs.expo.dev/build/introduction/) | Cloud builds for Android and iOS |
 | [Claude Code](https://claude.ai/claude-code) | AI-assisted development |
@@ -70,6 +73,10 @@ save-na/
 │       │   │   ├── api/                # listIncomeSources, createIncomeSource, updateIncomeSource
 │       │   │   ├── model/hooks/        # useIncomeSources, useCreateIncomeSource, etc.
 │       │   │   └── ui/                 # IncomePage + IncomePageContainer, modal, card
+│       │   ├── chat/                   # AI chat assistant screen
+│       │   │   ├── api/                # chat-db (message persistence)
+│       │   │   ├── model/hooks/        # useChatMessages, useSendMessage, useApiKey, etc.
+│       │   │   └── ui/                 # ChatPage + ChatPageContainer, ChatBubble, ChatSetupPrompt
 │       │   ├── settings/               # Settings screen
 │       │   │   ├── model/hooks/        # usePreferences, useCategories, useClearData, etc.
 │       │   │   └── ui/                 # SettingsPage + SettingsPageContainer
@@ -84,9 +91,12 @@ save-na/
 │
 └── .github/
     └── workflows/
-        ├── check-pr-client.yml         # PR checks: TypeScript, Biome lint, FSD, Knip
-        ├── eas-build-android.yml       # Manual EAS build trigger for Android
-        └── eas-build-ios.yml           # Manual EAS build trigger for iOS
+        ├── check-pr-client.yml              # PR checks: TypeScript, Biome lint, FSD, Knip
+        ├── eas-build-android.yml            # Manual EAS build — Android APK
+        ├── eas-build-android-production.yml # Manual EAS build — Android AAB (Production)
+        ├── eas-build-ios.yml                # Manual EAS build — iOS Simulator
+        ├── eas-build-pr-preview.yml         # Manual EAS build — PR preview APK with PR comment
+        └── eas-update.yml                   # OTA update on push to main or manual trigger
 ```
 
 ---
@@ -116,8 +126,11 @@ Pay period logic is computed in-memory from the income source's schedule and pay
 
 | Workflow | Trigger | What it does |
 |----------|---------|--------------|
-| `eas-build-android.yml` | Manual (`workflow_dispatch`) | Triggers an EAS cloud build for Android |
-| `eas-build-ios.yml` | Manual (`workflow_dispatch`) | Triggers an EAS cloud build for iOS |
+| `eas-build-android.yml` | Manual (`workflow_dispatch`) | EAS cloud build — Android APK |
+| `eas-build-android-production.yml` | Manual (`workflow_dispatch`) | EAS cloud build — Android AAB (Production) |
+| `eas-build-ios.yml` | Manual (`workflow_dispatch`) | EAS cloud build — iOS Simulator |
+| `eas-build-pr-preview.yml` | Manual (`workflow_dispatch`) | Builds a preview APK and comments the download link on the PR |
+| `eas-update.yml` | Push to `main` touching `client/**` or manual | Publishes an OTA update via EAS Update |
 
 ---
 
