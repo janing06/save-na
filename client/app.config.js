@@ -11,11 +11,6 @@ const envConfig = {
 		androidPackage: 'com.savena.app',
 		iosBundleIdentifier: 'com.savena.app',
 	},
-	development: {
-		name: 'SaveNa',
-		androidPackage: 'com.savena.app',
-		iosBundleIdentifier: 'com.savena.app',
-	},
 };
 
 const env = envConfig[APP_ENV] ?? envConfig.production;
