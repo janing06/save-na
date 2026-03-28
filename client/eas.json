@@ -3,10 +3,6 @@
 		"version": ">= 16.0.0"
 	},
 	"build": {
-		"development": {
-			"developmentClient": true,
-			"distribution": "internal"
-		},
 		"preview": {
 			"android": {
 				"buildType": "apk"
@@ -15,14 +11,20 @@
 				"simulator": true
 			},
 			"distribution": "internal",
-			"channel": "preview"
+			"channel": "preview",
+			"env": {
+				"APP_ENV": "preview"
+			}
 		},
 		"production": {
 			"android": {
 				"buildType": "app-bundle"
 			},
 			"distribution": "store",
-			"channel": "production"
+			"channel": "production",
+			"env": {
+				"APP_ENV": "production"
+			}
 		}
 	}
 }
