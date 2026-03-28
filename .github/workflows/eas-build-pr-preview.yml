@@ -1,12 +1,15 @@
 name: '[client] EAS Build PR Preview'
 
 on:
-  pull_request:
-    paths:
-      - 'client/**'
+  workflow_dispatch:
+    inputs:
+      pr_number:
+        description: 'PR number to build preview for'
+        required: true
+        type: string
 
 concurrency:
-  group: pr-preview-${{ github.event.pull_request.number }}
+  group: pr-preview-${{ inputs.pr_number }}
   cancel-in-progress: true
 
 permissions:
@@ -46,12 +49,12 @@ jobs:
           echo "download_url=$DOWNLOAD_URL" >> $GITHUB_OUTPUT
       - name: Comment on PR
         run: |
-          gh pr comment ${{ github.event.pull_request.number }} --body "$(cat <<'EOF'
+          gh pr comment ${{ inputs.pr_number }} --body "$(cat <<'EOF'
           📦 **Preview APK ready**
 
           [Download APK](${{ steps.build.outputs.download_url }})
 
-          Built from commit `${{ github.event.pull_request.head.sha }}`
+          Built manually via workflow dispatch
           EOF
           )"
         env:
