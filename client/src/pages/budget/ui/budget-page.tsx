@@ -162,9 +162,9 @@ export const BudgetPage = ({
 						<Ionicons name="add" size={28} color="white" />
 					</Pressable>
 				)}
-
-				<LoadingOverlay visible={isLoading} />
 			</View>
+
+			<LoadingOverlay visible={isLoading} />
 		</View>
 	);
 };

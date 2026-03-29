@@ -12,6 +12,7 @@ import {
 	View,
 } from 'react-native';
 import Animated, {
+	cancelAnimation,
 	Easing,
 	useAnimatedStyle,
 	useSharedValue,
@@ -39,6 +40,8 @@ const Dot = ({ delay }: { delay: number }) => {
 				-1,
 			),
 		);
+
+		return () => cancelAnimation(translateY);
 	}, [delay, translateY]);
 
 	const style = useAnimatedStyle(() => ({
