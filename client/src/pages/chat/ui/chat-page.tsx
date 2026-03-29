@@ -1,5 +1,6 @@
 import { Ionicons } from '@expo/vector-icons';
 import type { ChatMessage } from '@shared/lib';
+import { LoadingOverlay } from '@shared/ui';
 import { useEffect, useRef, useState } from 'react';
 import {
 	FlatList,
@@ -22,7 +23,6 @@ import Animated, {
 	withTiming,
 } from 'react-native-reanimated';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { LoadingOverlay } from '@shared/ui';
 import { ChatBubble } from './chat-bubble';
 
 const Dot = ({ delay }: { delay: number }) => {

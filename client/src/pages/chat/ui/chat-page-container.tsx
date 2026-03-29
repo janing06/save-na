@@ -1,3 +1,4 @@
+import { LoadingOverlay } from '@shared/ui';
 import { useState } from 'react';
 import { Alert } from 'react-native';
 import {
@@ -6,7 +7,6 @@ import {
 	useClearChat,
 	useSendMessage,
 } from '../model/hooks';
-import { LoadingOverlay } from '@shared/ui';
 import { ChatPage } from './chat-page';
 import { ChatSetupPrompt } from './chat-setup-prompt';
 

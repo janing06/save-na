@@ -96,7 +96,7 @@ export const BudgetPage = ({
 						<Text
 							className={`text-xs font-semibold ${viewMode === 'list' ? 'text-white' : 'text-slate-500'}`}
 						>
-							List
+							Overview
 						</Text>
 					</Pressable>
 					<Pressable
@@ -106,7 +106,7 @@ export const BudgetPage = ({
 						<Text
 							className={`text-xs font-semibold ${viewMode === 'charts' ? 'text-white' : 'text-slate-500'}`}
 						>
-							Charts
+							Insights
 						</Text>
 					</Pressable>
 				</View>
