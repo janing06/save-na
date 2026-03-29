@@ -1,6 +1,7 @@
 import { useEffect } from 'react';
 import { Image, Text, View } from 'react-native';
 import Animated, {
+	cancelAnimation,
 	useAnimatedStyle,
 	useSharedValue,
 	withDelay,
@@ -24,6 +25,7 @@ const Dot = ({ delay }: { delay: number }) => {
 				false,
 			),
 		);
+		return () => cancelAnimation(translateY);
 	}, [delay, translateY]);
 
 	const animStyle = useAnimatedStyle(() => ({
@@ -45,19 +47,16 @@ export const LoadingOverlay = ({ visible }: Props) => {
 
 	return (
 		<View className="absolute inset-0 bg-slate-100/80 items-center justify-center">
-			<View
-				className="bg-white rounded-2xl px-8 py-6 items-center shadow-sm"
-				style={{ gap: 16 }}
-			>
-				<View className="flex-row items-center" style={{ gap: 8 }}>
+			<View className="bg-white rounded-2xl px-8 py-6 items-center shadow-sm gap-4">
+				<View className="flex-row items-center gap-2">
 					<Image
 						// eslint-disable-next-line @typescript-eslint/no-require-imports
 						source={require('../../../assets/images/icon.png')}
-						style={{ width: 36, height: 36, borderRadius: 10 }}
+						className="w-9 h-9 rounded-lg"
 					/>
 					<Text className="text-lg font-bold text-teal-600">SaveNa</Text>
 				</View>
-				<View className="flex-row" style={{ gap: 6 }}>
+				<View className="flex-row gap-1.5">
 					<Dot delay={0} />
 					<Dot delay={150} />
 					<Dot delay={300} />
