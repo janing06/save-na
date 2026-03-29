@@ -27,7 +27,17 @@ export const DonutChart = ({
 	totalIncome,
 	currency,
 }: Props) => {
-	let currentOffset = 0;
+	const segmentArcs = segments.reduce<{ dashLength: number; offset: number }[]>(
+		(acc, segment) => {
+			const dashLength = (segment.percentage / 100) * CIRCUMFERENCE;
+			const prevOffset =
+				acc.length > 0
+					? acc[acc.length - 1].offset + acc[acc.length - 1].dashLength
+					: 0;
+			return [...acc, { dashLength, offset: prevOffset }];
+		},
+		[],
+	);
 
 	return (
 		<View className="bg-white rounded-2xl p-5 shadow-sm">
@@ -48,11 +58,8 @@ export const DonutChart = ({
 					/>
 
 					{/* Category segments */}
-					{segments.map((segment) => {
-						const dashLength = (segment.percentage / 100) * CIRCUMFERENCE;
-						const offset = -currentOffset;
-						currentOffset += dashLength;
-
+					{segments.map((segment, index) => {
+						const arc = segmentArcs[index];
 						return (
 							<Circle
 								key={segment.name}
@@ -62,8 +69,8 @@ export const DonutChart = ({
 								fill="none"
 								stroke={segment.color}
 								strokeWidth={STROKE_WIDTH}
-								strokeDasharray={`${dashLength} ${CIRCUMFERENCE - dashLength}`}
-								strokeDashoffset={offset}
+								strokeDasharray={`${arc.dashLength} ${CIRCUMFERENCE - arc.dashLength}`}
+								strokeDashoffset={CIRCUMFERENCE - arc.offset}
 								rotation={-90}
 								origin={`${SIZE / 2}, ${SIZE / 2}`}
 							/>
@@ -114,20 +121,18 @@ export const DonutChart = ({
 
 					{/* Unallocated row */}
 					{unallocated.amount > 0 && (
-						<>
-							<View className="border-t border-slate-200 mt-1 pt-1.5">
-								<View className="flex-row items-center gap-1.5">
-									<View className="w-2 h-2 rounded-full shrink-0 bg-slate-200" />
-									<Text className="text-xs text-slate-400">Unallocated</Text>
-									<Text className="text-xs text-slate-400 ml-auto">
-										{formatCurrency(unallocated.amount, currency)}{' '}
-										<Text className="opacity-70">
-											({Math.round(unallocated.percentage)}%)
-										</Text>
+						<View className="border-t border-slate-200 mt-1 pt-1.5">
+							<View className="flex-row items-center gap-1.5">
+								<View className="w-2 h-2 rounded-full shrink-0 bg-slate-200" />
+								<Text className="text-xs text-slate-400">Unallocated</Text>
+								<Text className="text-xs text-slate-400 ml-auto">
+									{formatCurrency(unallocated.amount, currency)}{' '}
+									<Text className="opacity-70">
+										({Math.round(unallocated.percentage)}%)
 									</Text>
-								</View>
+								</Text>
 							</View>
-						</>
+						</View>
 					)}
 				</View>
 			</View>
