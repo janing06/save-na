@@ -2,7 +2,7 @@ import { getPreferences } from '@shared/db';
 import { queryKeys } from '@shared/lib';
 import { useQuery } from '@tanstack/react-query';
 import { useRouter } from 'expo-router';
-import { useMemo } from 'react';
+import { useMemo, useState } from 'react';
 import type { BudgetItemWithAllocations } from '../api/list-budget-items';
 import {
 	useBudgetItems,
@@ -23,6 +23,8 @@ export const BudgetPageContainer = () => {
 	);
 	const { items } = useBudgetItems(month.yearMonth, switcher.selectedSourceId);
 	const { onToggle } = useTogglePaid(month.yearMonth);
+
+	const [viewMode, setViewMode] = useState<'list' | 'charts'>('list');
 
 	const { data: prefs } = useQuery({
 		queryKey: queryKeys.preferences,
@@ -121,6 +123,8 @@ export const BudgetPageContainer = () => {
 			onAdd={onAdd}
 			onEdit={onEdit}
 			onTogglePaid={onToggle}
+			viewMode={viewMode}
+			onToggleViewMode={setViewMode}
 		/>
 	);
 };
