@@ -34,7 +34,8 @@ export const DonutChart = ({
 				acc.length > 0
 					? acc[acc.length - 1].offset + acc[acc.length - 1].dashLength
 					: 0;
-			return [...acc, { dashLength, offset: prevOffset }];
+			acc.push({ dashLength, offset: prevOffset });
+			return acc;
 		},
 		[],
 	);
