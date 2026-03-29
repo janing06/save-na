@@ -21,7 +21,10 @@ export const BudgetPageContainer = () => {
 		switcher.selectedSource,
 		month.yearMonth,
 	);
-	const { items } = useBudgetItems(month.yearMonth, switcher.selectedSourceId);
+	const { items, isLoading } = useBudgetItems(
+		month.yearMonth,
+		switcher.selectedSourceId,
+	);
 	const { onToggle } = useTogglePaid(month.yearMonth);
 
 	const [viewMode, setViewMode] = useState<'list' | 'charts'>('list');
@@ -128,6 +131,7 @@ export const BudgetPageContainer = () => {
 				if (mode === 'charts') payPeriod.onSelect('full');
 				setViewMode(mode);
 			}}
+			isLoading={isLoading}
 		/>
 	);
 };

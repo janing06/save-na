@@ -5,7 +5,7 @@ import { getApiKey, saveApiKey } from '../../api/chat-db';
 export const useApiKey = () => {
 	const queryClient = useQueryClient();
 
-	const { data: apiKey = null } = useQuery({
+	const { data: apiKey = null, isLoading } = useQuery({
 		queryKey: queryKeys.apiKey,
 		queryFn: getApiKey,
 	});
@@ -17,5 +17,5 @@ export const useApiKey = () => {
 		},
 	});
 
-	return { apiKey, onSaveKey };
+	return { apiKey, isLoading, onSaveKey };
 };

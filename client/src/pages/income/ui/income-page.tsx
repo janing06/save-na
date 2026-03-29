@@ -1,6 +1,7 @@
 import { Ionicons } from '@expo/vector-icons';
 import type { IncomeSource } from '@shared/lib';
 import { formatCurrency } from '@shared/lib';
+import { LoadingOverlay } from '@shared/ui';
 import { FlatList, Pressable, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { IncomeSourceCard } from './income-source-card';
@@ -11,6 +12,7 @@ type Props = {
 	onAdd: () => void;
 	onEdit: (source: IncomeSource) => void;
 	onDelete: (id: number) => void;
+	isLoading: boolean;
 };
 
 export const IncomePage = ({
@@ -19,6 +21,7 @@ export const IncomePage = ({
 	onAdd,
 	onEdit,
 	onDelete,
+	isLoading,
 }: Props) => {
 	const totalIncome = sources.reduce((sum, s) => sum + s.amount, 0);
 
@@ -65,6 +68,8 @@ export const IncomePage = ({
 					<Ionicons name="add" size={28} color="white" />
 				</Pressable>
 			</View>
+
+			<LoadingOverlay visible={isLoading} />
 		</View>
 	);
 };

@@ -1,8 +1,8 @@
 import { Ionicons } from '@expo/vector-icons';
 import type { ChatMessage } from '@shared/lib';
+import { LoadingOverlay } from '@shared/ui';
 import { useEffect, useRef, useState } from 'react';
 import {
-	ActivityIndicator,
 	FlatList,
 	Keyboard,
 	KeyboardAvoidingView,
@@ -13,6 +13,7 @@ import {
 	View,
 } from 'react-native';
 import Animated, {
+	cancelAnimation,
 	Easing,
 	useAnimatedStyle,
 	useSharedValue,
@@ -39,6 +40,8 @@ const Dot = ({ delay }: { delay: number }) => {
 				-1,
 			),
 		);
+
+		return () => cancelAnimation(translateY);
 	}, [delay, translateY]);
 
 	const style = useAnimatedStyle(() => ({
@@ -122,15 +125,6 @@ export const ChatPage = ({
 			hideSub.remove();
 		};
 	}, []);
-
-	if (isLoading) {
-		return (
-			<View className="flex-1 items-center justify-center">
-				<ActivityIndicator size="large" color="#0d9488" />
-				<Text className="text-slate-400 text-sm mt-4">Loading chat...</Text>
-			</View>
-		);
-	}
 
 	const content = (
 		<>
@@ -244,6 +238,7 @@ export const ChatPage = ({
 					{content}
 				</View>
 			)}
+			<LoadingOverlay visible={isLoading} />
 		</View>
 	);
 };

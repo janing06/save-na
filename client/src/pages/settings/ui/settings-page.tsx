@@ -1,5 +1,6 @@
 import { currencies } from '@shared/config';
 import type { Category, UserPreferences } from '@shared/lib';
+import { LoadingOverlay } from '@shared/ui';
 import { Image, Pressable, ScrollView, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { CategoryList } from './category-list';
@@ -21,6 +22,7 @@ type Props = {
 	onClearData: () => void;
 	apiKey: string | null;
 	onRemoveApiKey: () => void;
+	isLoading: boolean;
 };
 
 export const SettingsPage = ({
@@ -31,6 +33,7 @@ export const SettingsPage = ({
 	onClearData,
 	apiKey,
 	onRemoveApiKey,
+	isLoading,
 }: Props) => {
 	const currencyInfo = currencies.find((c) => c.code === preferences?.currency);
 
@@ -137,6 +140,8 @@ export const SettingsPage = ({
 				onSelect={currencyPicker.onUpdate}
 				onClose={currencyPicker.onHide}
 			/>
+
+			<LoadingOverlay visible={isLoading} />
 		</View>
 	);
 };
