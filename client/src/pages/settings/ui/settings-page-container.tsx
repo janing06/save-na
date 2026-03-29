@@ -15,8 +15,8 @@ import { SettingsPage } from './settings-page';
 
 export const SettingsPageContainer = () => {
 	const router = useRouter();
-	const { preferences } = usePreferences();
-	const { categories } = useCategories();
+	const { preferences, isLoading: isPrefsLoading } = usePreferences();
+	const { categories, isLoading: isCatsLoading } = useCategories();
 	const { onUpdate } = useUpdateCurrency();
 	const clearData = useClearData();
 
@@ -90,6 +90,7 @@ export const SettingsPageContainer = () => {
 			onClearData={clearData.onClear}
 			apiKey={apiKey}
 			onRemoveApiKey={handleRemoveApiKey}
+			isLoading={isPrefsLoading || isCatsLoading}
 		/>
 	);
 };
