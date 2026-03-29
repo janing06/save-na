@@ -5,16 +5,8 @@ import type { BudgetItemWithAllocations } from '../api/list-budget-items';
 import { CategoryProgressBars } from './category-progress';
 import { DonutChart } from './donut-chart';
 
-const CHART_COLORS = [
-	'#0d9488', // teal
-	'#f59e0b', // amber
-	'#8b5cf6', // violet
-	'#ec4899', // pink
-	'#3b82f6', // blue
-	'#f97316', // orange
-	'#06b6d4', // cyan
-	'#84cc16', // lime
-];
+const categoryColor = (index: number, total: number) =>
+	`hsl(${Math.round((index * 360) / total)}, 60%, 55%)`;
 
 type Props = {
 	itemsByCategory: {
@@ -40,6 +32,7 @@ export const ChartsView = ({
 	} = useMemo(() => {
 		let budgeted = 0;
 
+		const categoryCount = itemsByCategory.length;
 		const categoryData = itemsByCategory.map((group, index) => {
 			const total = group.items.reduce(
 				(sum, item) => sum + item.total_amount,
@@ -60,7 +53,7 @@ export const ChartsView = ({
 				name: group.categoryName,
 				total,
 				checked,
-				color: CHART_COLORS[index % CHART_COLORS.length],
+				color: categoryColor(index, categoryCount),
 			};
 		});
 

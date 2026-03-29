@@ -124,7 +124,10 @@ export const BudgetPageContainer = () => {
 			onEdit={onEdit}
 			onTogglePaid={onToggle}
 			viewMode={viewMode}
-			onToggleViewMode={setViewMode}
+			onToggleViewMode={(mode) => {
+				if (mode === 'charts') payPeriod.onSelect('full');
+				setViewMode(mode);
+			}}
 		/>
 	);
 };
