@@ -36,6 +36,7 @@ export const ChartsView = ({
 		progressCategories,
 		totalBudgeted,
 		totalChecked,
+		checkedPercent,
 	} = useMemo(() => {
 		let budgeted = 0;
 
@@ -84,6 +85,8 @@ export const ChartsView = ({
 		}));
 
 		const checked = categoryData.reduce((sum, c) => sum + c.checked, 0);
+		const checkedPercentValue =
+			budgeted > 0 ? Math.round((checked / budgeted) * 100) : 0;
 
 		return {
 			segments: donutSegments,
@@ -91,6 +94,7 @@ export const ChartsView = ({
 			progressCategories: progress,
 			totalBudgeted: budgeted,
 			totalChecked: checked,
+			checkedPercent: checkedPercentValue,
 		};
 	}, [itemsByCategory, totalIncome]);
 
@@ -101,9 +105,6 @@ export const ChartsView = ({
 			</Text>
 		);
 	}
-
-	const checkedPercent =
-		totalBudgeted > 0 ? Math.round((totalChecked / totalBudgeted) * 100) : 0;
 
 	return (
 		<ScrollView
