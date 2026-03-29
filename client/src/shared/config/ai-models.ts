@@ -1,8 +1,8 @@
 export const AI_MODELS = [
 	// Primary: fast and reliable (paid, very cheap)
-	'meta-llama/llama-3.1-8b-instruct',
 	'openai/gpt-oss-20b',
 	'qwen/qwen3.5-flash-02-23',
+	'meta-llama/llama-3.1-8b-instruct',
 	// Tier 1: Largest / most capable (free)
 	'nvidia/nemotron-3-super-120b-a12b:free',
 	'stepfun/step-3.5-flash:free',
@@ -22,7 +22,6 @@ export const AI_MODELS = [
 	'google/gemma-3-12b-it:free',
 	'nvidia/nemotron-nano-12b-v2-vl:free',
 	'nvidia/nemotron-nano-9b-v2:free',
-	'stepfun/step-3.5-flash:free',
 	'z-ai/glm-4.5-air:free',
 	'arcee-ai/trinity-large-preview:free',
 	'arcee-ai/trinity-mini:free',

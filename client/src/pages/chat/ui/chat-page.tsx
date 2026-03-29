@@ -12,8 +12,56 @@ import {
 	TextInput,
 	View,
 } from 'react-native';
+import Animated, {
+	Easing,
+	useAnimatedStyle,
+	useSharedValue,
+	withDelay,
+	withRepeat,
+	withSequence,
+	withTiming,
+} from 'react-native-reanimated';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { ChatBubble } from './chat-bubble';
+
+const Dot = ({ delay }: { delay: number }) => {
+	const translateY = useSharedValue(0);
+
+	useEffect(() => {
+		translateY.value = withDelay(
+			delay,
+			withRepeat(
+				withSequence(
+					withTiming(-6, { duration: 300, easing: Easing.out(Easing.quad) }),
+					withTiming(0, { duration: 300, easing: Easing.in(Easing.quad) }),
+					withDelay(600, withTiming(0, { duration: 0 })),
+				),
+				-1,
+			),
+		);
+	}, [delay, translateY]);
+
+	const style = useAnimatedStyle(() => ({
+		transform: [{ translateY: translateY.value }],
+	}));
+
+	return (
+		<Animated.View
+			style={style}
+			className="w-2 h-2 rounded-full bg-slate-400"
+		/>
+	);
+};
+
+const TypingIndicator = () => (
+	<View className="mb-3 self-start">
+		<View className="px-4 py-3 rounded-2xl rounded-bl-sm bg-white flex-row items-center gap-1.5">
+			<Dot delay={0} />
+			<Dot delay={150} />
+			<Dot delay={300} />
+		</View>
+	</View>
+);
 
 const SUGGESTIONS = [
 	'How is my budget looking?',
@@ -93,6 +141,7 @@ export const ChatPage = ({
 				renderItem={({ item }) => (
 					<ChatBubble role={item.role} content={item.content} />
 				)}
+				ListFooterComponent={isSending ? <TypingIndicator /> : null}
 				style={{ flex: 1 }}
 				contentContainerStyle={{ padding: 16, paddingBottom: 8 }}
 				ListEmptyComponent={
@@ -108,13 +157,6 @@ export const ChatPage = ({
 
 			{/* Bottom section: suggestions + input */}
 			<View>
-				{isSending && (
-					<View className="px-4 py-2 flex-row items-center">
-						<ActivityIndicator size="small" color="#0d9488" />
-						<Text className="text-xs text-slate-400 ml-2">Thinking...</Text>
-					</View>
-				)}
-
 				{!isSending && (
 					<FlatList
 						horizontal
