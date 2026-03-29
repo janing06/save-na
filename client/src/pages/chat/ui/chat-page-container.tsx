@@ -6,15 +6,20 @@ import {
 	useClearChat,
 	useSendMessage,
 } from '../model/hooks';
+import { LoadingOverlay } from '@shared/ui';
 import { ChatPage } from './chat-page';
 import { ChatSetupPrompt } from './chat-setup-prompt';
 
 export const ChatPageContainer = () => {
-	const { apiKey, onSaveKey } = useApiKey();
+	const { apiKey, isLoading: isApiKeyLoading, onSaveKey } = useApiKey();
 	const { messages, isLoading } = useChatMessages();
 	const { onSend, isSending } = useSendMessage(apiKey, messages);
 	const { onClearChat } = useClearChat();
 	const [inputText, setInputText] = useState('');
+
+	if (isApiKeyLoading) {
+		return <LoadingOverlay visible />;
+	}
 
 	if (!apiKey) {
 		return <ChatSetupPrompt onSaveKey={onSaveKey} />;
