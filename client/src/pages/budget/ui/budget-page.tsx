@@ -1,5 +1,6 @@
 import { Ionicons } from '@expo/vector-icons';
 import type { IncomeSource, PayPeriod } from '@shared/lib';
+import { LoadingOverlay } from '@shared/ui';
 import { Pressable, ScrollView, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import type { BudgetItemWithAllocations } from '../api/list-budget-items';
@@ -39,6 +40,7 @@ type Props = {
 	onTogglePaid: (allocationId: number) => void;
 	viewMode: 'list' | 'charts';
 	onToggleViewMode: (mode: 'list' | 'charts') => void;
+	isLoading: boolean;
 };
 
 export const BudgetPage = ({
@@ -52,6 +54,7 @@ export const BudgetPage = ({
 	onTogglePaid,
 	viewMode,
 	onToggleViewMode,
+	isLoading,
 }: Props) => {
 	const isTotal = sourceSwitcher.selectedSourceId === 'total';
 
@@ -159,6 +162,8 @@ export const BudgetPage = ({
 						<Ionicons name="add" size={28} color="white" />
 					</Pressable>
 				)}
+
+				<LoadingOverlay visible={isLoading} />
 			</View>
 		</View>
 	);
