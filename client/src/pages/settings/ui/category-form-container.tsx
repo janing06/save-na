@@ -40,6 +40,7 @@ export const CategoryFormContainer = () => {
 			updateCategory(id, name),
 		onSuccess: () => {
 			invalidateCategories();
+			queryClient.invalidateQueries({ queryKey: queryKeys.budgetItemsAll });
 			router.back();
 		},
 		onError: () =>
