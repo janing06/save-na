@@ -1,5 +1,6 @@
 export const AI_MODELS = [
 	// Primary: fast and reliable (paid, very cheap)
+	'openai/gpt-oss-120b',
 	'openai/gpt-oss-20b',
 	'qwen/qwen3.5-flash-02-23',
 	'meta-llama/llama-3.1-8b-instruct',
