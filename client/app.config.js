@@ -43,7 +43,7 @@ export default {
 				monochromeImage: './assets/images/android-icon-monochrome.png',
 			},
 			package: env.androidPackage,
-			softwareKeyboardLayoutMode: 'adjustResize',
+			softwareKeyboardLayoutMode: 'resize',
 			edgeToEdgeEnabled: true,
 			predictiveBackGestureEnabled: false,
 		},
