@@ -1,7 +1,6 @@
 import { getPreferences } from '@shared/db';
 import { queryKeys } from '@shared/lib';
 import { useQuery } from '@tanstack/react-query';
-import { useRouter } from 'expo-router';
 import { useMemo, useState } from 'react';
 import type { BudgetItemWithAllocations } from '../api/list-budget-items';
 import {
@@ -11,10 +10,14 @@ import {
 	useSourceSwitcher,
 	useTogglePaid,
 } from '../model/hooks';
+import { BudgetItemFormContainer } from './budget-item-form-container';
 import { BudgetPage } from './budget-page';
 
-export const BudgetPageContainer = () => {
-	const router = useRouter();
+type Props = {
+	onOpenChat: () => void;
+};
+
+export const BudgetPageContainer = ({ onOpenChat }: Props) => {
 	const month = useBudgetMonth();
 	const switcher = useSourceSwitcher();
 	const payPeriod = usePayPeriodToggle(
@@ -34,6 +37,9 @@ export const BudgetPageContainer = () => {
 		queryFn: getPreferences,
 	});
 	const currency = prefs?.currency ?? 'PHP';
+
+	const [formVisible, setFormVisible] = useState(false);
+	const [editingItemId, setEditingItemId] = useState<number | null>(null);
 
 	const itemsByCategory = useMemo(() => {
 		const grouped = new Map<string, typeof items>();
@@ -89,49 +95,48 @@ export const BudgetPageContainer = () => {
 
 	const onAdd = () => {
 		if (!switcher.selectedSource) return;
-		router.push({
-			pathname: '/(tabs)/budget/budget-item-form',
-			params: {
-				incomeSourceId: String(switcher.selectedSource.id),
-				yearMonth: month.yearMonth,
-			},
-		});
+		setEditingItemId(null);
+		setFormVisible(true);
 	};
 
 	const onEdit = (item: BudgetItemWithAllocations) => {
 		if (!switcher.selectedSource) return;
-		router.push({
-			pathname: '/(tabs)/budget/budget-item-form',
-			params: {
-				incomeSourceId: String(switcher.selectedSource.id),
-				yearMonth: month.yearMonth,
-				itemId: String(item.id),
-			},
-		});
+		setEditingItemId(item.id);
+		setFormVisible(true);
 	};
 
 	return (
-		<BudgetPage
-			month={{
-				label: month.label,
-				onPrev: month.onPrev,
-				onNext: month.onNext,
-				isCurrentMonth: month.isCurrentMonth,
-				hasPrevMonth: month.hasPrevMonth,
-			}}
-			sourceSwitcher={switcher}
-			payPeriod={payPeriod}
-			summary={{ income: totalIncome, allocated: totalAllocated, currency }}
-			itemsByCategory={itemsByCategory}
-			onAdd={onAdd}
-			onEdit={onEdit}
-			onTogglePaid={onToggle}
-			viewMode={viewMode}
-			onToggleViewMode={(mode) => {
-				if (mode === 'charts') payPeriod.onSelect('full');
-				setViewMode(mode);
-			}}
-			isLoading={isLoading}
-		/>
+		<>
+			<BudgetPage
+				month={{
+					label: month.label,
+					onPrev: month.onPrev,
+					onNext: month.onNext,
+					isCurrentMonth: month.isCurrentMonth,
+					hasPrevMonth: month.hasPrevMonth,
+				}}
+				sourceSwitcher={switcher}
+				payPeriod={payPeriod}
+				summary={{ income: totalIncome, allocated: totalAllocated, currency }}
+				itemsByCategory={itemsByCategory}
+				onAdd={onAdd}
+				onEdit={onEdit}
+				onTogglePaid={onToggle}
+				onOpenChat={onOpenChat}
+				viewMode={viewMode}
+				onToggleViewMode={(mode) => {
+					if (mode === 'charts') payPeriod.onSelect('full');
+					setViewMode(mode);
+				}}
+				isLoading={isLoading}
+			/>
+			<BudgetItemFormContainer
+				visible={formVisible}
+				incomeSourceId={switcher.selectedSource?.id ?? null}
+				yearMonth={month.yearMonth}
+				editingItemId={editingItemId}
+				onClose={() => setFormVisible(false)}
+			/>
+		</>
 	);
 };

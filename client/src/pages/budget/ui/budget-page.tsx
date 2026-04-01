@@ -6,6 +6,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import type { BudgetItemWithAllocations } from '../api/list-budget-items';
 import { CategoryAccordion } from './category-accordion';
 import { ChartsView } from './charts-view';
+import { ChatbotIcon } from './chatbot-icon';
 import { MonthSelector } from './month-selector';
 import { PayPeriodToggle } from './pay-period-toggle';
 import { SourceSwitcher } from './source-switcher';
@@ -38,6 +39,7 @@ type Props = {
 	onAdd: () => void;
 	onEdit: (item: BudgetItemWithAllocations) => void;
 	onTogglePaid: (allocationId: number) => void;
+	onOpenChat: () => void;
 	viewMode: 'list' | 'charts';
 	onToggleViewMode: (mode: 'list' | 'charts') => void;
 	isLoading: boolean;
@@ -52,6 +54,7 @@ export const BudgetPage = ({
 	onAdd,
 	onEdit,
 	onTogglePaid,
+	onOpenChat,
 	viewMode,
 	onToggleViewMode,
 	isLoading,
@@ -162,6 +165,14 @@ export const BudgetPage = ({
 						<Ionicons name="add" size={28} color="white" />
 					</Pressable>
 				)}
+
+				<Pressable
+					className="absolute bottom-6 left-6 bg-teal-600 w-12 h-12 rounded-full items-center justify-center shadow-lg"
+					style={{ shadowColor: '#0d9488' }}
+					onPress={onOpenChat}
+				>
+					<ChatbotIcon size={35} color="white" />
+				</Pressable>
 			</View>
 
 			<LoadingOverlay visible={isLoading} />

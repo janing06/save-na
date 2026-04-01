@@ -2,25 +2,32 @@ import { listIncomeSources } from '@shared/db';
 import type { NotificationSettings, PaySchedule } from '@shared/lib';
 import { queryKeys } from '@shared/lib';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { useLocalSearchParams, useRouter } from 'expo-router';
-import { Alert } from 'react-native';
+import { Alert, Modal, Platform } from 'react-native';
 import { createIncomeSource } from '../api/create-income-source';
 import { deleteIncomeSource } from '../api/delete-income-source';
 import { updateIncomeSource } from '../api/update-income-source';
 import { useNotificationConfig } from '../model/hooks';
 import { IncomeSourceFormPage } from './income-source-form-page';
 
-export const IncomeSourceFormContainer = () => {
-	const router = useRouter();
+type Props = {
+	visible: boolean;
+	editingSourceId: number | null;
+	onClose: () => void;
+};
+
+export const IncomeSourceFormContainer = ({
+	visible,
+	editingSourceId,
+	onClose,
+}: Props) => {
 	const queryClient = useQueryClient();
-	const { sourceId } = useLocalSearchParams<{ sourceId?: string }>();
 
 	const { data: sources = [] } = useQuery({
 		queryKey: queryKeys.incomeSources,
 		queryFn: listIncomeSources,
 	});
-	const editingSource = sourceId
-		? (sources.find((s) => s.id === Number(sourceId)) ?? null)
+	const editingSource = editingSourceId
+		? (sources.find((s) => s.id === editingSourceId) ?? null)
 		: null;
 
 	const { initialNotifications } = useNotificationConfig(
@@ -35,7 +42,7 @@ export const IncomeSourceFormContainer = () => {
 		mutationFn: createIncomeSource,
 		onSuccess: () => {
 			invalidate();
-			router.back();
+			onClose();
 		},
 		onError: () =>
 			Alert.alert('Error', 'Failed to create income source. Please try again.'),
@@ -45,7 +52,7 @@ export const IncomeSourceFormContainer = () => {
 		mutationFn: updateIncomeSource,
 		onSuccess: () => {
 			invalidate();
-			router.back();
+			onClose();
 		},
 		onError: () =>
 			Alert.alert('Error', 'Failed to update income source. Please try again.'),
@@ -55,7 +62,7 @@ export const IncomeSourceFormContainer = () => {
 		mutationFn: deleteIncomeSource,
 		onSuccess: () => {
 			invalidate();
-			router.back();
+			onClose();
 		},
 		onError: () =>
 			Alert.alert('Error', 'Failed to delete income source. Please try again.'),
@@ -97,13 +104,20 @@ export const IncomeSourceFormContainer = () => {
 		: undefined;
 
 	return (
-		<IncomeSourceFormPage
-			editingSource={editingSource}
-			initialNotifications={initialNotifications}
-			onSubmit={onSubmit}
-			onDelete={onDelete}
-			onClose={() => router.back()}
-			isPending={createMutation.isPending || updateMutation.isPending}
-		/>
+		<Modal
+			visible={visible}
+			animationType="slide"
+			presentationStyle={Platform.OS === 'ios' ? 'pageSheet' : 'fullScreen'}
+			onRequestClose={onClose}
+		>
+			<IncomeSourceFormPage
+				editingSource={editingSource}
+				initialNotifications={initialNotifications}
+				onSubmit={onSubmit}
+				onDelete={onDelete}
+				onClose={onClose}
+				isPending={createMutation.isPending || updateMutation.isPending}
+			/>
+		</Modal>
 	);
 };

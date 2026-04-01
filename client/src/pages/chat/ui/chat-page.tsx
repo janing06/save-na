@@ -83,6 +83,7 @@ type Props = {
 	onSend: () => void;
 	onSuggestionPress: (text: string) => void;
 	onClearChat: () => void;
+	onClose: () => void;
 };
 
 export const ChatPage = ({
@@ -94,6 +95,7 @@ export const ChatPage = ({
 	onSend,
 	onSuggestionPress,
 	onClearChat,
+	onClose,
 }: Props) => {
 	const flatListRef = useRef<FlatList>(null);
 	const [keyboardHeight, setKeyboardHeight] = useState(0);
@@ -214,17 +216,20 @@ export const ChatPage = ({
 	);
 
 	return (
-		<View className="flex-1 bg-teal-600">
-			<SafeAreaView edges={['top']} className="bg-teal-600">
-				<View className="px-5 py-4 flex-row items-center justify-between">
-					<Text className="text-xl font-bold text-white">Chat</Text>
-					{messages.length > 0 && (
-						<Pressable onPress={onClearChat} className="active:opacity-60">
-							<Ionicons name="trash-outline" size={20} color="#ffffff" />
-						</Pressable>
-					)}
-				</View>
-			</SafeAreaView>
+		<SafeAreaView edges={['top']} className="flex-1 bg-teal-600">
+			<View className="px-5 pt-4 pb-8 flex-row items-center justify-between">
+				<Pressable onPress={onClose} className="active:opacity-60">
+					<Ionicons name="arrow-back" size={24} color="#ffffff" />
+				</Pressable>
+				<Text className="text-xl font-bold text-white">Chat</Text>
+				{messages.length > 0 ? (
+					<Pressable onPress={onClearChat} className="active:opacity-60">
+						<Ionicons name="trash-outline" size={20} color="#ffffff" />
+					</Pressable>
+				) : (
+					<View className="w-6" />
+				)}
+			</View>
 
 			{Platform.OS === 'ios' ? (
 				<KeyboardAvoidingView
@@ -239,6 +244,6 @@ export const ChatPage = ({
 				</View>
 			)}
 			<LoadingOverlay visible={isLoading} />
-		</View>
+		</SafeAreaView>
 	);
 };
