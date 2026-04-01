@@ -1,3 +1,21 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@layer base {
+	* {
+		font-family: PlusJakartaSans_400Regular, sans-serif;
+	}
+}
+
+@layer utilities {
+	.font-medium {
+		font-family: PlusJakartaSans_500Medium, sans-serif;
+	}
+	.font-semibold {
+		font-family: PlusJakartaSans_600SemiBold, sans-serif;
+	}
+	.font-bold {
+		font-family: PlusJakartaSans_700Bold, sans-serif;
+	}
+}

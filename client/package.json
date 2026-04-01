@@ -17,10 +17,12 @@
 		"check-all": "npm run ts:check && npm run lint && npm run lint:fix && npm run format && npm run fsd && npm run knip"
 	},
 	"dependencies": {
+		"@expo-google-fonts/plus-jakarta-sans": "^0.4.2",
 		"@ronradtke/react-native-markdown-display": "^8.1.0",
 		"@tanstack/react-query": "^5.95.0",
 		"expo": "~54.0.33",
 		"expo-constants": "~18.0.13",
+		"expo-font": "~14.0.11",
 		"expo-linking": "~8.0.11",
 		"expo-notifications": "~0.32.16",
 		"expo-router": "~6.0.23",
