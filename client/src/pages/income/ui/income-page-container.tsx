@@ -2,12 +2,12 @@ import { getPreferences } from '@shared/db';
 import type { IncomeSource } from '@shared/lib';
 import { queryKeys } from '@shared/lib';
 import { useQuery } from '@tanstack/react-query';
-import { useRouter } from 'expo-router';
+import { useState } from 'react';
 import { useDeleteIncomeSource, useIncomeSources } from '../model/hooks';
 import { IncomePage } from './income-page';
+import { IncomeSourceFormContainer } from './income-source-form-container';
 
 export const IncomePageContainer = () => {
-	const router = useRouter();
 	const { sources, isLoading } = useIncomeSources();
 	const { onDelete } = useDeleteIncomeSource();
 
@@ -17,22 +17,34 @@ export const IncomePageContainer = () => {
 	});
 	const currency = prefs?.currency ?? 'PHP';
 
-	const onAdd = () => router.push('/(tabs)/income/income-source-form');
+	const [formVisible, setFormVisible] = useState(false);
+	const [editingSourceId, setEditingSourceId] = useState<number | null>(null);
 
-	const onEdit = (source: IncomeSource) =>
-		router.push({
-			pathname: '/(tabs)/income/income-source-form',
-			params: { sourceId: String(source.id) },
-		});
+	const onAdd = () => {
+		setEditingSourceId(null);
+		setFormVisible(true);
+	};
+
+	const onEdit = (source: IncomeSource) => {
+		setEditingSourceId(source.id);
+		setFormVisible(true);
+	};
 
 	return (
-		<IncomePage
-			sources={sources}
-			currency={currency}
-			onAdd={onAdd}
-			onEdit={onEdit}
-			onDelete={onDelete}
-			isLoading={isLoading}
-		/>
+		<>
+			<IncomePage
+				sources={sources}
+				currency={currency}
+				onAdd={onAdd}
+				onEdit={onEdit}
+				onDelete={onDelete}
+				isLoading={isLoading}
+			/>
+			<IncomeSourceFormContainer
+				visible={formVisible}
+				editingSourceId={editingSourceId}
+				onClose={() => setFormVisible(false)}
+			/>
+		</>
 	);
 };

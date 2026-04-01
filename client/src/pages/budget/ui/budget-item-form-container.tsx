@@ -2,8 +2,7 @@ import { listCategories, listIncomeSources } from '@shared/db';
 import type { SplitType } from '@shared/lib';
 import { computePayPeriods, queryKeys } from '@shared/lib';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { useLocalSearchParams, useRouter } from 'expo-router';
-import { Alert } from 'react-native';
+import { Alert, Modal, Platform } from 'react-native';
 import { createBudgetItem } from '../api/create-budget-item';
 import { deleteBudgetItem } from '../api/delete-budget-item';
 import { getBudgetItemById } from '../api/get-budget-item-by-id';
@@ -11,20 +10,30 @@ import { getBudgetMonth } from '../api/get-budget-month';
 import { updateBudgetItem } from '../api/update-budget-item';
 import { BudgetItemFormPage } from './budget-item-form-page';
 
-export const BudgetItemFormContainer = () => {
-	const router = useRouter();
+type Props = {
+	visible: boolean;
+	incomeSourceId: number | null;
+	yearMonth: string;
+	editingItemId: number | null;
+	onClose: () => void;
+};
+
+export const BudgetItemFormContainer = ({
+	visible,
+	incomeSourceId,
+	yearMonth,
+	editingItemId,
+	onClose,
+}: Props) => {
 	const queryClient = useQueryClient();
-	const { incomeSourceId, yearMonth, itemId } = useLocalSearchParams<{
-		incomeSourceId: string;
-		yearMonth: string;
-		itemId?: string;
-	}>();
 
 	const { data: sources = [] } = useQuery({
 		queryKey: queryKeys.incomeSources,
 		queryFn: listIncomeSources,
 	});
-	const source = sources.find((s) => s.id === Number(incomeSourceId)) ?? null;
+	const source = incomeSourceId
+		? (sources.find((s) => s.id === incomeSourceId) ?? null)
+		: null;
 
 	const { data: budgetMonth } = useQuery({
 		queryKey: queryKeys.budgetMonth(yearMonth),
@@ -38,9 +47,9 @@ export const BudgetItemFormContainer = () => {
 	});
 
 	const { data: editingItem = null } = useQuery({
-		queryKey: queryKeys.budgetItemById(Number(itemId)),
-		queryFn: () => getBudgetItemById(Number(itemId)),
-		enabled: !!itemId,
+		queryKey: queryKeys.budgetItemById(Number(editingItemId)),
+		queryFn: () => getBudgetItemById(Number(editingItemId)),
+		enabled: !!editingItemId,
 	});
 
 	const payPeriods = source
@@ -57,7 +66,7 @@ export const BudgetItemFormContainer = () => {
 		mutationFn: createBudgetItem,
 		onSuccess: () => {
 			invalidate();
-			router.back();
+			onClose();
 		},
 		onError: () =>
 			Alert.alert('Error', 'Failed to save budget item. Please try again.'),
@@ -67,7 +76,7 @@ export const BudgetItemFormContainer = () => {
 		mutationFn: updateBudgetItem,
 		onSuccess: () => {
 			invalidate();
-			router.back();
+			onClose();
 		},
 		onError: () =>
 			Alert.alert('Error', 'Failed to save budget item. Please try again.'),
@@ -77,7 +86,7 @@ export const BudgetItemFormContainer = () => {
 		mutationFn: deleteBudgetItem,
 		onSuccess: () => {
 			invalidate();
-			router.back();
+			onClose();
 		},
 		onError: () =>
 			Alert.alert('Error', 'Failed to delete budget item. Please try again.'),
@@ -137,14 +146,21 @@ export const BudgetItemFormContainer = () => {
 		: undefined;
 
 	return (
-		<BudgetItemFormPage
-			editingItem={editingItem}
-			categories={categories}
-			payPeriods={payPeriods}
-			onSubmit={onSubmit}
-			onDelete={onDelete}
-			onClose={() => router.back()}
-			isPending={createMutation.isPending || updateMutation.isPending}
-		/>
+		<Modal
+			visible={visible}
+			animationType="slide"
+			presentationStyle={Platform.OS === 'ios' ? 'pageSheet' : 'fullScreen'}
+			onRequestClose={onClose}
+		>
+			<BudgetItemFormPage
+				editingItem={editingItem}
+				categories={categories}
+				payPeriods={payPeriods}
+				onSubmit={onSubmit}
+				onDelete={onDelete}
+				onClose={onClose}
+				isPending={createMutation.isPending || updateMutation.isPending}
+			/>
+		</Modal>
 	);
 };

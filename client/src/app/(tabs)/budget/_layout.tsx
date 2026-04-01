@@ -1,17 +1,15 @@
 import { Stack } from 'expo-router';
-import { Platform } from 'react-native';
 
 const BudgetLayout = () => {
 	return (
-		<Stack
-			screenOptions={({ route }) => ({
-				headerShown: false,
-				animation: 'slide_from_right',
-				...(Platform.OS === 'android' && route.name === 'budget-item-form'
-					? { statusBarStyle: 'dark' }
-					: {}),
-			})}
-		/>
+		<Stack screenOptions={{ headerShown: false }}>
+			<Stack.Screen name="index" options={{ animation: 'slide_from_right' }} />
+			<Stack.Screen
+				name="budget-item-form"
+				options={{ animation: 'slide_from_right' }}
+			/>
+			<Stack.Screen name="chat" options={{ animation: 'slide_from_right' }} />
+		</Stack>
 	);
 };
 

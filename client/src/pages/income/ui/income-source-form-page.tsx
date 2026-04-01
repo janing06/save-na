@@ -184,7 +184,7 @@ export const IncomeSourceFormPage = ({
 	};
 
 	return (
-		<SafeAreaView edges={['top']} className="flex-1 bg-white">
+		<SafeAreaView edges={['top', 'bottom']} className="flex-1 bg-white">
 			<ScrollView className="flex-1 px-6 pt-6">
 				<View className="flex-row justify-between items-center mb-6">
 					<Text className="text-xl font-bold text-slate-900">

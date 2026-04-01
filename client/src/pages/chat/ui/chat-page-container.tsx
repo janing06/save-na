@@ -10,7 +10,11 @@ import {
 import { ChatPage } from './chat-page';
 import { ChatSetupPrompt } from './chat-setup-prompt';
 
-export const ChatPageContainer = () => {
+type Props = {
+	onClose: () => void;
+};
+
+export const ChatPageContainer = ({ onClose }: Props) => {
 	const { apiKey, isLoading: isApiKeyLoading, onSaveKey } = useApiKey();
 	const { messages, isLoading } = useChatMessages();
 	const { onSend, isSending } = useSendMessage(apiKey, messages);
@@ -22,7 +26,7 @@ export const ChatPageContainer = () => {
 	}
 
 	if (!apiKey) {
-		return <ChatSetupPrompt onSaveKey={onSaveKey} />;
+		return <ChatSetupPrompt onSaveKey={onSaveKey} onClose={onClose} />;
 	}
 
 	const handleSend = () => {
@@ -61,6 +65,7 @@ export const ChatPageContainer = () => {
 			onSend={handleSend}
 			onSuggestionPress={handleSuggestionPress}
 			onClearChat={handleClearChat}
+			onClose={onClose}
 		/>
 	);
 };
