@@ -11,7 +11,7 @@ import {
 	requestNotificationPermission,
 	rescheduleAllNotifications,
 } from '@shared/lib';
-import { Slot } from 'expo-router';
+import { Stack } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
 import { useEffect } from 'react';
 
@@ -37,7 +37,10 @@ const RootLayout = () => {
 
 	return (
 		<Providers>
-			<Slot />
+			<Stack screenOptions={{ headerShown: false }}>
+				<Stack.Screen name="(tabs)" />
+				<Stack.Screen name="chat" options={{ animation: 'slide_from_right' }} />
+			</Stack>
 		</Providers>
 	);
 };

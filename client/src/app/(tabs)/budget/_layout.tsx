@@ -8,7 +8,6 @@ const BudgetLayout = () => {
 				name="budget-item-form"
 				options={{ animation: 'slide_from_right' }}
 			/>
-			<Stack.Screen name="chat" options={{ animation: 'slide_from_right' }} />
 		</Stack>
 	);
 };
