@@ -54,6 +54,7 @@ export default {
 					root: 'src/app',
 				},
 			],
+			'expo-font',
 			[
 				'expo-splash-screen',
 				{

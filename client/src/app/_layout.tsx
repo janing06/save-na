@@ -1,6 +1,13 @@
 import '../../global.css';
 import { Providers } from '@core/providers/providers';
 import {
+	PlusJakartaSans_400Regular,
+	PlusJakartaSans_500Medium,
+	PlusJakartaSans_600SemiBold,
+	PlusJakartaSans_700Bold,
+	useFonts,
+} from '@expo-google-fonts/plus-jakarta-sans';
+import {
 	requestNotificationPermission,
 	rescheduleAllNotifications,
 } from '@shared/lib';
@@ -11,6 +18,13 @@ import { useEffect } from 'react';
 SplashScreen.preventAutoHideAsync();
 
 const RootLayout = () => {
+	const [fontsLoaded] = useFonts({
+		PlusJakartaSans_400Regular,
+		PlusJakartaSans_500Medium,
+		PlusJakartaSans_600SemiBold,
+		PlusJakartaSans_700Bold,
+	});
+
 	useEffect(() => {
 		requestNotificationPermission()
 			.then((granted) => {
@@ -18,6 +32,8 @@ const RootLayout = () => {
 			})
 			.catch(() => {});
 	}, []);
+
+	if (!fontsLoaded) return null;
 
 	return (
 		<Providers>
