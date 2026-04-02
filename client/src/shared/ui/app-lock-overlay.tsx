@@ -50,9 +50,11 @@ export const AppLockOverlay = ({ onReady }: Props) => {
 		init();
 	}, []);
 
-	// Signal splash screen ready once initial lock state is determined
+	// Signal splash screen ready once — fires only on first transition from null
+	const hasCalledOnReadyRef = useRef(false);
 	useEffect(() => {
-		if (isLocked !== null) {
+		if (isLocked !== null && !hasCalledOnReadyRef.current) {
+			hasCalledOnReadyRef.current = true;
 			onReady();
 		}
 	}, [isLocked, onReady]);
