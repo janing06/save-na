@@ -10,7 +10,7 @@ const features = [
 		icon: 'lock-closed-outline' as const,
 		title: 'Your budget stays private',
 		description:
-			'No sign in needed. Budget data never leaves your phone. Optional AI chat helper available.',
+			'No sign in needed. Your data stays on your phone. AI chat sends budget data to OpenRouter using your own API key.',
 	},
 	{
 		icon: 'wallet-outline' as const,
