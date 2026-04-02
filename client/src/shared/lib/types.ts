@@ -4,6 +4,7 @@ export type SplitType = 'even' | 'custom';
 export type UserPreferences = {
 	id: number;
 	currency: string;
+	app_lock_enabled: number;
 	created_at: string;
 	updated_at: string;
 };

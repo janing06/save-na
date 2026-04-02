@@ -58,6 +58,14 @@ async function runMigrations(database: SQLite.SQLiteDatabase): Promise<void> {
 			'ALTER TABLE user_preferences ADD COLUMN openrouter_api_key TEXT;',
 		);
 	}
+
+	// Migration 5: add app_lock_enabled column to user_preferences
+	const hasAppLock = prefColumns.some((c) => c.name === 'app_lock_enabled');
+	if (!hasAppLock) {
+		await database.execAsync(
+			'ALTER TABLE user_preferences ADD COLUMN app_lock_enabled INTEGER NOT NULL DEFAULT 0;',
+		);
+	}
 }
 
 export async function getDatabase(): Promise<SQLite.SQLiteDatabase> {
