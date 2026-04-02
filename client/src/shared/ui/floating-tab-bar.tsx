@@ -40,14 +40,19 @@ type TabItemProps = {
 const TabItem = ({ name, isFocused, onPress }: TabItemProps) => {
 	const width = useSharedValue(isFocused ? 110 : 44);
 	const labelOpacity = useSharedValue(isFocused ? 1 : 0);
+	const labelMaxWidth = useSharedValue(isFocused ? 80 : 0);
 
 	useEffect(() => {
 		width.value = withSpring(isFocused ? 110 : 44, {
-			damping: 20,
-			stiffness: 200,
+			damping: 60,
+			stiffness: 500,
 		});
-		labelOpacity.value = withTiming(isFocused ? 1 : 0, { duration: 150 });
-	}, [isFocused, width, labelOpacity]);
+		labelOpacity.value = withTiming(isFocused ? 1 : 0, { duration: 120 });
+		labelMaxWidth.value = withSpring(isFocused ? 80 : 0, {
+			damping: 60,
+			stiffness: 500,
+		});
+	}, [isFocused, width, labelOpacity, labelMaxWidth]);
 
 	const pillStyle = useAnimatedStyle(() => ({
 		width: width.value,
@@ -55,22 +60,23 @@ const TabItem = ({ name, isFocused, onPress }: TabItemProps) => {
 
 	const labelStyle = useAnimatedStyle(() => ({
 		opacity: labelOpacity.value,
+		maxWidth: labelMaxWidth.value,
 	}));
 
-	const iconColor = isFocused ? '#0d9488' : 'rgba(255,255,255,0.65)';
+	const iconColor = isFocused ? '#ffffff' : 'rgba(13,148,136)';
 
 	return (
 		<Pressable onPress={onPress} className="items-center justify-center">
 			<Animated.View
 				style={pillStyle}
 				className={`h-9 flex-row items-center justify-center gap-1.5 rounded-full overflow-hidden ${
-					isFocused ? 'bg-white' : ''
+					isFocused ? 'bg-teal-600' : ''
 				}`}
 			>
 				{TAB_ICONS[name]?.(iconColor)}
 				<Animated.Text
 					style={labelStyle}
-					className="text-sm font-semibold text-teal-600"
+					className="text-sm font-semibold text-white"
 					numberOfLines={1}
 					pointerEvents={isFocused ? 'auto' : 'none'}
 				>
@@ -99,7 +105,7 @@ export const FloatingTabBar = ({
 			pointerEvents="box-none"
 		>
 			<View
-				className="flex-row items-center bg-teal-600 rounded-full px-3 gap-1"
+				className="flex-row items-center bg-white rounded-full px-3 gap-1"
 				style={{
 					height: 50,
 					shadowColor: '#000',

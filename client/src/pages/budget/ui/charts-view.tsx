@@ -107,7 +107,7 @@ export const ChartsView = ({
 			className="flex-1"
 			contentContainerStyle={{
 				padding: 16,
-				paddingBottom: insets.bottom + TAB_BAR_CLEARANCE + 16,
+				paddingBottom: insets.bottom + TAB_BAR_CLEARANCE + 50,
 				gap: 12,
 			}}
 		>
