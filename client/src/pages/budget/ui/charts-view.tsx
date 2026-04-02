@@ -1,6 +1,8 @@
 import { formatCurrency } from '@shared/lib';
+import { TAB_BAR_CLEARANCE } from '@shared/ui';
 import { useMemo } from 'react';
 import { ScrollView, Text, View } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import type { BudgetItemWithAllocations } from '../api/list-budget-items';
 import { CategoryProgressBars } from './category-progress';
 import { DonutChart } from './donut-chart';
@@ -22,6 +24,7 @@ export const ChartsView = ({
 	totalIncome,
 	currency,
 }: Props) => {
+	const insets = useSafeAreaInsets();
 	const {
 		segments,
 		unallocated,
@@ -102,7 +105,11 @@ export const ChartsView = ({
 	return (
 		<ScrollView
 			className="flex-1"
-			contentContainerStyle={{ padding: 16, paddingBottom: 80, gap: 12 }}
+			contentContainerStyle={{
+				padding: 16,
+				paddingBottom: insets.bottom + TAB_BAR_CLEARANCE + 50,
+				gap: 12,
+			}}
 		>
 			{/* Overall checked progress card */}
 			<View className="bg-white rounded-2xl p-5 shadow-sm">
