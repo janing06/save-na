@@ -1,5 +1,5 @@
-import { getPreferences } from '@shared/db';
 import Ionicons from '@expo/vector-icons/Ionicons';
+import { getPreferences } from '@shared/db';
 import * as LocalAuthentication from 'expo-local-authentication';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { AppState, Pressable, Text, View } from 'react-native';

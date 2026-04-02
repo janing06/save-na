@@ -11,9 +11,10 @@ import {
 	requestNotificationPermission,
 	rescheduleAllNotifications,
 } from '@shared/lib';
+import { AppLockOverlay } from '@shared/ui';
 import { Slot } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
-import { useEffect } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 
 SplashScreen.preventAutoHideAsync();
 
@@ -25,6 +26,12 @@ const RootLayout = () => {
 		PlusJakartaSans_700Bold,
 	});
 
+	const [appLockReady, setAppLockReady] = useState(false);
+
+	const handleAppLockReady = useCallback(() => {
+		setAppLockReady(true);
+	}, []);
+
 	useEffect(() => {
 		requestNotificationPermission()
 			.then((granted) => {
@@ -33,11 +40,18 @@ const RootLayout = () => {
 			.catch(() => {});
 	}, []);
 
+	useEffect(() => {
+		if (fontsLoaded && appLockReady) {
+			SplashScreen.hideAsync();
+		}
+	}, [fontsLoaded, appLockReady]);
+
 	if (!fontsLoaded) return null;
 
 	return (
 		<Providers>
 			<Slot />
+			<AppLockOverlay onReady={handleAppLockReady} />
 		</Providers>
 	);
 };
