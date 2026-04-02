@@ -10,16 +10,23 @@ type Props = {
 
 export const AppLockOverlay = ({ onReady }: Props) => {
 	const [isLocked, setIsLocked] = useState<boolean | null>(null);
-	const appLockEnabledRef = useRef(false);
+	const isInitializedRef = useRef(false);
+	const isAuthenticatingRef = useRef(false);
 	const appStateRef = useRef(AppState.currentState);
 
 	const authenticate = useCallback(async () => {
-		const result = await LocalAuthentication.authenticateAsync({
-			promptMessage: 'Unlock SaveNa',
-			disableDeviceFallback: false,
-		});
-		if (result.success) {
-			setIsLocked(false);
+		if (isAuthenticatingRef.current) return;
+		isAuthenticatingRef.current = true;
+		try {
+			const result = await LocalAuthentication.authenticateAsync({
+				promptMessage: 'Unlock SaveNa',
+				disableDeviceFallback: false,
+			});
+			if (result.success) {
+				setIsLocked(false);
+			}
+		} finally {
+			isAuthenticatingRef.current = false;
 		}
 	}, []);
 
@@ -29,7 +36,6 @@ export const AppLockOverlay = ({ onReady }: Props) => {
 			try {
 				const prefs = await getPreferences();
 				const enabled = prefs?.app_lock_enabled === 1;
-				appLockEnabledRef.current = enabled;
 				if (enabled) {
 					setIsLocked(true);
 				} else {
@@ -38,11 +44,18 @@ export const AppLockOverlay = ({ onReady }: Props) => {
 			} catch {
 				setIsLocked(false);
 			} finally {
-				onReady();
+				isInitializedRef.current = true;
 			}
 		};
 		init();
-	}, [onReady]);
+	}, []);
+
+	// Signal splash screen ready once initial lock state is determined
+	useEffect(() => {
+		if (isLocked !== null) {
+			onReady();
+		}
+	}, [isLocked, onReady]);
 
 	// Auto-trigger auth when locked becomes true
 	useEffect(() => {
@@ -58,16 +71,18 @@ export const AppLockOverlay = ({ onReady }: Props) => {
 				appStateRef.current.match(/inactive|background/) &&
 				nextState === 'active'
 			) {
+				if (!isInitializedRef.current) return;
 				// Re-read preference in case it changed while app was backgrounded
 				getPreferences()
 					.then((prefs) => {
 						const enabled = prefs?.app_lock_enabled === 1;
-						appLockEnabledRef.current = enabled;
 						if (enabled) {
 							setIsLocked(true);
 						}
 					})
-					.catch(() => {});
+					.catch(() => {
+						setIsLocked(true);
+					});
 			}
 			appStateRef.current = nextState;
 		});
@@ -79,16 +94,21 @@ export const AppLockOverlay = ({ onReady }: Props) => {
 	if (!isLocked) return null;
 
 	return (
-		<View className="absolute inset-0 z-50 bg-teal-600 items-center justify-center">
-			<Ionicons name="lock-closed" size={48} color="white" />
-			<Text className="text-white text-xl font-bold mt-4">SaveNa</Text>
-			<Text className="text-teal-200 text-sm mt-1">Tap to unlock</Text>
-			<Pressable
-				onPress={authenticate}
-				className="mt-8 bg-white/20 rounded-full px-8 py-3 active:opacity-60"
-			>
-				<Text className="text-white font-semibold">Unlock</Text>
-			</Pressable>
-		</View>
+		<Pressable
+			onPress={authenticate}
+			className="absolute inset-0 z-50 bg-teal-600 items-center justify-center"
+		>
+			<View className="items-center">
+				<Ionicons name="lock-closed" size={48} color="white" />
+				<Text className="text-white text-xl font-bold mt-4">SaveNa</Text>
+				<Text className="text-teal-200 text-sm mt-1">Tap to unlock</Text>
+				<Pressable
+					onPress={authenticate}
+					className="mt-8 bg-white/20 rounded-full px-8 py-3 active:opacity-60"
+				>
+					<Text className="text-white font-semibold">Unlock</Text>
+				</Pressable>
+			</View>
+		</Pressable>
 	);
 };
