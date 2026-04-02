@@ -1,7 +1,7 @@
 import { Ionicons } from '@expo/vector-icons';
 import type { IncomeSource } from '@shared/lib';
 import { formatCurrency } from '@shared/lib';
-import { LoadingOverlay, TAB_BAR_CLEARANCE } from '@shared/ui';
+import { LoadingOverlay } from '@shared/ui';
 import { FlatList, Pressable, Text, View } from 'react-native';
 import {
 	SafeAreaView,
@@ -28,7 +28,6 @@ export const IncomePage = ({
 }: Props) => {
 	const totalIncome = sources.reduce((sum, s) => sum + s.amount, 0);
 	const insets = useSafeAreaInsets();
-	const fabBottom = insets.bottom + TAB_BAR_CLEARANCE;
 
 	return (
 		<View className="flex-1 bg-teal-600">
@@ -51,7 +50,7 @@ export const IncomePage = ({
 					keyExtractor={(item) => String(item.id)}
 					contentContainerStyle={{
 						paddingTop: 16,
-						paddingBottom: fabBottom + 64,
+						paddingBottom: insets.bottom + 80,
 					}}
 					renderItem={({ item }) => (
 						<IncomeSourceCard
@@ -70,7 +69,7 @@ export const IncomePage = ({
 
 				<Pressable
 					className="absolute right-6 bg-teal-600 w-12 h-12 rounded-full items-center justify-center shadow-lg"
-					style={{ bottom: fabBottom, shadowColor: '#0d9488' }}
+					style={{ bottom: insets.bottom + 16, shadowColor: '#0d9488' }}
 					onPress={onAdd}
 				>
 					<Ionicons name="add" size={28} color="white" />
