@@ -9,6 +9,7 @@ import {
 	useCategories,
 	useClearData,
 	usePreferences,
+	useUpdateAppLock,
 	useUpdateCurrency,
 } from '../model/hooks';
 import { SettingsPage } from './settings-page';
@@ -18,6 +19,7 @@ export const SettingsPageContainer = () => {
 	const { preferences, isLoading: isPrefsLoading } = usePreferences();
 	const { categories, isLoading: isCatsLoading } = useCategories();
 	const { onUpdate } = useUpdateCurrency();
+	const { onUpdate: onUpdateAppLock } = useUpdateAppLock();
 	const clearData = useClearData();
 
 	const { data: apiKey = null } = useQuery({
@@ -91,6 +93,7 @@ export const SettingsPageContainer = () => {
 			apiKey={apiKey}
 			onRemoveApiKey={handleRemoveApiKey}
 			isLoading={isPrefsLoading || isCatsLoading}
+			onToggleAppLock={onUpdateAppLock}
 		/>
 	);
 };

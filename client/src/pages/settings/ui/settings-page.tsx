@@ -1,7 +1,7 @@
 import { currencies } from '@shared/config';
 import type { Category, UserPreferences } from '@shared/lib';
 import { LoadingOverlay, TAB_BAR_CLEARANCE } from '@shared/ui';
-import { Image, Pressable, ScrollView, Text, View } from 'react-native';
+import { Image, Pressable, ScrollView, Switch, Text, View } from 'react-native';
 import {
 	SafeAreaView,
 	useSafeAreaInsets,
@@ -26,6 +26,7 @@ type Props = {
 	apiKey: string | null;
 	onRemoveApiKey: () => void;
 	isLoading: boolean;
+	onToggleAppLock: (enabled: boolean) => void;
 };
 
 export const SettingsPage = ({
@@ -37,6 +38,7 @@ export const SettingsPage = ({
 	apiKey,
 	onRemoveApiKey,
 	isLoading,
+	onToggleAppLock,
 }: Props) => {
 	const insets = useSafeAreaInsets();
 	const currencyInfo = currencies.find((c) => c.code === preferences?.currency);
@@ -59,8 +61,30 @@ export const SettingsPage = ({
 						paddingBottom: insets.bottom + TAB_BAR_CLEARANCE + 16,
 					}}
 				>
-					{/* Currency section label */}
+					{/* Security section */}
 					<Text className="text-xs font-bold tracking-widest text-slate-400 uppercase mx-4 mt-4 mb-1.5">
+						Security
+					</Text>
+					<View className="mx-4 bg-white rounded-2xl overflow-hidden">
+						<View className="px-4 py-4 flex-row items-center justify-between">
+							<View className="flex-1 mr-3">
+								<Text className="text-sm font-medium text-slate-700">
+									App Lock
+								</Text>
+								<Text className="text-xs text-slate-400 mt-0.5">
+									Require authentication when opening the app
+								</Text>
+							</View>
+							<Switch
+								value={preferences?.app_lock_enabled === 1}
+								onValueChange={onToggleAppLock}
+								trackColor={{ true: '#0d9488' }}
+							/>
+						</View>
+					</View>
+
+					{/* Currency section label */}
+					<Text className="text-xs font-bold tracking-widest text-slate-400 uppercase mx-4 mt-6 mb-1.5">
 						Currency
 					</Text>
 					<CategoryList
