@@ -103,7 +103,6 @@ export const AppLockOverlay = ({ onReady }: Props) => {
 			<View className="items-center">
 				<Ionicons name="lock-closed" size={48} color="white" />
 				<Text className="text-white text-xl font-bold mt-4">SaveNa</Text>
-				<Text className="text-teal-200 text-sm mt-1">Tap to unlock</Text>
 				<Pressable
 					onPress={authenticate}
 					className="mt-8 bg-white/20 rounded-full px-8 py-3 active:opacity-60"

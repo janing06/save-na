@@ -78,7 +78,9 @@ export const SettingsPage = ({
 							<Switch
 								value={preferences?.app_lock_enabled === 1}
 								onValueChange={onToggleAppLock}
-								trackColor={{ true: '#0d9488' }}
+								trackColor={{ false: '#cbd5e1', true: '#0d9488' }}
+								thumbColor="white"
+								ios_backgroundColor="#cbd5e1"
 							/>
 						</View>
 					</View>
