@@ -1,6 +1,6 @@
 import { Ionicons } from '@expo/vector-icons';
 import { useState } from 'react';
-import { Pressable, Text, TextInput, View } from 'react-native';
+import { Pressable, StatusBar, Text, TextInput, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 type Props = {
@@ -13,9 +13,10 @@ export const ChatSetupPrompt = ({ onSaveKey, onClose }: Props) => {
 
 	return (
 		<SafeAreaView edges={['top', 'bottom']} className="flex-1 bg-white">
-			<View className="bg-teal-600 px-5 py-4 flex-row items-center">
+			<StatusBar barStyle="dark-content" />
+			<View className="px-5 py-4 flex-row items-center">
 				<Pressable onPress={onClose} className="active:opacity-60">
-					<Ionicons name="arrow-back" size={24} color="#ffffff" />
+					<Ionicons name="arrow-back" size={24} color="#1e293b" />
 				</Pressable>
 			</View>
 
