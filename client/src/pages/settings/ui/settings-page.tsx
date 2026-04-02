@@ -1,8 +1,11 @@
 import { currencies } from '@shared/config';
 import type { Category, UserPreferences } from '@shared/lib';
-import { LoadingOverlay } from '@shared/ui';
+import { LoadingOverlay, TAB_BAR_CLEARANCE } from '@shared/ui';
 import { Image, Pressable, ScrollView, Text, View } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import {
+	SafeAreaView,
+	useSafeAreaInsets,
+} from 'react-native-safe-area-context';
 import { CategoryList } from './category-list';
 import { CurrencyPicker } from './currency-picker';
 
@@ -35,6 +38,7 @@ export const SettingsPage = ({
 	onRemoveApiKey,
 	isLoading,
 }: Props) => {
+	const insets = useSafeAreaInsets();
 	const currencyInfo = currencies.find((c) => c.code === preferences?.currency);
 
 	return (
@@ -50,7 +54,10 @@ export const SettingsPage = ({
 			<View className="flex-1 bg-slate-100 rounded-t-3xl -mt-4 overflow-hidden">
 				<ScrollView
 					className="flex-1"
-					contentContainerStyle={{ paddingTop: 20, paddingBottom: 40 }}
+					contentContainerStyle={{
+						paddingTop: 20,
+						paddingBottom: insets.bottom + TAB_BAR_CLEARANCE + 16,
+					}}
 				>
 					{/* Currency section label */}
 					<Text className="text-xs font-bold tracking-widest text-slate-400 uppercase mx-4 mt-4 mb-1.5">
