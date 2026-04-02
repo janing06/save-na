@@ -101,7 +101,7 @@ export const FloatingTabBar = ({
 			<View
 				className="flex-row items-center bg-teal-600 rounded-full px-3 gap-1"
 				style={{
-					height: 60,
+					height: 50,
 					shadowColor: '#000',
 					shadowOffset: { width: 0, height: 4 },
 					shadowOpacity: 0.18,
