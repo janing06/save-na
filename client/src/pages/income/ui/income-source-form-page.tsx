@@ -211,6 +211,9 @@ export const IncomeSourceFormPage = ({
 						<Text className="text-sm font-medium text-slate-700 mb-1">
 							Net Salary
 						</Text>
+						<Text className="text-xs text-slate-400 mb-1">
+							Enter your salary after tax deductions
+						</Text>
 						<TextInput
 							className={`bg-slate-50 rounded-xl px-4 py-3 text-base text-slate-900 mb-4 border ${focusedField === 'amount' ? 'border-teal-600' : 'border-slate-200'}`}
 							placeholder="e.g., 15000"
@@ -271,8 +274,11 @@ export const IncomeSourceFormPage = ({
 
 				{isBiMonthly && (
 					<View className="mb-4">
-						<Text className="text-sm font-medium text-slate-700 mb-2">
+						<Text className="text-sm font-medium text-slate-700 mb-1">
 							Pay days &amp; amounts
+						</Text>
+						<Text className="text-xs text-slate-400 mb-2">
+							Enter your salary after tax deductions
 						</Text>
 						<View className="flex-row items-center gap-2 mb-2">
 							<TextInput
