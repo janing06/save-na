@@ -3,7 +3,7 @@ import Entypo from '@expo/vector-icons/Entypo';
 import FontAwesome6 from '@expo/vector-icons/FontAwesome6';
 import type { BottomTabBarProps } from '@react-navigation/bottom-tabs';
 import { usePathname } from 'expo-router';
-import { useEffect } from 'react';
+import { type ReactNode, useEffect } from 'react';
 import { Pressable, View } from 'react-native';
 import Animated, {
 	useAnimatedStyle,
@@ -15,7 +15,7 @@ import Animated, {
 // Bar height (60) + bottom offset above safe area (12) + gap (8)
 export const TAB_BAR_CLEARANCE = 80;
 
-const TAB_ICONS: Record<string, (color: string) => React.ReactNode> = {
+const TAB_ICONS: Record<string, (color: string) => ReactNode> = {
 	budget: (color) => (
 		<FontAwesome6 name="chart-simple" size={20} color={color} />
 	),
@@ -47,7 +47,7 @@ const TabItem = ({ name, isFocused, onPress }: TabItemProps) => {
 			stiffness: 200,
 		});
 		labelOpacity.value = withTiming(isFocused ? 1 : 0, { duration: 150 });
-	}, [isFocused]);
+	}, [isFocused, width, labelOpacity]);
 
 	const pillStyle = useAnimatedStyle(() => ({
 		width: width.value,
