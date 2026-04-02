@@ -36,6 +36,7 @@ export default {
 			bundleIdentifier: env.iosBundleIdentifier,
 		},
 		android: {
+			versionCode: 2,
 			adaptiveIcon: {
 				backgroundColor: '#0d9488',
 				foregroundImage: './assets/images/android-icon-foreground.png',
