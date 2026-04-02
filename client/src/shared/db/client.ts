@@ -4,6 +4,7 @@ import { createTables } from './schema';
 import { seedDefaultCategories } from './seed';
 
 let db: SQLite.SQLiteDatabase | null = null;
+let dbPromise: Promise<SQLite.SQLiteDatabase> | null = null;
 
 async function runMigrations(database: SQLite.SQLiteDatabase): Promise<void> {
 	// Migration 1: add pay_amounts column
@@ -70,14 +71,17 @@ async function runMigrations(database: SQLite.SQLiteDatabase): Promise<void> {
 
 export async function getDatabase(): Promise<SQLite.SQLiteDatabase> {
 	if (db) return db;
+	if (dbPromise) return dbPromise;
 
-	db = await SQLite.openDatabaseAsync('savena.db');
+	dbPromise = (async () => {
+		db = await SQLite.openDatabaseAsync('savena.db');
+		await db.execAsync('PRAGMA journal_mode = WAL;');
+		await db.execAsync('PRAGMA foreign_keys = ON;');
+		await db.execAsync(createTables);
+		await runMigrations(db);
+		await seedDefaultCategories(db);
+		return db;
+	})();
 
-	await db.execAsync('PRAGMA journal_mode = WAL;');
-	await db.execAsync('PRAGMA foreign_keys = ON;');
-	await db.execAsync(createTables);
-	await runMigrations(db);
-	await seedDefaultCategories(db);
-
-	return db;
+	return dbPromise;
 }
