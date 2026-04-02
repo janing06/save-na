@@ -1,6 +1,15 @@
 import { Ionicons } from '@expo/vector-icons';
-import { useState } from 'react';
-import { Pressable, StatusBar, Text, TextInput, View } from 'react-native';
+import { useEffect, useState } from 'react';
+import {
+	Keyboard,
+	KeyboardAvoidingView,
+	Platform,
+	Pressable,
+	StatusBar,
+	Text,
+	TextInput,
+	View,
+} from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 type Props = {
@@ -10,9 +19,26 @@ type Props = {
 
 export const ChatSetupPrompt = ({ onSaveKey, onClose }: Props) => {
 	const [key, setKey] = useState('');
+	const [keyboardHeight, setKeyboardHeight] = useState(0);
 
-	return (
-		<SafeAreaView edges={['top', 'bottom']} className="flex-1 bg-white">
+	useEffect(() => {
+		if (Platform.OS !== 'android') return;
+
+		const showSub = Keyboard.addListener('keyboardDidShow', (e) => {
+			setKeyboardHeight(e.endCoordinates.height);
+		});
+		const hideSub = Keyboard.addListener('keyboardDidHide', () => {
+			setKeyboardHeight(0);
+		});
+
+		return () => {
+			showSub.remove();
+			hideSub.remove();
+		};
+	}, []);
+
+	const content = (
+		<>
 			<StatusBar barStyle="dark-content" />
 			<View className="px-5 py-4 flex-row items-center">
 				<Pressable onPress={onClose} className="active:opacity-60">
@@ -20,7 +46,14 @@ export const ChatSetupPrompt = ({ onSaveKey, onClose }: Props) => {
 				</Pressable>
 			</View>
 
-			<View className="flex-1 justify-center px-6">
+			<View
+				className="flex-1 justify-center px-6"
+				style={
+					Platform.OS === 'android'
+						? { marginBottom: keyboardHeight }
+						: undefined
+				}
+			>
 				<Text className="text-lg font-bold text-slate-800 text-center mb-2">
 					Set Up AI Assistant
 				</Text>
@@ -65,6 +98,18 @@ export const ChatSetupPrompt = ({ onSaveKey, onClose }: Props) => {
 					<Text className="text-white font-semibold text-center">Save Key</Text>
 				</Pressable>
 			</View>
+		</>
+	);
+
+	return (
+		<SafeAreaView edges={['top', 'bottom']} className="flex-1 bg-white">
+			{Platform.OS === 'ios' ? (
+				<KeyboardAvoidingView className="flex-1" behavior="padding">
+					{content}
+				</KeyboardAvoidingView>
+			) : (
+				content
+			)}
 		</SafeAreaView>
 	);
 };
