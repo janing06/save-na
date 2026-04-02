@@ -16,7 +16,7 @@ export const ChatSetupPrompt = ({ onSaveKey, onClose }: Props) => {
 			<StatusBar barStyle="dark-content" />
 			<View className="px-5 py-4 flex-row items-center">
 				<Pressable onPress={onClose} className="active:opacity-60">
-					<Ionicons name="arrow-back" size={24} color="text-slate-800" />
+					<Ionicons name="arrow-back" size={24} color="#1e293b" />
 				</Pressable>
 			</View>
 
