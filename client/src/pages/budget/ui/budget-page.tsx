@@ -134,26 +134,53 @@ export const BudgetPage = ({
 							/>
 						)}
 
-						{itemsByCategory.map((group) => (
-							<CategoryAccordion
-								key={group.categoryName}
-								categoryName={group.categoryName}
-								items={group.items}
-								selectedPeriodIndex={isTotal ? 'full' : payPeriod.selectedIndex}
-								currency={summary.currency}
-								onEditItem={onEdit}
-								onTogglePaid={onTogglePaid}
-								showSourceLabel={isTotal}
-							/>
-						))}
+						{(() => {
+							// total view always shows all periods
+							const periodIndex = isTotal ? 'full' : payPeriod.selectedIndex;
+							const visibleGroups = itemsByCategory
+								.map((group) => {
+									if (periodIndex === 'full') return group;
+									const visibleItems = group.items.filter((item) => {
+										const alloc = item.allocations.find(
+											(a) => a.pay_period_index === periodIndex,
+										);
+										return (alloc?.amount ?? 0) > 0;
+									});
+									return { ...group, items: visibleItems };
+								})
+								.filter((group) => group.items.length > 0);
 
-						{itemsByCategory.length === 0 && (
-							<Text className="text-slate-400 text-sm text-center mt-16">
-								{isTotal
-									? 'No budget items yet.'
-									: 'No budget items yet.\nTap + to add one.'}
-							</Text>
-						)}
+							if (itemsByCategory.length === 0) {
+								return (
+									<Text className="text-slate-400 text-sm text-center mt-16">
+										{isTotal
+											? 'No budget items yet.'
+											: 'No budget items yet.\nTap + to add one.'}
+									</Text>
+								);
+							}
+
+							if (visibleGroups.length === 0) {
+								return (
+									<Text className="text-slate-400 text-sm text-center mt-16">
+										No items for this pay period.
+									</Text>
+								);
+							}
+
+							return visibleGroups.map((group) => (
+								<CategoryAccordion
+									key={group.categoryName}
+									categoryName={group.categoryName}
+									items={group.items}
+									selectedPeriodIndex={periodIndex}
+									currency={summary.currency}
+									onEditItem={onEdit}
+									onTogglePaid={onTogglePaid}
+									showSourceLabel={isTotal}
+								/>
+							));
+						})()}
 					</ScrollView>
 				) : (
 					<ChartsView

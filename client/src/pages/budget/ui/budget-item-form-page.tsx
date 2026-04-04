@@ -161,9 +161,12 @@ export const BudgetItemFormPage = ({
 								{payPeriods.map((period, i) => (
 									<View
 										key={period.index}
-										className="flex-row items-center gap-3 mb-2"
+										className="flex-row items-center mb-2"
 									>
-										<Text className="text-sm text-slate-500 w-12">
+										<Text
+											className="text-sm text-slate-500 w-16"
+											numberOfLines={1}
+										>
 											{period.label}
 										</Text>
 										<TextInput
@@ -178,6 +181,23 @@ export const BudgetItemFormPage = ({
 											onFocus={() => setFocusedField(`alloc-${i}`)}
 											onBlur={() => setFocusedField(null)}
 										/>
+										<Pressable
+											className="w-10 items-end"
+											disabled={totalNum <= 0}
+											onPress={() => {
+												setAllocations(
+													payPeriods.map((_, j) =>
+														j === i ? String(totalNum) : '0',
+													),
+												);
+											}}
+										>
+											<Text
+												className={`text-sm font-medium ${totalNum > 0 ? 'text-teal-600' : 'text-slate-300'}`}
+											>
+												Full
+											</Text>
+										</Pressable>
 									</View>
 								))}
 								<Text
