@@ -60,6 +60,11 @@ export const BudgetItemFormContainer = ({
 		queryClient.invalidateQueries({
 			queryKey: queryKeys.budgetItemsPrefix(yearMonth),
 		});
+		if (editingItemId) {
+			queryClient.invalidateQueries({
+				queryKey: queryKeys.budgetItemById(editingItemId),
+			});
+		}
 	};
 
 	const createMutation = useMutation({
