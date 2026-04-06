@@ -38,11 +38,12 @@ export async function rolloverMonth(yearMonth: string): Promise<void> {
 		total_amount: number;
 		split_type: string;
 		sort_order: number;
+		due_day: number | null;
 		pay_schedule: string;
 		pay_dates: string;
 	}>(
 		`SELECT bi.id, bi.income_source_id, bi.category_id, bi.name, bi.total_amount,
-		        bi.split_type, bi.sort_order, inc.pay_schedule, inc.pay_dates
+		        bi.split_type, bi.sort_order, bi.due_day, inc.pay_schedule, inc.pay_dates
 		 FROM budget_item bi
 		 JOIN income_source inc ON inc.id = bi.income_source_id
 		 WHERE bi.budget_month_id = ?`,
@@ -51,7 +52,7 @@ export async function rolloverMonth(yearMonth: string): Promise<void> {
 
 	for (const item of items) {
 		const itemResult = await db.runAsync(
-			'INSERT INTO budget_item (budget_month_id, income_source_id, category_id, name, total_amount, split_type, sort_order) VALUES (?, ?, ?, ?, ?, ?, ?)',
+			'INSERT INTO budget_item (budget_month_id, income_source_id, category_id, name, total_amount, split_type, sort_order, due_day) VALUES (?, ?, ?, ?, ?, ?, ?, ?)',
 			[
 				newMonthId,
 				item.income_source_id,
@@ -60,6 +61,7 @@ export async function rolloverMonth(yearMonth: string): Promise<void> {
 				item.total_amount,
 				'even',
 				item.sort_order,
+				item.due_day,
 			],
 		);
 		const newItemId = itemResult.lastInsertRowId;
