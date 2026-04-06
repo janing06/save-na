@@ -58,6 +58,17 @@ async function runMigrations(database: SQLite.SQLiteDatabase): Promise<void> {
 			'ALTER TABLE user_preferences ADD COLUMN openrouter_api_key TEXT;',
 		);
 	}
+
+	// Migration 5: add due_day column to budget_item
+	const budgetItemColumns = await database.getAllAsync<{ name: string }>(
+		"SELECT name FROM pragma_table_info('budget_item')",
+	);
+	const hasDueDay = budgetItemColumns.some((c) => c.name === 'due_day');
+	if (!hasDueDay) {
+		await database.execAsync(
+			'ALTER TABLE budget_item ADD COLUMN due_day INTEGER DEFAULT NULL;',
+		);
+	}
 }
 
 export async function getDatabase(): Promise<SQLite.SQLiteDatabase> {
