@@ -12,18 +12,20 @@ type Input = {
 	paySchedule: string;
 	payDatesJson: string;
 	yearMonth: string;
+	dueDay: number | null;
 };
 
 export async function updateBudgetItem(input: Input): Promise<void> {
 	const db = await getDatabase();
 
 	await db.runAsync(
-		`UPDATE budget_item SET category_id = ?, name = ?, total_amount = ?, split_type = ?, updated_at = datetime('now') WHERE id = ?`,
+		`UPDATE budget_item SET category_id = ?, name = ?, total_amount = ?, split_type = ?, due_day = ?, updated_at = datetime('now') WHERE id = ?`,
 		[
 			input.categoryId,
 			input.name,
 			input.totalAmount,
 			input.splitType,
+			input.dueDay,
 			input.id,
 		],
 	);

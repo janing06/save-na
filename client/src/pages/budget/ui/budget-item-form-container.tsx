@@ -103,6 +103,7 @@ export const BudgetItemFormContainer = ({
 		totalAmount: number;
 		splitType: SplitType;
 		customAllocations?: { payPeriodIndex: number; amount: number }[];
+		dueDay: number | null;
 	}) => {
 		if (!source || !budgetMonth) return;
 		if (editingItem) {
@@ -116,6 +117,7 @@ export const BudgetItemFormContainer = ({
 				paySchedule: source.pay_schedule,
 				payDatesJson: source.pay_dates,
 				yearMonth,
+				dueDay: input.dueDay,
 			});
 		} else {
 			createMutation.mutate({
@@ -129,6 +131,7 @@ export const BudgetItemFormContainer = ({
 				paySchedule: source.pay_schedule,
 				payDatesJson: source.pay_dates,
 				yearMonth,
+				dueDay: input.dueDay,
 			});
 		}
 	};

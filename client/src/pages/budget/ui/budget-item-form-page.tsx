@@ -15,6 +15,7 @@ type Props = {
 		totalAmount: number;
 		splitType: SplitType;
 		customAllocations?: { payPeriodIndex: number; amount: number }[];
+		dueDay: number | null;
 	}) => void;
 	onDelete?: () => void;
 	onClose: () => void;
@@ -36,12 +37,14 @@ export const BudgetItemFormPage = ({
 	const [customSplit, setCustomSplit] = useState(false);
 	const [allocations, setAllocations] = useState<string[]>([]);
 	const [focusedField, setFocusedField] = useState<string | null>(null);
+	const [dueDay, setDueDay] = useState<number | null>(null);
 
 	useEffect(() => {
 		if (editingItem) {
 			setName(editingItem.name);
 			setAmount(String(editingItem.total_amount));
 			setCategoryId(editingItem.category_id);
+			setDueDay(editingItem.due_day);
 			if (
 				editingItem.split_type === 'custom' &&
 				editingItem.allocations.length > 1
@@ -58,6 +61,7 @@ export const BudgetItemFormPage = ({
 			setCategoryId(categories[0]?.id ?? null);
 			setCustomSplit(false);
 			setAllocations([]);
+			setDueDay(null);
 		}
 	}, [editingItem, categories]);
 
@@ -103,6 +107,7 @@ export const BudgetItemFormPage = ({
 			totalAmount: totalNum,
 			splitType,
 			customAllocations,
+			dueDay,
 		});
 	};
 
