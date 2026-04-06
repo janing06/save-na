@@ -46,6 +46,7 @@ export type BudgetItem = {
 	total_amount: number;
 	split_type: SplitType;
 	sort_order: number;
+	due_day: number | null;
 	created_at: string;
 	updated_at: string;
 };
