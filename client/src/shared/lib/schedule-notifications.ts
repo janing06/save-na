@@ -151,10 +151,16 @@ export async function rescheduleAllNotifications(): Promise<void> {
 	for (const item of itemsWithDueDay) {
 		// Schedule for current month and next month
 		for (let monthOffset = 0; monthOffset <= 1; monthOffset++) {
+			const daysInMonth = new Date(
+				today.getFullYear(),
+				today.getMonth() + monthOffset + 1,
+				0,
+			).getDate();
+			const clampedDay = Math.min(item.due_day, daysInMonth);
 			const targetDate = new Date(
 				today.getFullYear(),
 				today.getMonth() + monthOffset,
-				item.due_day,
+				clampedDay,
 			);
 			const notifyDate = new Date(targetDate);
 			notifyDate.setDate(notifyDate.getDate() - 1);

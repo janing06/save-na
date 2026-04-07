@@ -35,6 +35,6 @@ export async function listBudgetItemsWithDueDay(): Promise<
 	const db = await getDatabase();
 	// GROUP BY name, due_day to deduplicate the same bill across multiple months
 	return db.getAllAsync<BudgetItemDueDateRow>(
-		'SELECT MIN(id) as id, name, total_amount, due_day FROM budget_item WHERE due_day IS NOT NULL GROUP BY name, due_day',
+		'SELECT MIN(id) as id, name, MAX(total_amount) as total_amount, due_day FROM budget_item WHERE due_day IS NOT NULL GROUP BY name, due_day',
 	);
 }
