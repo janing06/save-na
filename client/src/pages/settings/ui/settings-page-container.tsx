@@ -1,4 +1,4 @@
-import { getDatabase } from '@shared/db';
+import { exportBackup, getDatabase, restoreBackup } from '@shared/db';
 import type { Category } from '@shared/lib';
 import { queryKeys } from '@shared/lib';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
@@ -60,6 +60,73 @@ export const SettingsPageContainer = () => {
 		);
 	};
 
+	const [isBackingUp, setIsBackingUp] = useState(false);
+
+	const handleExportBackup = async () => {
+		setIsBackingUp(true);
+		try {
+			await exportBackup();
+		} catch {
+			Alert.alert(
+				'Export Failed',
+				'Something went wrong while exporting your data.',
+			);
+		} finally {
+			setIsBackingUp(false);
+		}
+	};
+
+	const handleRestoreBackup = () => {
+		Alert.alert(
+			'Restore Backup',
+			'This will replace all your current data. Are you sure?',
+			[
+				{ text: 'Cancel', style: 'cancel' },
+				{
+					text: 'Restore',
+					style: 'destructive',
+					onPress: async () => {
+						setIsBackingUp(true);
+						try {
+							const result = await restoreBackup();
+							switch (result.status) {
+								case 'success':
+									// Invalidate all queries — restore replaces all data
+									queryClient.invalidateQueries();
+									Alert.alert(
+										'Backup Restored',
+										'Your data has been restored successfully.',
+									);
+									break;
+								case 'invalid':
+									Alert.alert(
+										'Invalid Backup',
+										'The selected file is not a valid SaveNa backup.',
+									);
+									break;
+								case 'newer_version':
+									Alert.alert(
+										'Update Required',
+										'This backup was created with a newer version of SaveNa. Please update the app first.',
+									);
+									break;
+								case 'cancelled':
+									break;
+							}
+						} catch {
+							Alert.alert(
+								'Restore Failed',
+								'Something went wrong while restoring your data.',
+							);
+						} finally {
+							setIsBackingUp(false);
+						}
+					},
+				},
+			],
+		);
+	};
+
 	const [currencyPickerVisible, setCurrencyPickerVisible] = useState(false);
 
 	const currencyPicker = {
@@ -90,7 +157,9 @@ export const SettingsPageContainer = () => {
 			onClearData={clearData.onClear}
 			apiKey={apiKey}
 			onRemoveApiKey={handleRemoveApiKey}
-			isLoading={isPrefsLoading || isCatsLoading}
+			onExportBackup={handleExportBackup}
+			onRestoreBackup={handleRestoreBackup}
+			isLoading={isPrefsLoading || isCatsLoading || isBackingUp}
 		/>
 	);
 };
