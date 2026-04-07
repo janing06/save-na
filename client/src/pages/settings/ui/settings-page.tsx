@@ -25,6 +25,8 @@ type Props = {
 	onClearData: () => void;
 	apiKey: string | null;
 	onRemoveApiKey: () => void;
+	onExportBackup: () => void;
+	onRestoreBackup: () => void;
 	isLoading: boolean;
 };
 
@@ -36,6 +38,8 @@ export const SettingsPage = ({
 	onClearData,
 	apiKey,
 	onRemoveApiKey,
+	onExportBackup,
+	onRestoreBackup,
 	isLoading,
 }: Props) => {
 	const insets = useSafeAreaInsets();
@@ -116,6 +120,35 @@ export const SettingsPage = ({
 								<Text className="text-sm text-red-500">Remove API Key</Text>
 							</Pressable>
 						)}
+					</View>
+
+					{/* Data section */}
+					<Text className="text-xs font-bold tracking-widest text-slate-400 uppercase mx-4 mt-6 mb-1.5">
+						Data
+					</Text>
+					<View className="mx-4 bg-white rounded-2xl overflow-hidden">
+						<Pressable
+							onPress={onExportBackup}
+							className="px-4 py-4 active:opacity-60"
+						>
+							<Text className="text-sm font-medium text-slate-700">
+								Export Backup
+							</Text>
+							<Text className="text-xs text-slate-400 mt-0.5">
+								Save your data as a file
+							</Text>
+						</Pressable>
+						<Pressable
+							onPress={onRestoreBackup}
+							className="px-4 py-4 border-t border-slate-100 active:opacity-60"
+						>
+							<Text className="text-sm font-medium text-slate-700">
+								Restore Backup
+							</Text>
+							<Text className="text-xs text-slate-400 mt-0.5">
+								Import data from a file
+							</Text>
+						</Pressable>
 					</View>
 
 					<Text className="text-xs font-bold tracking-widest text-slate-400 uppercase mx-4 mt-6 mb-1.5">

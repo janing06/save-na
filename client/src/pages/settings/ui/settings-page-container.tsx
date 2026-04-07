@@ -6,6 +6,7 @@ import { useRouter } from 'expo-router';
 import { useState } from 'react';
 import { Alert } from 'react-native';
 import {
+	useBackup,
 	useCategories,
 	useClearData,
 	usePreferences,
@@ -19,6 +20,7 @@ export const SettingsPageContainer = () => {
 	const { categories, isLoading: isCatsLoading } = useCategories();
 	const { onUpdate } = useUpdateCurrency();
 	const clearData = useClearData();
+	const backup = useBackup();
 
 	const { data: apiKey = null } = useQuery({
 		queryKey: queryKeys.apiKey,
@@ -90,7 +92,9 @@ export const SettingsPageContainer = () => {
 			onClearData={clearData.onClear}
 			apiKey={apiKey}
 			onRemoveApiKey={handleRemoveApiKey}
-			isLoading={isPrefsLoading || isCatsLoading}
+			onExportBackup={backup.onExport}
+			onRestoreBackup={backup.onRestore}
+			isLoading={isPrefsLoading || isCatsLoading || backup.isLoading}
 		/>
 	);
 };
