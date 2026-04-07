@@ -123,6 +123,7 @@ export const BudgetPageContainer = ({ onOpenChat }: Props) => {
 				onEdit={onEdit}
 				onTogglePaid={onToggle}
 				onOpenChat={onOpenChat}
+				yearMonth={month.yearMonth}
 				viewMode={viewMode}
 				onToggleViewMode={(mode) => {
 					if (mode === 'charts') payPeriod.onSelect('full');
