@@ -19,7 +19,7 @@ export default {
 	expo: {
 		name: env.name,
 		slug: 'save-na',
-		version: '1.1.0',
+		version: '1.2.0',
 		runtimeVersion: {
 			policy: 'appVersion',
 		},
@@ -36,7 +36,7 @@ export default {
 			bundleIdentifier: env.iosBundleIdentifier,
 		},
 		android: {
-			versionCode: 2,
+			versionCode: 3,
 			adaptiveIcon: {
 				backgroundColor: '#0d9488',
 				foregroundImage: './assets/images/android-icon-foreground.png',

@@ -168,7 +168,7 @@ export const SettingsPage = ({
 
 					<View className="mt-6 mb-4">
 						<Text className="text-xs text-slate-300 text-center">
-							SaveNa v1.1.0
+							SaveNa v1.2.0
 						</Text>
 					</View>
 				</ScrollView>
