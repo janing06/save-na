@@ -157,7 +157,12 @@ async function insertRow(
 	table: string,
 	row: Record<string, unknown>,
 ): Promise<void> {
-	const columns = Object.keys(row);
+	const tableColumns = await db.getAllAsync<{ name: string }>(
+		`SELECT name FROM pragma_table_info('${table}')`,
+	);
+	const validColumns = new Set(tableColumns.map((c) => c.name));
+
+	const columns = Object.keys(row).filter((col) => validColumns.has(col));
 	const placeholders = columns.map(() => '?').join(', ');
 	const values = columns.map((col) => row[col]);
 
