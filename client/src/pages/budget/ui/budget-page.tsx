@@ -46,6 +46,7 @@ type Props = {
 	viewMode: 'list' | 'charts';
 	onToggleViewMode: (mode: 'list' | 'charts') => void;
 	isLoading: boolean;
+	yearMonth: string;
 };
 
 export const BudgetPage = ({
@@ -61,6 +62,7 @@ export const BudgetPage = ({
 	viewMode,
 	onToggleViewMode,
 	isLoading,
+	yearMonth,
 }: Props) => {
 	const isTotal = sourceSwitcher.selectedSourceId === 'total';
 	const insets = useSafeAreaInsets();
@@ -178,6 +180,7 @@ export const BudgetPage = ({
 									onEditItem={onEdit}
 									onTogglePaid={onTogglePaid}
 									showSourceLabel={isTotal}
+									yearMonth={yearMonth}
 								/>
 							));
 						})()}

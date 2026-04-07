@@ -1,6 +1,6 @@
 import { Ionicons } from '@expo/vector-icons';
 import type { BudgetItemAllocation } from '@shared/lib';
-import { formatCurrency } from '@shared/lib';
+import { formatCurrency, ordinal } from '@shared/lib';
 import { Pressable, Text } from 'react-native';
 
 type Props = {
@@ -12,6 +12,8 @@ type Props = {
 	onTogglePaid: (allocationId: number) => void;
 	showCheckbox: boolean;
 	sourceLabel?: string;
+	dueDay?: number | null;
+	isOverdue?: boolean;
 };
 
 export const BudgetItemRow = ({
@@ -23,6 +25,8 @@ export const BudgetItemRow = ({
 	onTogglePaid,
 	showCheckbox,
 	sourceLabel,
+	dueDay,
+	isOverdue,
 }: Props) => {
 	const isPaid = allocation?.is_paid === 1;
 
@@ -61,6 +65,13 @@ export const BudgetItemRow = ({
 				</Text>
 				{sourceLabel && (
 					<Text className="text-xs text-slate-400">{sourceLabel}</Text>
+				)}
+				{dueDay != null && (
+					<Text
+						className={`text-xs ${isOverdue && !isPaid ? 'text-red-500' : 'text-slate-400'}`}
+					>
+						Due {ordinal(dueDay)}
+					</Text>
 				)}
 			</Pressable>
 			<Text

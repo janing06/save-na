@@ -13,6 +13,7 @@ type Input = {
 	paySchedule: string;
 	payDatesJson: string;
 	yearMonth: string;
+	dueDay: number | null;
 };
 
 export async function createBudgetItem(input: Input): Promise<void> {
@@ -25,7 +26,7 @@ export async function createBudgetItem(input: Input): Promise<void> {
 	const sortOrder = (maxOrder?.max_order ?? -1) + 1;
 
 	const result = await db.runAsync(
-		'INSERT INTO budget_item (budget_month_id, income_source_id, category_id, name, total_amount, split_type, sort_order) VALUES (?, ?, ?, ?, ?, ?, ?)',
+		'INSERT INTO budget_item (budget_month_id, income_source_id, category_id, name, total_amount, split_type, sort_order, due_day) VALUES (?, ?, ?, ?, ?, ?, ?, ?)',
 		[
 			input.budgetMonthId,
 			input.incomeSourceId,
@@ -34,6 +35,7 @@ export async function createBudgetItem(input: Input): Promise<void> {
 			input.totalAmount,
 			input.splitType,
 			sortOrder,
+			input.dueDay,
 		],
 	);
 	const itemId = result.lastInsertRowId;

@@ -1,4 +1,8 @@
-import { listAllNotificationConfigs, listIncomeSources } from '@shared/db';
+import {
+	listAllNotificationConfigs,
+	listBudgetItemsWithDueDay,
+	listIncomeSources,
+} from '@shared/db';
 import Constants from 'expo-constants';
 import { Platform } from 'react-native';
 import { getNextPaydays } from './next-paydays';
@@ -138,5 +142,44 @@ export async function rescheduleAllNotifications(): Promise<void> {
 	for (const source of sources) {
 		const configs = allConfigs.filter((c) => c.income_source_id === source.id);
 		await scheduleNotificationsForSource(source, configs);
+	}
+
+	const itemsWithDueDay = await listBudgetItemsWithDueDay();
+	const now2 = new Date();
+	const today = new Date(now2.getFullYear(), now2.getMonth(), now2.getDate());
+
+	for (const item of itemsWithDueDay) {
+		// Schedule for current month and next month
+		for (let monthOffset = 0; monthOffset <= 1; monthOffset++) {
+			const daysInMonth = new Date(
+				today.getFullYear(),
+				today.getMonth() + monthOffset + 1,
+				0,
+			).getDate();
+			const clampedDay = Math.min(item.due_day, daysInMonth);
+			const targetDate = new Date(
+				today.getFullYear(),
+				today.getMonth() + monthOffset,
+				clampedDay,
+			);
+			const notifyDate = new Date(targetDate);
+			notifyDate.setDate(notifyDate.getDate() - 1);
+			notifyDate.setHours(10, 0, 0, 0);
+
+			if (notifyDate > now2) {
+				const dateKey = targetDate.toISOString().split('T')[0];
+				await Notifications.scheduleNotificationAsync({
+					identifier: `due-date-${item.id}-${dateKey}`,
+					content: {
+						title: 'Budget item due tomorrow',
+						body: `${item.name} (₱${item.total_amount.toLocaleString()}) is due tomorrow.`,
+					},
+					trigger: {
+						type: Notifications.SchedulableTriggerInputTypes.DATE,
+						date: notifyDate,
+					},
+				});
+			}
+		}
 	}
 }

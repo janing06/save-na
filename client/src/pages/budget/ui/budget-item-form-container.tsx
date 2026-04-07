@@ -1,6 +1,10 @@
 import { listCategories, listIncomeSources } from '@shared/db';
 import type { SplitType } from '@shared/lib';
-import { computePayPeriods, queryKeys } from '@shared/lib';
+import {
+	computePayPeriods,
+	queryKeys,
+	rescheduleAllNotifications,
+} from '@shared/lib';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { Alert, Modal, Platform } from 'react-native';
 import { createBudgetItem } from '../api/create-budget-item';
@@ -71,6 +75,7 @@ export const BudgetItemFormContainer = ({
 		mutationFn: createBudgetItem,
 		onSuccess: () => {
 			invalidate();
+			rescheduleAllNotifications();
 			onClose();
 		},
 		onError: () =>
@@ -81,6 +86,7 @@ export const BudgetItemFormContainer = ({
 		mutationFn: updateBudgetItem,
 		onSuccess: () => {
 			invalidate();
+			rescheduleAllNotifications();
 			onClose();
 		},
 		onError: () =>
@@ -91,6 +97,7 @@ export const BudgetItemFormContainer = ({
 		mutationFn: deleteBudgetItem,
 		onSuccess: () => {
 			invalidate();
+			rescheduleAllNotifications();
 			onClose();
 		},
 		onError: () =>
@@ -103,6 +110,7 @@ export const BudgetItemFormContainer = ({
 		totalAmount: number;
 		splitType: SplitType;
 		customAllocations?: { payPeriodIndex: number; amount: number }[];
+		dueDay: number | null;
 	}) => {
 		if (!source || !budgetMonth) return;
 		if (editingItem) {
@@ -116,6 +124,7 @@ export const BudgetItemFormContainer = ({
 				paySchedule: source.pay_schedule,
 				payDatesJson: source.pay_dates,
 				yearMonth,
+				dueDay: input.dueDay,
 			});
 		} else {
 			createMutation.mutate({
@@ -129,6 +138,7 @@ export const BudgetItemFormContainer = ({
 				paySchedule: source.pay_schedule,
 				payDatesJson: source.pay_dates,
 				yearMonth,
+				dueDay: input.dueDay,
 			});
 		}
 	};

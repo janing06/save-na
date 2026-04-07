@@ -1,7 +1,15 @@
 import { Ionicons } from '@expo/vector-icons';
 import type { Category, PayPeriod, SplitType } from '@shared/lib';
+import { ordinal } from '@shared/lib';
 import { useEffect, useState } from 'react';
-import { Pressable, ScrollView, Text, TextInput, View } from 'react-native';
+import {
+	Modal,
+	Pressable,
+	ScrollView,
+	Text,
+	TextInput,
+	View,
+} from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import type { BudgetItemWithAllocations } from '../api/list-budget-items';
 
@@ -15,6 +23,7 @@ type Props = {
 		totalAmount: number;
 		splitType: SplitType;
 		customAllocations?: { payPeriodIndex: number; amount: number }[];
+		dueDay: number | null;
 	}) => void;
 	onDelete?: () => void;
 	onClose: () => void;
@@ -36,12 +45,15 @@ export const BudgetItemFormPage = ({
 	const [customSplit, setCustomSplit] = useState(false);
 	const [allocations, setAllocations] = useState<string[]>([]);
 	const [focusedField, setFocusedField] = useState<string | null>(null);
+	const [dueDay, setDueDay] = useState<number | null>(null);
+	const [showDayPicker, setShowDayPicker] = useState(false);
 
 	useEffect(() => {
 		if (editingItem) {
 			setName(editingItem.name);
 			setAmount(String(editingItem.total_amount));
 			setCategoryId(editingItem.category_id);
+			setDueDay(editingItem.due_day);
 			if (
 				editingItem.split_type === 'custom' &&
 				editingItem.allocations.length > 1
@@ -58,6 +70,7 @@ export const BudgetItemFormPage = ({
 			setCategoryId(categories[0]?.id ?? null);
 			setCustomSplit(false);
 			setAllocations([]);
+			setDueDay(null);
 		}
 	}, [editingItem, categories]);
 
@@ -103,6 +116,7 @@ export const BudgetItemFormPage = ({
 			totalAmount: totalNum,
 			splitType,
 			customAllocations,
+			dueDay,
 		});
 	};
 
@@ -242,6 +256,71 @@ export const BudgetItemFormPage = ({
 						</Pressable>
 					))}
 				</View>
+
+				{/* Due Date */}
+				<Text className="text-sm font-medium text-slate-700 mb-2">
+					Due date
+				</Text>
+				<Pressable
+					className="bg-slate-50 rounded-xl px-4 py-3 mb-6 border border-slate-200 flex-row justify-between items-center"
+					onPress={() => setShowDayPicker(true)}
+				>
+					<Text
+						className={`text-base ${dueDay ? 'text-slate-900' : 'text-slate-400'}`}
+					>
+						{dueDay ? ordinal(dueDay) : 'None'}
+					</Text>
+					{dueDay !== null && (
+						<Pressable
+							hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
+							onPress={() => setDueDay(null)}
+						>
+							<Ionicons name="close-circle" size={18} color="#94a3b8" />
+						</Pressable>
+					)}
+				</Pressable>
+
+				{/* Day Picker Modal */}
+				<Modal
+					visible={showDayPicker}
+					transparent
+					animationType="fade"
+					onRequestClose={() => setShowDayPicker(false)}
+				>
+					<Pressable
+						className="flex-1 bg-black/40 justify-end"
+						onPress={() => setShowDayPicker(false)}
+					>
+						<Pressable className="bg-white rounded-t-2xl pb-8">
+							<View className="flex-row justify-between items-center px-6 py-4 border-b border-slate-100">
+								<Text className="text-base font-bold text-slate-900">
+									Select day
+								</Text>
+								<Pressable onPress={() => setShowDayPicker(false)}>
+									<Ionicons name="close" size={20} color="#94a3b8" />
+								</Pressable>
+							</View>
+							<ScrollView style={{ maxHeight: 300 }} className="px-4 pt-2">
+								{Array.from({ length: 31 }, (_, i) => i + 1).map((day) => (
+									<Pressable
+										key={day}
+										className={`px-4 py-3 rounded-xl mb-1 ${dueDay === day ? 'bg-teal-600' : 'bg-slate-50'}`}
+										onPress={() => {
+											setDueDay(day);
+											setShowDayPicker(false);
+										}}
+									>
+										<Text
+											className={`text-base ${dueDay === day ? 'text-white font-semibold' : 'text-slate-700'}`}
+										>
+											{ordinal(day)}
+										</Text>
+									</Pressable>
+								))}
+							</ScrollView>
+						</Pressable>
+					</Pressable>
+				</Modal>
 
 				<Pressable
 					className={`rounded-xl px-8 py-4 items-center mb-3 ${

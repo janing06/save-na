@@ -14,6 +14,7 @@ type Props = {
 	onEditItem: (item: BudgetItemWithAllocations) => void;
 	onTogglePaid: (allocationId: number) => void;
 	showSourceLabel: boolean;
+	yearMonth: string;
 };
 
 const getCategoryAmountColor = (categoryName: string): string => {
@@ -28,6 +29,7 @@ export const CategoryAccordion = ({
 	onEditItem,
 	onTogglePaid,
 	showSourceLabel,
+	yearMonth,
 }: Props) => {
 	const [expanded, setExpanded] = useState(true);
 
@@ -54,6 +56,15 @@ export const CategoryAccordion = ({
 		if (selectedPeriodIndex === 'full') return item.total_amount;
 		const alloc = getAllocation(item);
 		return alloc?.amount ?? 0;
+	};
+
+	const isItemOverdue = (item: BudgetItemWithAllocations): boolean => {
+		if (item.due_day == null) return false;
+		const [year, month] = yearMonth.split('-').map(Number);
+		const dueDate = new Date(year, (month ?? 1) - 1, item.due_day);
+		const today = new Date();
+		today.setHours(0, 0, 0, 0);
+		return dueDate < today;
 	};
 
 	const amountColor = getCategoryAmountColor(categoryName);
@@ -96,6 +107,8 @@ export const CategoryAccordion = ({
 										? (item.income_source_name ?? undefined)
 										: undefined
 								}
+								dueDay={item.due_day}
+								isOverdue={isItemOverdue(item)}
 							/>
 						))}
 					</View>

@@ -6,4 +6,9 @@ export {
 	listAllNotificationConfigs,
 	updateNotificationConfigs,
 } from './notification-config';
-export { getPreferences, listCategories, listIncomeSources } from './queries';
+export {
+	getPreferences,
+	listBudgetItemsWithDueDay,
+	listCategories,
+	listIncomeSources,
+} from './queries';
