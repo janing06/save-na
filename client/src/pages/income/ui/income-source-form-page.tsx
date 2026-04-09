@@ -4,6 +4,7 @@ import type {
 	NotificationSettings,
 	PaySchedule,
 } from '@shared/lib';
+import { useThemeColors } from '@shared/lib';
 import { useEffect, useState } from 'react';
 import { Pressable, ScrollView, Text, TextInput, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -76,6 +77,7 @@ export const IncomeSourceFormPage = ({
 	const [timePickerTarget, setTimePickerTarget] = useState<
 		'payday' | 'budget_reminder' | null
 	>(null);
+	const colors = useThemeColors();
 
 	useEffect(() => {
 		setPaydayEnabled(initialNotifications.paydayEnabled);
@@ -184,22 +186,27 @@ export const IncomeSourceFormPage = ({
 	};
 
 	return (
-		<SafeAreaView edges={['top', 'bottom']} className="flex-1 bg-white">
+		<SafeAreaView
+			edges={['top', 'bottom']}
+			className="flex-1 bg-white dark:bg-zinc-900"
+		>
 			<ScrollView className="flex-1 px-6 pt-6">
 				<View className="flex-row justify-between items-center mb-6">
-					<Text className="text-xl font-bold text-slate-900">
+					<Text className="text-xl font-bold text-slate-900 dark:text-slate-100">
 						{editingSource ? 'Edit Income' : 'Add Income'}
 					</Text>
 					<Pressable onPress={onClose}>
-						<Ionicons name="close" size={22} color="#94a3b8" />
+						<Ionicons name="close" size={22} color={colors.muted} />
 					</Pressable>
 				</View>
 
-				<Text className="text-sm font-medium text-slate-700 mb-1">Name</Text>
+				<Text className="text-sm font-medium text-slate-900 dark:text-slate-100 mb-1">
+					Name
+				</Text>
 				<TextInput
-					className={`bg-slate-50 rounded-xl px-4 py-3 text-base text-slate-900 mb-4 border ${focusedField === 'name' ? 'border-teal-600' : 'border-slate-200'}`}
+					className={`bg-slate-50 dark:bg-zinc-900 rounded-xl px-4 py-3 text-base text-slate-900 dark:text-slate-100 mb-4 border ${focusedField === 'name' ? 'border-teal-600 dark:border-teal-500' : 'border-slate-200 dark:border-zinc-800'}`}
 					placeholder="e.g., Main Job"
-					placeholderTextColor="#94a3b8"
+					placeholderTextColor={colors.muted}
 					value={name}
 					onChangeText={setName}
 					onFocus={() => setFocusedField('name')}
@@ -208,16 +215,16 @@ export const IncomeSourceFormPage = ({
 
 				{!isBiMonthly && (
 					<>
-						<Text className="text-sm font-medium text-slate-700 mb-1">
+						<Text className="text-sm font-medium text-slate-900 dark:text-slate-100 mb-1">
 							Net Salary
 						</Text>
-						<Text className="text-xs text-slate-400 mb-1">
+						<Text className="text-xs text-slate-400 dark:text-slate-500 mb-1">
 							Enter your salary after tax deductions
 						</Text>
 						<TextInput
-							className={`bg-slate-50 rounded-xl px-4 py-3 text-base text-slate-900 mb-4 border ${focusedField === 'amount' ? 'border-teal-600' : 'border-slate-200'}`}
+							className={`bg-slate-50 dark:bg-zinc-900 rounded-xl px-4 py-3 text-base text-slate-900 dark:text-slate-100 mb-4 border ${focusedField === 'amount' ? 'border-teal-600 dark:border-teal-500' : 'border-slate-200 dark:border-zinc-800'}`}
 							placeholder="e.g., 15000"
-							placeholderTextColor="#94a3b8"
+							placeholderTextColor={colors.muted}
 							value={amount}
 							onChangeText={setAmount}
 							keyboardType="numeric"
@@ -227,7 +234,7 @@ export const IncomeSourceFormPage = ({
 					</>
 				)}
 
-				<Text className="text-sm font-medium text-slate-700 mb-2">
+				<Text className="text-sm font-medium text-slate-900 dark:text-slate-100 mb-2">
 					Pay Schedule
 				</Text>
 				<View className="flex-row flex-wrap gap-2 mb-4">
@@ -235,7 +242,9 @@ export const IncomeSourceFormPage = ({
 						<Pressable
 							key={opt.value}
 							className={`px-4 py-2 rounded-full ${
-								paySchedule === opt.value ? 'bg-teal-600' : 'bg-slate-100'
+								paySchedule === opt.value
+									? 'bg-teal-600'
+									: 'bg-slate-100 dark:bg-black'
 							}`}
 							onPress={() => setPaySchedule(opt.value)}
 						>
@@ -243,7 +252,7 @@ export const IncomeSourceFormPage = ({
 								className={`text-sm ${
 									paySchedule === opt.value
 										? 'text-white font-semibold'
-										: 'text-slate-600'
+										: 'text-slate-500 dark:text-slate-400'
 								}`}
 							>
 								{opt.label}
@@ -254,12 +263,12 @@ export const IncomeSourceFormPage = ({
 
 				{paySchedule === 'monthly' && (
 					<View className="mb-4">
-						<Text className="text-sm font-medium text-slate-700 mb-1">
+						<Text className="text-sm font-medium text-slate-900 dark:text-slate-100 mb-1">
 							Pay day
 						</Text>
 						<TextInput
-							className={`bg-slate-50 rounded-xl px-4 py-3 text-base text-slate-900 border ${focusedField === 'firstPayDay' ? 'border-teal-600' : 'border-slate-200'}`}
-							placeholderTextColor="#94a3b8"
+							className={`bg-slate-50 dark:bg-zinc-900 rounded-xl px-4 py-3 text-base text-slate-900 dark:text-slate-100 border ${focusedField === 'firstPayDay' ? 'border-teal-600 dark:border-teal-500' : 'border-slate-200 dark:border-zinc-800'}`}
+							placeholderTextColor={colors.muted}
 							value={firstPayDay}
 							onChangeText={setFirstPayDay}
 							keyboardType="numeric"
@@ -274,17 +283,17 @@ export const IncomeSourceFormPage = ({
 
 				{isBiMonthly && (
 					<View className="mb-4">
-						<Text className="text-sm font-medium text-slate-700 mb-1">
+						<Text className="text-sm font-medium text-slate-900 dark:text-slate-100 mb-1">
 							Pay days &amp; amounts
 						</Text>
-						<Text className="text-xs text-slate-400 mb-2">
+						<Text className="text-xs text-slate-400 dark:text-slate-500 mb-2">
 							Enter your salary after tax deductions
 						</Text>
 						<View className="flex-row items-center gap-2 mb-2">
 							<TextInput
-								className={`w-16 bg-slate-50 rounded-xl px-3 py-3 text-base text-slate-900 border text-center ${focusedField === 'firstPayDay' ? 'border-teal-600' : 'border-slate-200'}`}
+								className={`w-16 bg-slate-50 dark:bg-zinc-900 rounded-xl px-3 py-3 text-base text-slate-900 dark:text-slate-100 border text-center ${focusedField === 'firstPayDay' ? 'border-teal-600 dark:border-teal-500' : 'border-slate-200 dark:border-zinc-800'}`}
 								placeholder="15"
-								placeholderTextColor="#94a3b8"
+								placeholderTextColor={colors.muted}
 								value={firstPayDay}
 								onChangeText={setFirstPayDay}
 								keyboardType="numeric"
@@ -294,11 +303,13 @@ export const IncomeSourceFormPage = ({
 									setFocusedField(null);
 								}}
 							/>
-							<Text className="text-slate-400 text-sm">day</Text>
+							<Text className="text-slate-400 dark:text-slate-500 text-sm">
+								day
+							</Text>
 							<TextInput
-								className={`flex-1 bg-slate-50 rounded-xl px-4 py-3 text-base text-slate-900 border ${focusedField === 'firstPayAmount' ? 'border-teal-600' : 'border-slate-200'}`}
+								className={`flex-1 bg-slate-50 dark:bg-zinc-900 rounded-xl px-4 py-3 text-base text-slate-900 dark:text-slate-100 border ${focusedField === 'firstPayAmount' ? 'border-teal-600 dark:border-teal-500' : 'border-slate-200 dark:border-zinc-800'}`}
 								placeholder="e.g., 8000"
-								placeholderTextColor="#94a3b8"
+								placeholderTextColor={colors.muted}
 								value={firstPayAmount}
 								onChangeText={setFirstPayAmount}
 								keyboardType="numeric"
@@ -308,9 +319,9 @@ export const IncomeSourceFormPage = ({
 						</View>
 						<View className="flex-row items-center gap-2 mb-2">
 							<TextInput
-								className={`w-16 bg-slate-50 rounded-xl px-3 py-3 text-base text-slate-900 border text-center ${focusedField === 'secondPayDay' ? 'border-teal-600' : 'border-slate-200'}`}
+								className={`w-16 bg-slate-50 dark:bg-zinc-900 rounded-xl px-3 py-3 text-base text-slate-900 dark:text-slate-100 border text-center ${focusedField === 'secondPayDay' ? 'border-teal-600 dark:border-teal-500' : 'border-slate-200 dark:border-zinc-800'}`}
 								placeholder="30"
-								placeholderTextColor="#94a3b8"
+								placeholderTextColor={colors.muted}
 								value={secondPayDay}
 								onChangeText={setSecondPayDay}
 								keyboardType="numeric"
@@ -320,11 +331,13 @@ export const IncomeSourceFormPage = ({
 									setFocusedField(null);
 								}}
 							/>
-							<Text className="text-slate-400 text-sm">day</Text>
+							<Text className="text-slate-400 dark:text-slate-500 text-sm">
+								day
+							</Text>
 							<TextInput
-								className={`flex-1 bg-slate-50 rounded-xl px-4 py-3 text-base text-slate-900 border ${focusedField === 'secondPayAmount' ? 'border-teal-600' : 'border-slate-200'}`}
+								className={`flex-1 bg-slate-50 dark:bg-zinc-900 rounded-xl px-4 py-3 text-base text-slate-900 dark:text-slate-100 border ${focusedField === 'secondPayAmount' ? 'border-teal-600 dark:border-teal-500' : 'border-slate-200 dark:border-zinc-800'}`}
 								placeholder="e.g., 12000"
-								placeholderTextColor="#94a3b8"
+								placeholderTextColor={colors.muted}
 								value={secondPayAmount}
 								onChangeText={setSecondPayAmount}
 								keyboardType="numeric"
@@ -333,7 +346,7 @@ export const IncomeSourceFormPage = ({
 							/>
 						</View>
 						{biMonthlyTotal > 0 && (
-							<Text className="text-xs text-teal-600 mt-1">
+							<Text className="text-xs text-teal-600 dark:text-teal-400 mt-1">
 								Total: {biMonthlyTotal.toLocaleString()} / month
 							</Text>
 						)}
@@ -342,7 +355,7 @@ export const IncomeSourceFormPage = ({
 
 				{(paySchedule === 'weekly' || paySchedule === 'bi-weekly') && (
 					<View className="mb-4">
-						<Text className="text-sm font-medium text-slate-700 mb-2">
+						<Text className="text-sm font-medium text-slate-900 dark:text-slate-100 mb-2">
 							Pay day
 						</Text>
 						<View className="flex-row flex-wrap gap-2">
@@ -350,7 +363,9 @@ export const IncomeSourceFormPage = ({
 								<Pressable
 									key={opt.value}
 									className={`px-4 py-2 rounded-full ${
-										dayOfWeek === opt.value ? 'bg-teal-600' : 'bg-slate-100'
+										dayOfWeek === opt.value
+											? 'bg-teal-600'
+											: 'bg-slate-100 dark:bg-black'
 									}`}
 									onPress={() => setDayOfWeek(opt.value)}
 								>
@@ -358,7 +373,7 @@ export const IncomeSourceFormPage = ({
 										className={`text-sm ${
 											dayOfWeek === opt.value
 												? 'text-white font-semibold'
-												: 'text-slate-600'
+												: 'text-slate-500 dark:text-slate-400'
 										}`}
 									>
 										{opt.label}
@@ -370,17 +385,17 @@ export const IncomeSourceFormPage = ({
 				)}
 
 				{/* Notifications section */}
-				<Text className="text-xs font-bold tracking-widest text-slate-400 uppercase mt-6 mb-1.5">
+				<Text className="text-xs font-bold tracking-widest text-slate-400 dark:text-slate-500 uppercase mt-6 mb-1.5">
 					Notifications
 				</Text>
-				<View className="bg-slate-50 rounded-2xl overflow-hidden mb-4">
+				<View className="bg-slate-50 dark:bg-zinc-900 rounded-2xl overflow-hidden mb-4">
 					{/* Payday row */}
-					<View className="flex-row items-center px-4 py-3 border-b border-slate-100">
+					<View className="flex-row items-center px-4 py-3 border-b border-slate-100 dark:border-zinc-800">
 						<View className="flex-1">
-							<Text className="text-sm font-medium text-slate-900">
+							<Text className="text-sm font-medium text-slate-900 dark:text-slate-100">
 								Payday alert
 							</Text>
-							<Text className="text-xs text-slate-400 mt-0.5">
+							<Text className="text-xs text-slate-400 dark:text-slate-500 mt-0.5">
 								Remind me on payday
 							</Text>
 						</View>
@@ -391,14 +406,14 @@ export const IncomeSourceFormPage = ({
 							className="mr-3"
 						>
 							<Text
-								className={`text-sm ${paydayEnabled ? 'text-teal-600' : 'text-slate-300'}`}
+								className={`text-sm ${paydayEnabled ? 'text-teal-600 dark:text-teal-400' : 'text-slate-300 dark:text-slate-600'}`}
 							>
 								{formatTime(paydayTime)}
 							</Text>
 						</Pressable>
 						<Pressable
 							onPress={() => setPaydayEnabled((v) => !v)}
-							className={`w-10 h-6 rounded-full justify-center ${paydayEnabled ? 'bg-teal-600' : 'bg-slate-200'}`}
+							className={`w-10 h-6 rounded-full justify-center ${paydayEnabled ? 'bg-teal-600' : 'bg-slate-100 dark:bg-black'}`}
 						>
 							<View
 								className={`w-5 h-5 rounded-full bg-white mx-0.5 ${paydayEnabled ? 'self-end' : 'self-start'}`}
@@ -408,10 +423,10 @@ export const IncomeSourceFormPage = ({
 					{/* Budget reminder row */}
 					<View className="flex-row items-center px-4 py-3">
 						<View className="flex-1">
-							<Text className="text-sm font-medium text-slate-900">
+							<Text className="text-sm font-medium text-slate-900 dark:text-slate-100">
 								Budget reminder
 							</Text>
-							<Text className="text-xs text-slate-400 mt-0.5">
+							<Text className="text-xs text-slate-400 dark:text-slate-500 mt-0.5">
 								2 days after payday
 							</Text>
 						</View>
@@ -423,14 +438,14 @@ export const IncomeSourceFormPage = ({
 							className="mr-3"
 						>
 							<Text
-								className={`text-sm ${budgetReminderEnabled ? 'text-teal-600' : 'text-slate-300'}`}
+								className={`text-sm ${budgetReminderEnabled ? 'text-teal-600 dark:text-teal-400' : 'text-slate-300 dark:text-slate-600'}`}
 							>
 								{formatTime(budgetReminderTime)}
 							</Text>
 						</Pressable>
 						<Pressable
 							onPress={() => setBudgetReminderEnabled((v) => !v)}
-							className={`w-10 h-6 rounded-full justify-center ${budgetReminderEnabled ? 'bg-teal-600' : 'bg-slate-200'}`}
+							className={`w-10 h-6 rounded-full justify-center ${budgetReminderEnabled ? 'bg-teal-600' : 'bg-slate-100 dark:bg-black'}`}
 						>
 							<View
 								className={`w-5 h-5 rounded-full bg-white mx-0.5 ${budgetReminderEnabled ? 'self-end' : 'self-start'}`}
@@ -454,13 +469,13 @@ export const IncomeSourceFormPage = ({
 
 				<Pressable
 					className={`rounded-xl px-8 py-4 items-center mb-3 ${
-						canSubmit ? 'bg-teal-600' : 'bg-slate-200'
+						canSubmit ? 'bg-teal-600' : 'bg-slate-100 dark:bg-black'
 					}`}
 					onPress={handleSubmit}
 					disabled={!canSubmit}
 				>
 					<Text
-						className={`text-base font-bold ${canSubmit ? 'text-white' : 'text-slate-400'}`}
+						className={`text-base font-bold ${canSubmit ? 'text-white' : 'text-slate-400 dark:text-slate-500'}`}
 					>
 						{submitLabel}
 					</Text>
@@ -468,7 +483,7 @@ export const IncomeSourceFormPage = ({
 
 				{editingSource && onDelete && (
 					<Pressable className="items-center py-3 mb-12" onPress={onDelete}>
-						<Text className="text-red-500 text-sm font-semibold">
+						<Text className="text-red-500 dark:text-red-400 text-sm font-semibold">
 							Delete Income Source
 						</Text>
 					</Pressable>

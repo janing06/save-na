@@ -96,7 +96,7 @@ export const ChartsView = ({
 
 	if (itemsByCategory.length === 0) {
 		return (
-			<Text className="text-slate-400 text-sm text-center mt-16">
+			<Text className="text-slate-400 dark:text-slate-500 text-sm text-center mt-16">
 				No budget items yet.
 			</Text>
 		);
@@ -112,25 +112,25 @@ export const ChartsView = ({
 			}}
 		>
 			{/* Overall checked progress card */}
-			<View className="bg-white rounded-2xl p-5 shadow-sm">
-				<Text className="text-sm font-semibold text-slate-700 mb-3">
+			<View className="bg-white dark:bg-zinc-900 rounded-2xl p-5 shadow-sm">
+				<Text className="text-sm font-semibold text-slate-900 dark:text-slate-100 mb-3">
 					Overall Progress
 				</Text>
 				<View className="flex-row justify-between mb-2">
-					<Text className="text-xs text-slate-500">
+					<Text className="text-xs text-slate-500 dark:text-slate-400">
 						{formatCurrency(totalChecked, currency)} checked
 					</Text>
-					<Text className="text-xs text-slate-500">
+					<Text className="text-xs text-slate-500 dark:text-slate-400">
 						of {formatCurrency(totalBudgeted, currency)}
 					</Text>
 				</View>
-				<View className="h-2.5 bg-slate-200 rounded-full overflow-hidden">
+				<View className="h-2.5 bg-slate-100 dark:bg-black rounded-full overflow-hidden">
 					<View
 						className="h-full bg-teal-600 rounded-full"
 						style={{ width: `${checkedPercent}%` }}
 					/>
 				</View>
-				<Text className="text-xs font-medium text-teal-600 mt-1.5">
+				<Text className="text-xs font-medium text-teal-600 dark:text-teal-400 mt-1.5">
 					{checkedPercent}% checked off
 				</Text>
 			</View>

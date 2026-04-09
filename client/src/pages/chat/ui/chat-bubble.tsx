@@ -1,12 +1,13 @@
 import Markdown from '@ronradtke/react-native-markdown-display';
-import { StyleSheet, Text, View } from 'react-native';
+import { useThemeColors } from '@shared/lib';
+import { Text, View } from 'react-native';
 
 type Props = {
 	role: 'user' | 'assistant';
 	content: string;
 };
 
-const _userStyles = StyleSheet.create({
+const _userStyles = {
 	body: { color: '#ffffff', fontSize: 14, lineHeight: 20 },
 	strong: { color: '#ffffff', fontWeight: '700' },
 	em: { color: '#ffffff' },
@@ -25,31 +26,32 @@ const _userStyles = StyleSheet.create({
 		borderColor: 'rgba(255,255,255,0.2)',
 	},
 	paragraph: { marginTop: 0, marginBottom: 4 },
-});
-
-const assistantStyles = StyleSheet.create({
-	body: { color: '#334155', fontSize: 14, lineHeight: 20 },
-	strong: { color: '#0f172a', fontWeight: '700' },
-	em: { color: '#334155' },
-	link: { color: '#0d9488' },
-	bullet_list_icon: { color: '#64748b' },
-	ordered_list_icon: { color: '#64748b' },
-	code_inline: {
-		backgroundColor: '#f1f5f9',
-		color: '#0f172a',
-		fontSize: 13,
-	},
-	fence: {
-		backgroundColor: '#f1f5f9',
-		color: '#0f172a',
-		fontSize: 13,
-		borderColor: '#e2e8f0',
-	},
-	paragraph: { marginTop: 0, marginBottom: 4 },
-});
+};
 
 export const ChatBubble = ({ role, content }: Props) => {
 	const isUser = role === 'user';
+	const colors = useThemeColors();
+
+	const assistantStyles = {
+		body: { color: colors.textSecondary, fontSize: 14, lineHeight: 20 },
+		strong: { color: colors.text, fontWeight: '700' as const },
+		em: { color: colors.textSecondary },
+		link: { color: colors.brand },
+		bullet_list_icon: { color: colors.textSecondary },
+		ordered_list_icon: { color: colors.textSecondary },
+		code_inline: {
+			backgroundColor: colors.surface,
+			color: colors.text,
+			fontSize: 13,
+		},
+		fence: {
+			backgroundColor: colors.surface,
+			color: colors.text,
+			fontSize: 13,
+			borderColor: colors.card,
+		},
+		paragraph: { marginTop: 0, marginBottom: 4 },
+	};
 
 	return (
 		<View
@@ -57,7 +59,9 @@ export const ChatBubble = ({ role, content }: Props) => {
 		>
 			<View
 				className={`px-4 py-3 rounded-2xl ${
-					isUser ? 'bg-teal-600 rounded-br-sm' : 'bg-white rounded-bl-sm'
+					isUser
+						? 'bg-teal-600 rounded-br-sm'
+						: 'bg-white dark:bg-zinc-900 rounded-bl-sm'
 				}`}
 			>
 				{isUser ? (

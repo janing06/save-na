@@ -1,5 +1,6 @@
 import { Ionicons } from '@expo/vector-icons';
 import type { ChatMessage } from '@shared/lib';
+import { useThemeColors } from '@shared/lib';
 import { LoadingOverlay } from '@shared/ui';
 import { useEffect, useRef, useState } from 'react';
 import {
@@ -49,16 +50,13 @@ const Dot = ({ delay }: { delay: number }) => {
 	}));
 
 	return (
-		<Animated.View
-			style={style}
-			className="w-2 h-2 rounded-full bg-slate-400"
-		/>
+		<Animated.View style={style} className="w-2 h-2 rounded-full bg-muted" />
 	);
 };
 
 const TypingIndicator = () => (
 	<View className="mb-3 self-start">
-		<View className="px-4 py-3 rounded-2xl rounded-bl-sm bg-white flex-row items-center gap-1.5">
+		<View className="px-4 py-3 rounded-2xl rounded-bl-sm bg-white dark:bg-zinc-900 flex-row items-center gap-1.5">
 			<Dot delay={0} />
 			<Dot delay={150} />
 			<Dot delay={300} />
@@ -99,6 +97,7 @@ export const ChatPage = ({
 }: Props) => {
 	const flatListRef = useRef<FlatList>(null);
 	const [keyboardHeight, setKeyboardHeight] = useState(0);
+	const colors = useThemeColors();
 
 	// Messages come from DB in DESC order, reverse for display
 	const sortedMessages = [...messages].reverse();
@@ -162,7 +161,7 @@ export const ChatPage = ({
 						style={{
 							maxHeight: 52,
 							paddingBlock: 4,
-							backgroundColor: 'white',
+							backgroundColor: colors.card,
 						}}
 						contentContainerStyle={{
 							paddingHorizontal: 16,
@@ -171,9 +170,9 @@ export const ChatPage = ({
 						renderItem={({ item }) => (
 							<Pressable
 								onPress={() => onSuggestionPress(item)}
-								className="bg-teal-50 border border-teal-200 rounded-full px-4 py-3 mr-2.5 active:opacity-60"
+								className="bg-teal-50 dark:bg-teal-950 border border-teal-200 rounded-full px-4 py-3 mr-2.5 active:opacity-60"
 							>
-								<Text className="text-sm font-medium text-teal-700">
+								<Text className="text-sm font-medium text-teal-600 dark:text-teal-400">
 									{item}
 								</Text>
 							</Pressable>
@@ -183,7 +182,7 @@ export const ChatPage = ({
 
 				<SafeAreaView
 					edges={['bottom']}
-					className="bg-white border-t border-slate-200"
+					className="bg-white dark:bg-zinc-900 border-t border-slate-200 dark:border-zinc-800"
 				>
 					<View
 						className="flex-row items-end px-4 py-2"
@@ -194,9 +193,9 @@ export const ChatPage = ({
 						}
 					>
 						<TextInput
-							className="flex-1 bg-slate-100 rounded-2xl px-4 py-2.5 text-sm text-slate-800 max-h-[100px]"
+							className="flex-1 bg-slate-100 dark:bg-black rounded-2xl px-4 py-2.5 text-sm text-slate-900 dark:text-slate-100 max-h-[100px]"
 							placeholder="Ask about your budget..."
-							placeholderTextColor="#94a3b8"
+							placeholderTextColor={colors.muted}
 							value={inputText}
 							onChangeText={onChangeText}
 							multiline
@@ -216,7 +215,7 @@ export const ChatPage = ({
 	);
 
 	return (
-		<SafeAreaView edges={['top']} className="flex-1 bg-teal-600">
+		<SafeAreaView edges={['top']} className="flex-1 bg-teal-600 dark:bg-black">
 			<View className="px-5 pt-4 pb-8 flex-row items-center justify-between">
 				<Pressable onPress={onClose} className="active:opacity-60">
 					<Ionicons name="arrow-back" size={24} color="#ffffff" />
@@ -233,13 +232,13 @@ export const ChatPage = ({
 
 			{Platform.OS === 'ios' ? (
 				<KeyboardAvoidingView
-					className="flex-1 bg-slate-100 rounded-t-3xl -mt-4 overflow-hidden"
+					className="flex-1 bg-slate-100 dark:bg-black rounded-t-3xl -mt-4 overflow-hidden"
 					behavior="padding"
 				>
 					{content}
 				</KeyboardAvoidingView>
 			) : (
-				<View className="flex-1 bg-slate-100 rounded-t-3xl -mt-4 overflow-hidden">
+				<View className="flex-1 bg-slate-100 dark:bg-black rounded-t-3xl -mt-4 overflow-hidden">
 					{content}
 				</View>
 			)}

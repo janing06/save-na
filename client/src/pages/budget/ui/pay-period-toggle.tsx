@@ -23,13 +23,15 @@ export const PayPeriodToggle = ({
 				className={`px-4 py-1.5 rounded-full ${
 					selectedIndex === 'full'
 						? 'bg-teal-600'
-						: 'bg-white border border-slate-200'
+						: 'bg-white dark:bg-zinc-900 border border-slate-200 dark:border-zinc-800'
 				}`}
 				onPress={() => onSelect('full')}
 			>
 				<Text
 					className={`text-xs font-semibold ${
-						selectedIndex === 'full' ? 'text-white' : 'text-slate-500'
+						selectedIndex === 'full'
+							? 'text-white'
+							: 'text-slate-500 dark:text-slate-400'
 					}`}
 				>
 					Full Month
@@ -41,13 +43,15 @@ export const PayPeriodToggle = ({
 					className={`px-4 py-1.5 rounded-full ${
 						selectedIndex === period.index
 							? 'bg-teal-600'
-							: 'bg-white border border-slate-200'
+							: 'bg-white dark:bg-zinc-900 border border-slate-200 dark:border-zinc-800'
 					}`}
 					onPress={() => onSelect(period.index)}
 				>
 					<Text
 						className={`text-xs font-semibold ${
-							selectedIndex === period.index ? 'text-white' : 'text-slate-500'
+							selectedIndex === period.index
+								? 'text-white'
+								: 'text-slate-500 dark:text-slate-400'
 						}`}
 					>
 						{period.label}
