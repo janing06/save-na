@@ -1,8 +1,8 @@
 import { Ionicons } from '@expo/vector-icons';
 import type { IncomeSource, PayPeriod } from '@shared/lib';
 import { useThemeColors } from '@shared/lib';
-import { useColorScheme } from 'nativewind';
 import { LoadingOverlay } from '@shared/ui';
+import { useColorScheme } from 'nativewind';
 import { Pressable, ScrollView, Text, View } from 'react-native';
 import {
 	SafeAreaView,
