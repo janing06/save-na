@@ -1,4 +1,4 @@
-import { formatCurrency } from '@shared/lib';
+import { formatCurrency, useThemeColors } from '@shared/lib';
 import { Text, View } from 'react-native';
 import { Circle, Svg, Text as SvgText } from 'react-native-svg';
 
@@ -27,6 +27,7 @@ export const DonutChart = ({
 	totalIncome,
 	currency,
 }: Props) => {
+	const colors = useThemeColors();
 	const segmentArcs = segments.reduce<{ dashLength: number; offset: number }[]>(
 		(acc, segment) => {
 			const dashLength = (segment.percentage / 100) * CIRCUMFERENCE;
@@ -41,8 +42,8 @@ export const DonutChart = ({
 	);
 
 	return (
-		<View className="bg-white rounded-2xl p-5 shadow-sm">
-			<Text className="text-sm font-semibold text-slate-700 mb-4">
+		<View className="bg-white dark:bg-zinc-900 rounded-2xl p-5 shadow-sm">
+			<Text className="text-sm font-semibold text-slate-900 dark:text-slate-100 mb-4">
 				Budget Breakdown
 			</Text>
 
@@ -54,7 +55,7 @@ export const DonutChart = ({
 						cy={SIZE / 2}
 						r={RADIUS}
 						fill="none"
-						stroke="#e2e8f0"
+						stroke={colors.surface}
 						strokeWidth={STROKE_WIDTH}
 					/>
 
@@ -84,7 +85,7 @@ export const DonutChart = ({
 						y={SIZE / 2 - 8}
 						textAnchor="middle"
 						fontSize={10}
-						fill="#64748b"
+						fill={colors.textSecondary}
 					>
 						Income
 					</SvgText>
@@ -94,7 +95,7 @@ export const DonutChart = ({
 						textAnchor="middle"
 						fontSize={14}
 						fontWeight="700"
-						fill="#0f172a"
+						fill={colors.text}
 					>
 						{formatCurrency(totalIncome, currency)}
 					</SvgText>
@@ -108,10 +109,13 @@ export const DonutChart = ({
 								className="w-2 h-2 rounded-full shrink-0"
 								style={{ backgroundColor: segment.color }}
 							/>
-							<Text className="text-xs text-slate-700 shrink" numberOfLines={1}>
+							<Text
+								className="text-xs text-slate-500 dark:text-slate-400 shrink"
+								numberOfLines={1}
+							>
 								{segment.name}
 							</Text>
-							<Text className="text-xs text-slate-500 ml-auto shrink-0">
+							<Text className="text-xs text-slate-500 dark:text-slate-400 ml-auto shrink-0">
 								{formatCurrency(segment.amount, currency)}{' '}
 								<Text className="opacity-70">
 									({Math.round(segment.percentage)}%)
@@ -122,11 +126,13 @@ export const DonutChart = ({
 
 					{/* Unallocated row */}
 					{unallocated.amount > 0 && (
-						<View className="border-t border-slate-200 mt-1 pt-1.5">
+						<View className="border-t border-slate-200 dark:border-zinc-800 mt-1 pt-1.5">
 							<View className="flex-row items-center gap-1.5">
-								<View className="w-2 h-2 rounded-full shrink-0 bg-slate-200" />
-								<Text className="text-xs text-slate-400">Unallocated</Text>
-								<Text className="text-xs text-slate-400 ml-auto">
+								<View className="w-2 h-2 rounded-full shrink-0 bg-slate-100 dark:bg-black" />
+								<Text className="text-xs text-slate-400 dark:text-slate-500">
+									Unallocated
+								</Text>
+								<Text className="text-xs text-slate-400 dark:text-slate-500 ml-auto">
 									{formatCurrency(unallocated.amount, currency)}{' '}
 									<Text className="opacity-70">
 										({Math.round(unallocated.percentage)}%)

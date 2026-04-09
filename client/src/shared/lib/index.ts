@@ -5,3 +5,4 @@ export * from './pay-periods';
 export * from './query-keys';
 export * from './schedule-notifications';
 export * from './types';
+export * from './use-theme-colors';

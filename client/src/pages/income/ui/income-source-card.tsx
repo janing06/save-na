@@ -36,29 +36,29 @@ export const IncomeSourceCard = ({
 
 	return (
 		<Pressable
-			className="bg-white rounded-2xl shadow-sm mx-4 mb-3 px-4 py-3"
+			className="bg-white dark:bg-zinc-900 rounded-2xl shadow-sm mx-4 mb-3 px-4 py-3"
 			onPress={() => onEdit(source)}
 			onLongPress={() => onDelete(source.id)}
 		>
 			<View className="flex-row justify-between items-start">
 				<View className="flex-1 mr-3">
-					<Text className="text-sm font-bold text-slate-900 mb-1">
+					<Text className="text-sm font-bold text-slate-900 dark:text-slate-100 mb-1">
 						{source.name}
 					</Text>
-					<Text className="text-xs text-slate-500">
+					<Text className="text-xs text-slate-500 dark:text-slate-400">
 						{scheduleLabels[source.pay_schedule]}
 					</Text>
 				</View>
-				<Text className="text-base font-bold text-green-600">
+				<Text className="text-base font-bold text-green-600 dark:text-green-500">
 					{formatCurrency(source.amount, currency)}
 				</Text>
 			</View>
 			{isBiMonthlyWithSplit && (
 				<View className="flex-row gap-3 mt-2">
-					<Text className="text-xs text-slate-400">
+					<Text className="text-xs text-slate-400 dark:text-slate-500">
 						{payDates[0]}th · {formatCurrency(payAmounts[0], currency)}
 					</Text>
-					<Text className="text-xs text-slate-400">
+					<Text className="text-xs text-slate-400 dark:text-slate-500">
 						{payDates[1]}th · {formatCurrency(payAmounts[1], currency)}
 					</Text>
 				</View>

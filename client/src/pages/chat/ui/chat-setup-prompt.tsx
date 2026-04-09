@@ -1,4 +1,6 @@
 import { Ionicons } from '@expo/vector-icons';
+import { useThemeColors } from '@shared/lib';
+import { useColorScheme } from 'nativewind';
 import { useEffect, useState } from 'react';
 import {
 	Keyboard,
@@ -20,6 +22,8 @@ type Props = {
 export const ChatSetupPrompt = ({ onSaveKey, onClose }: Props) => {
 	const [key, setKey] = useState('');
 	const [keyboardHeight, setKeyboardHeight] = useState(0);
+	const colors = useThemeColors();
+	const { colorScheme } = useColorScheme();
 
 	useEffect(() => {
 		if (Platform.OS !== 'android') return;
@@ -39,10 +43,12 @@ export const ChatSetupPrompt = ({ onSaveKey, onClose }: Props) => {
 
 	const content = (
 		<>
-			<StatusBar barStyle="dark-content" />
+			<StatusBar
+				barStyle={colorScheme === 'dark' ? 'light-content' : 'dark-content'}
+			/>
 			<View className="px-5 py-4 flex-row items-center">
 				<Pressable onPress={onClose} className="active:opacity-60">
-					<Ionicons name="arrow-back" size={24} color="#1e293b" />
+					<Ionicons name="arrow-back" size={24} color={colors.text} />
 				</Pressable>
 			</View>
 
@@ -54,31 +60,31 @@ export const ChatSetupPrompt = ({ onSaveKey, onClose }: Props) => {
 						: undefined
 				}
 			>
-				<Text className="text-lg font-bold text-slate-800 text-center mb-2">
+				<Text className="text-lg font-bold text-slate-900 dark:text-slate-100 text-center mb-2">
 					Set Up AI Assistant
 				</Text>
-				<Text className="text-sm text-slate-500 text-center mb-6">
+				<Text className="text-sm text-slate-500 dark:text-slate-400 text-center mb-6">
 					Get a free API key to use the budget chat assistant
 				</Text>
 
-				<View className="bg-slate-50 rounded-2xl px-4 py-5 mb-4">
-					<Text className="text-sm font-medium text-slate-700 mb-3">
+				<View className="bg-slate-50 dark:bg-zinc-900 rounded-2xl px-4 py-5 mb-4">
+					<Text className="text-sm font-medium text-slate-900 dark:text-slate-100 mb-3">
 						How to get your free key:
 					</Text>
-					<Text className="text-sm text-slate-500 mb-1">
+					<Text className="text-sm text-slate-500 dark:text-slate-400 mb-1">
 						1. Go to openrouter.ai and sign up (free)
 					</Text>
-					<Text className="text-sm text-slate-500 mb-1">
+					<Text className="text-sm text-slate-500 dark:text-slate-400 mb-1">
 						2. Go to Keys and create a new key
 					</Text>
-					<Text className="text-sm text-slate-500 mb-4">
+					<Text className="text-sm text-slate-500 dark:text-slate-400 mb-4">
 						3. Copy the key and paste it below
 					</Text>
 
 					<TextInput
-						className="bg-white rounded-xl px-4 py-3 text-sm text-slate-800"
+						className="bg-white dark:bg-zinc-800 rounded-xl px-4 py-3 text-sm text-slate-900 dark:text-slate-100"
 						placeholder="Paste your OpenRouter API key"
-						placeholderTextColor="#94a3b8"
+						placeholderTextColor={colors.muted}
 						value={key}
 						onChangeText={setKey}
 						autoCapitalize="none"
@@ -102,7 +108,10 @@ export const ChatSetupPrompt = ({ onSaveKey, onClose }: Props) => {
 	);
 
 	return (
-		<SafeAreaView edges={['top', 'bottom']} className="flex-1 bg-white">
+		<SafeAreaView
+			edges={['top', 'bottom']}
+			className="flex-1 bg-white dark:bg-zinc-900"
+		>
 			{Platform.OS === 'ios' ? (
 				<KeyboardAvoidingView className="flex-1" behavior="padding">
 					{content}

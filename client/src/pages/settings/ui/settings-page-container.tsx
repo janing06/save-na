@@ -10,6 +10,7 @@ import {
 	useCategories,
 	useClearData,
 	usePreferences,
+	useTheme,
 	useUpdateCurrency,
 } from '../model/hooks';
 import { SettingsPage } from './settings-page';
@@ -21,6 +22,7 @@ export const SettingsPageContainer = () => {
 	const { onUpdate } = useUpdateCurrency();
 	const clearData = useClearData();
 	const backup = useBackup();
+	const { theme, updateTheme } = useTheme();
 
 	const { data: apiKey = null } = useQuery({
 		queryKey: queryKeys.apiKey,
@@ -95,6 +97,8 @@ export const SettingsPageContainer = () => {
 			onExportBackup={backup.onExport}
 			onRestoreBackup={backup.onRestore}
 			isLoading={isPrefsLoading || isCatsLoading || backup.isLoading}
+			theme={theme}
+			onThemeChange={updateTheme}
 		/>
 	);
 };

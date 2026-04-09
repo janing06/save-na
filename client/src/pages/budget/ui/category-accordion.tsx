@@ -1,6 +1,6 @@
 import { Ionicons } from '@expo/vector-icons';
 import type { BudgetItemAllocation } from '@shared/lib';
-import { formatCurrency } from '@shared/lib';
+import { formatCurrency, useThemeColors } from '@shared/lib';
 import { useState } from 'react';
 import { Pressable, Text, View } from 'react-native';
 import type { BudgetItemWithAllocations } from '../api/list-budget-items';
@@ -18,7 +18,9 @@ type Props = {
 };
 
 const getCategoryAmountColor = (categoryName: string): string => {
-	return categoryName === 'Expenses' ? 'text-red-500' : 'text-green-600';
+	return categoryName === 'Expenses'
+		? 'text-red-500 dark:text-red-400'
+		: 'text-green-600 dark:text-green-500';
 };
 
 export const CategoryAccordion = ({
@@ -31,6 +33,7 @@ export const CategoryAccordion = ({
 	showSourceLabel,
 	yearMonth,
 }: Props) => {
+	const colors = useThemeColors();
 	const [expanded, setExpanded] = useState(true);
 
 	const categoryTotal = items.reduce((sum, item) => {
@@ -71,12 +74,12 @@ export const CategoryAccordion = ({
 
 	return (
 		<View className="mx-4 mb-3 rounded-2xl shadow-sm">
-			<View className="bg-white rounded-2xl overflow-hidden">
+			<View className="bg-white dark:bg-zinc-900 rounded-2xl overflow-hidden">
 				<Pressable
 					className="flex-row justify-between items-center px-4 py-3"
 					onPress={() => setExpanded((prev) => !prev)}
 				>
-					<Text className="text-sm font-bold text-slate-900">
+					<Text className="text-sm font-bold text-slate-900 dark:text-slate-100">
 						{categoryName}
 					</Text>
 					<View className="flex-row items-center gap-2">
@@ -86,12 +89,12 @@ export const CategoryAccordion = ({
 						<Ionicons
 							name={expanded ? 'chevron-up' : 'chevron-forward'}
 							size={16}
-							color="#94a3b8"
+							color={colors.muted}
 						/>
 					</View>
 				</Pressable>
 				{expanded && items.length > 0 && (
-					<View className="border-t border-slate-100">
+					<View className="border-t border-slate-100 dark:border-zinc-800">
 						{items.map((item) => (
 							<BudgetItemRow
 								key={item.id}

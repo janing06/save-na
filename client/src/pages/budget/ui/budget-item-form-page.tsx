@@ -1,6 +1,6 @@
 import { Ionicons } from '@expo/vector-icons';
 import type { Category, PayPeriod, SplitType } from '@shared/lib';
-import { ordinal } from '@shared/lib';
+import { ordinal, useThemeColors } from '@shared/lib';
 import { useEffect, useState } from 'react';
 import {
 	Modal,
@@ -39,6 +39,7 @@ export const BudgetItemFormPage = ({
 	onClose,
 	isPending,
 }: Props) => {
+	const colors = useThemeColors();
 	const [name, setName] = useState('');
 	const [amount, setAmount] = useState('');
 	const [categoryId, setCategoryId] = useState<number | null>(null);
@@ -121,35 +122,40 @@ export const BudgetItemFormPage = ({
 	};
 
 	return (
-		<SafeAreaView edges={['top', 'bottom']} className="flex-1 bg-white">
+		<SafeAreaView
+			edges={['top', 'bottom']}
+			className="flex-1 bg-white dark:bg-zinc-900"
+		>
 			<ScrollView className="flex-1 px-6 pt-6">
 				<View className="flex-row justify-between items-center mb-6">
-					<Text className="text-xl font-bold text-slate-900">
+					<Text className="text-xl font-bold text-slate-900 dark:text-slate-100">
 						{editingItem ? 'Edit Item' : 'Add Item'}
 					</Text>
 					<Pressable onPress={onClose}>
-						<Ionicons name="close" size={22} color="#94a3b8" />
+						<Ionicons name="close" size={22} color={colors.muted} />
 					</Pressable>
 				</View>
 
-				<Text className="text-sm font-medium text-slate-700 mb-1">Name</Text>
+				<Text className="text-sm font-medium text-slate-900 dark:text-slate-100 mb-1">
+					Name
+				</Text>
 				<TextInput
-					className={`bg-slate-50 rounded-xl px-4 py-3 text-base text-slate-900 mb-4 border ${focusedField === 'name' ? 'border-teal-600' : 'border-slate-200'}`}
+					className={`bg-slate-50 dark:bg-zinc-900 rounded-xl px-4 py-3 text-base text-slate-900 dark:text-slate-100 mb-4 border ${focusedField === 'name' ? 'border-teal-600 dark:border-teal-500' : 'border-slate-200 dark:border-zinc-800'}`}
 					placeholder="e.g., Rent"
-					placeholderTextColor="#94a3b8"
+					placeholderTextColor={colors.muted}
 					value={name}
 					onChangeText={setName}
 					onFocus={() => setFocusedField('name')}
 					onBlur={() => setFocusedField(null)}
 				/>
 
-				<Text className="text-sm font-medium text-slate-700 mb-1">
+				<Text className="text-sm font-medium text-slate-900 dark:text-slate-100 mb-1">
 					Amount (monthly total)
 				</Text>
 				<TextInput
-					className={`bg-slate-50 rounded-xl px-4 py-3 text-base text-slate-900 mb-4 border ${focusedField === 'amount' ? 'border-teal-600' : 'border-slate-200'}`}
+					className={`bg-slate-50 dark:bg-zinc-900 rounded-xl px-4 py-3 text-base text-slate-900 dark:text-slate-100 mb-4 border ${focusedField === 'amount' ? 'border-teal-600 dark:border-teal-500' : 'border-slate-200 dark:border-zinc-800'}`}
 					placeholder="e.g., 3500"
-					placeholderTextColor="#94a3b8"
+					placeholderTextColor={colors.muted}
 					value={amount}
 					onChangeText={setAmount}
 					keyboardType="numeric"
@@ -160,10 +166,12 @@ export const BudgetItemFormPage = ({
 				{showSplitSection && (
 					<View className="mb-6">
 						<View className="flex-row justify-between items-center mb-2">
-							<Text className="text-sm font-medium text-slate-700">Split</Text>
+							<Text className="text-sm font-medium text-slate-900 dark:text-slate-100">
+								Split
+							</Text>
 							<Pressable onPress={onToggleCustomSplit} disabled={totalNum <= 0}>
 								<Text
-									className={`text-sm font-medium ${totalNum > 0 ? 'text-teal-600' : 'text-slate-300'}`}
+									className={`text-sm font-medium ${totalNum > 0 ? 'text-teal-600 dark:text-teal-400' : 'text-slate-300 dark:text-slate-600'}`}
 								>
 									{customSplit ? 'Reset to even' : 'Customize'}
 								</Text>
@@ -178,13 +186,13 @@ export const BudgetItemFormPage = ({
 										className="flex-row items-center mb-2"
 									>
 										<Text
-											className="text-sm text-slate-500 w-16"
+											className="text-sm text-slate-500 dark:text-slate-400 w-16"
 											numberOfLines={1}
 										>
 											{period.label}
 										</Text>
 										<TextInput
-											className={`flex-1 bg-slate-50 rounded-xl px-4 py-3 text-base text-slate-900 border ${focusedField === `alloc-${i}` ? 'border-teal-600' : 'border-slate-200'}`}
+											className={`flex-1 bg-slate-50 dark:bg-zinc-900 rounded-xl px-4 py-3 text-base text-slate-900 dark:text-slate-100 border ${focusedField === `alloc-${i}` ? 'border-teal-600 dark:border-teal-500' : 'border-slate-200 dark:border-zinc-800'}`}
 											value={allocations[i] ?? ''}
 											onChangeText={(val) => {
 												const next = [...allocations];
@@ -207,7 +215,7 @@ export const BudgetItemFormPage = ({
 											}}
 										>
 											<Text
-												className={`text-sm font-medium ${totalNum > 0 ? 'text-teal-600' : 'text-slate-300'}`}
+												className={`text-sm font-medium ${totalNum > 0 ? 'text-teal-600 dark:text-teal-400' : 'text-slate-300 dark:text-slate-600'}`}
 											>
 												Full
 											</Text>
@@ -215,7 +223,7 @@ export const BudgetItemFormPage = ({
 									</View>
 								))}
 								<Text
-									className={`text-xs mt-1 ${splitBalanced ? 'text-teal-600' : 'text-red-500'}`}
+									className={`text-xs mt-1 ${splitBalanced ? 'text-teal-600 dark:text-teal-400' : 'text-red-500 dark:text-red-400'}`}
 								>
 									{splitBalanced
 										? 'Split balanced'
@@ -223,7 +231,7 @@ export const BudgetItemFormPage = ({
 								</Text>
 							</>
 						) : (
-							<Text className="text-sm text-slate-400">
+							<Text className="text-sm text-slate-400 dark:text-slate-500">
 								{totalNum > 0
 									? `Split evenly · ${(totalNum / payPeriods.length).toLocaleString()} per period`
 									: 'Split evenly across pay periods'}
@@ -232,7 +240,7 @@ export const BudgetItemFormPage = ({
 					</View>
 				)}
 
-				<Text className="text-sm font-medium text-slate-700 mb-2">
+				<Text className="text-sm font-medium text-slate-900 dark:text-slate-100 mb-2">
 					Category
 				</Text>
 				<View className="flex-row flex-wrap gap-2 mb-6">
@@ -240,7 +248,9 @@ export const BudgetItemFormPage = ({
 						<Pressable
 							key={cat.id}
 							className={`px-4 py-2 rounded-full ${
-								categoryId === cat.id ? 'bg-teal-600' : 'bg-slate-100'
+								categoryId === cat.id
+									? 'bg-teal-600'
+									: 'bg-slate-100 dark:bg-black'
 							}`}
 							onPress={() => setCategoryId(cat.id)}
 						>
@@ -248,7 +258,7 @@ export const BudgetItemFormPage = ({
 								className={`text-sm ${
 									categoryId === cat.id
 										? 'text-white font-semibold'
-										: 'text-slate-600'
+										: 'text-slate-500 dark:text-slate-400'
 								}`}
 							>
 								{cat.name}
@@ -258,15 +268,15 @@ export const BudgetItemFormPage = ({
 				</View>
 
 				{/* Due Date */}
-				<Text className="text-sm font-medium text-slate-700 mb-2">
+				<Text className="text-sm font-medium text-slate-900 dark:text-slate-100 mb-2">
 					Due date
 				</Text>
 				<Pressable
-					className="bg-slate-50 rounded-xl px-4 py-3 mb-6 border border-slate-200 flex-row justify-between items-center"
+					className="bg-slate-50 dark:bg-zinc-900 rounded-xl px-4 py-3 mb-6 border border-slate-200 dark:border-zinc-800 flex-row justify-between items-center"
 					onPress={() => setShowDayPicker(true)}
 				>
 					<Text
-						className={`text-base ${dueDay ? 'text-slate-900' : 'text-slate-400'}`}
+						className={`text-base ${dueDay ? 'text-slate-900 dark:text-slate-100' : 'text-slate-400 dark:text-slate-500'}`}
 					>
 						{dueDay ? ordinal(dueDay) : 'None'}
 					</Text>
@@ -275,7 +285,7 @@ export const BudgetItemFormPage = ({
 							hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
 							onPress={() => setDueDay(null)}
 						>
-							<Ionicons name="close-circle" size={18} color="#94a3b8" />
+							<Ionicons name="close-circle" size={18} color={colors.muted} />
 						</Pressable>
 					)}
 				</Pressable>
@@ -291,27 +301,27 @@ export const BudgetItemFormPage = ({
 						className="flex-1 bg-black/40 justify-end"
 						onPress={() => setShowDayPicker(false)}
 					>
-						<Pressable className="bg-white rounded-t-2xl pb-8">
-							<View className="flex-row justify-between items-center px-6 py-4 border-b border-slate-100">
-								<Text className="text-base font-bold text-slate-900">
+						<Pressable className="bg-white dark:bg-zinc-900 rounded-t-2xl pb-8">
+							<View className="flex-row justify-between items-center px-6 py-4 border-b border-slate-100 dark:border-zinc-800">
+								<Text className="text-base font-bold text-slate-900 dark:text-slate-100">
 									Select day
 								</Text>
 								<Pressable onPress={() => setShowDayPicker(false)}>
-									<Ionicons name="close" size={20} color="#94a3b8" />
+									<Ionicons name="close" size={20} color={colors.muted} />
 								</Pressable>
 							</View>
 							<ScrollView style={{ maxHeight: 300 }} className="px-4 pt-2">
 								{Array.from({ length: 31 }, (_, i) => i + 1).map((day) => (
 									<Pressable
 										key={day}
-										className={`px-4 py-3 rounded-xl mb-1 ${dueDay === day ? 'bg-teal-600' : 'bg-slate-50'}`}
+										className={`px-4 py-3 rounded-xl mb-1 ${dueDay === day ? 'bg-teal-600' : 'bg-slate-50 dark:bg-zinc-900'}`}
 										onPress={() => {
 											setDueDay(day);
 											setShowDayPicker(false);
 										}}
 									>
 										<Text
-											className={`text-base ${dueDay === day ? 'text-white font-semibold' : 'text-slate-700'}`}
+											className={`text-base ${dueDay === day ? 'text-white font-semibold' : 'text-slate-500 dark:text-slate-400'}`}
 										>
 											{ordinal(day)}
 										</Text>
@@ -324,13 +334,13 @@ export const BudgetItemFormPage = ({
 
 				<Pressable
 					className={`rounded-xl px-8 py-4 items-center mb-3 ${
-						canSubmit ? 'bg-teal-600' : 'bg-slate-200'
+						canSubmit ? 'bg-teal-600' : 'bg-slate-100 dark:bg-black'
 					}`}
 					onPress={handleSubmit}
 					disabled={!canSubmit}
 				>
 					<Text
-						className={`text-base font-bold ${canSubmit ? 'text-white' : 'text-slate-400'}`}
+						className={`text-base font-bold ${canSubmit ? 'text-white' : 'text-slate-400 dark:text-slate-500'}`}
 					>
 						{submitLabel}
 					</Text>
@@ -338,7 +348,7 @@ export const BudgetItemFormPage = ({
 
 				{editingItem && onDelete && (
 					<Pressable className="items-center py-3 mb-12" onPress={onDelete}>
-						<Text className="text-red-500 text-sm font-semibold">
+						<Text className="text-red-500 dark:text-red-400 text-sm font-semibold">
 							Delete Item
 						</Text>
 					</Pressable>

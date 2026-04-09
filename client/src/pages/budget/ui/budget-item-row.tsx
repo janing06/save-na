@@ -1,6 +1,6 @@
 import { Ionicons } from '@expo/vector-icons';
 import type { BudgetItemAllocation } from '@shared/lib';
-import { formatCurrency, ordinal } from '@shared/lib';
+import { formatCurrency, ordinal, useThemeColors } from '@shared/lib';
 import { Pressable, Text } from 'react-native';
 
 type Props = {
@@ -28,6 +28,7 @@ export const BudgetItemRow = ({
 	dueDay,
 	isOverdue,
 }: Props) => {
+	const colors = useThemeColors();
 	const isPaid = allocation?.is_paid === 1;
 
 	return (
@@ -46,7 +47,7 @@ export const BudgetItemRow = ({
 					<Ionicons
 						name={isPaid ? 'checkbox' : 'square-outline'}
 						size={20}
-						color={isPaid ? '#0d9488' : '#94a3b8'}
+						color={isPaid ? colors.brand : colors.muted}
 					/>
 				</Pressable>
 			)}
@@ -59,23 +60,25 @@ export const BudgetItemRow = ({
 				}
 			>
 				<Text
-					className={`text-xs ${isPaid ? 'text-slate-400 line-through' : 'text-slate-700'}`}
+					className={`text-xs ${isPaid ? 'text-slate-400 dark:text-slate-500 line-through' : 'text-slate-900 dark:text-slate-100'}`}
 				>
 					{name}
 				</Text>
 				{sourceLabel && (
-					<Text className="text-xs text-slate-400">{sourceLabel}</Text>
+					<Text className="text-xs text-slate-400 dark:text-slate-500">
+						{sourceLabel}
+					</Text>
 				)}
 				{dueDay != null && (
 					<Text
-						className={`text-xs ${isOverdue && !isPaid ? 'text-red-500' : 'text-slate-400'}`}
+						className={`text-xs ${isOverdue && !isPaid ? 'text-red-500 dark:text-red-400' : 'text-slate-400 dark:text-slate-500'}`}
 					>
 						Due {ordinal(dueDay)}
 					</Text>
 				)}
 			</Pressable>
 			<Text
-				className={`text-xs font-semibold ${isPaid ? 'text-slate-400' : 'text-slate-700'}`}
+				className={`text-xs font-semibold ${isPaid ? 'text-slate-400 dark:text-slate-500' : 'text-slate-900 dark:text-slate-100'}`}
 			>
 				{formatCurrency(amount, currency)}
 			</Text>

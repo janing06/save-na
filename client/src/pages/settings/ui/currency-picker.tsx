@@ -1,5 +1,7 @@
 import { Ionicons } from '@expo/vector-icons';
 import { currencies } from '@shared/config';
+import { useThemeColors } from '@shared/lib';
+import { useColorScheme } from 'nativewind';
 import {
 	FlatList,
 	Modal,
@@ -24,6 +26,9 @@ export const CurrencyPicker = ({
 	onSelect,
 	onClose,
 }: Props) => {
+	const colors = useThemeColors();
+	const { colorScheme } = useColorScheme();
+
 	return (
 		<Modal
 			visible={visible}
@@ -31,12 +36,21 @@ export const CurrencyPicker = ({
 			presentationStyle="pageSheet"
 			onRequestClose={onClose}
 		>
-			<SafeAreaView edges={['top']} className="flex-1 bg-white pt-6 px-6">
-				{Platform.OS === 'android' && <StatusBar barStyle="dark-content" />}
+			<SafeAreaView
+				edges={['top']}
+				className="flex-1 bg-white dark:bg-zinc-900 pt-6 px-6"
+			>
+				{Platform.OS === 'android' && (
+					<StatusBar
+						barStyle={colorScheme === 'dark' ? 'light-content' : 'dark-content'}
+					/>
+				)}
 				<View className="flex-row justify-between items-center mb-6">
-					<Text className="text-xl font-bold text-slate-900">Currency</Text>
+					<Text className="text-xl font-bold text-slate-900 dark:text-slate-100">
+						Currency
+					</Text>
 					<Pressable onPress={onClose}>
-						<Ionicons name="close" size={22} color="#94a3b8" />
+						<Ionicons name="close" size={22} color={colors.muted} />
 					</Pressable>
 				</View>
 				<FlatList
@@ -47,25 +61,29 @@ export const CurrencyPicker = ({
 						return (
 							<Pressable
 								className={`flex-row items-center px-4 py-3 rounded-xl mb-2 ${
-									isSelected ? 'bg-teal-50' : 'bg-slate-50'
+									isSelected
+										? 'bg-teal-50 dark:bg-teal-950'
+										: 'bg-slate-50 dark:bg-zinc-900'
 								}`}
 								onPress={() => {
 									onSelect(item.code);
 									onClose();
 								}}
 							>
-								<Text className="text-base text-slate-900 flex-1">
+								<Text className="text-base text-slate-900 dark:text-slate-100 flex-1">
 									{item.name}
 								</Text>
 								<Text
 									className={`text-sm font-semibold mr-2 ${
-										isSelected ? 'text-teal-600' : 'text-slate-400'
+										isSelected
+											? 'text-teal-600 dark:text-teal-400'
+											: 'text-slate-400 dark:text-slate-500'
 									}`}
 								>
 									{item.code}
 								</Text>
 								{isSelected && (
-									<Ionicons name="checkmark" size={18} color="#0d9488" />
+									<Ionicons name="checkmark" size={18} color={colors.brand} />
 								)}
 							</Pressable>
 						);

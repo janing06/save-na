@@ -1,4 +1,6 @@
 import { Ionicons } from '@expo/vector-icons';
+import { useThemeColors } from '@shared/lib';
+import { useColorScheme } from 'nativewind';
 import {
 	FlatList,
 	Modal,
@@ -34,6 +36,9 @@ export const TimePickerModal = ({
 	onSelect,
 	onClose,
 }: Props) => {
+	const colors = useThemeColors();
+	const { colorScheme } = useColorScheme();
+
 	return (
 		<Modal
 			visible={visible}
@@ -41,14 +46,21 @@ export const TimePickerModal = ({
 			presentationStyle={Platform.OS === 'ios' ? 'pageSheet' : 'fullScreen'}
 			onRequestClose={onClose}
 		>
-			<SafeAreaView edges={['top']} className="flex-1 bg-white pt-6 px-6">
-				{Platform.OS === 'android' && <StatusBar barStyle="dark-content" />}
+			<SafeAreaView
+				edges={['top']}
+				className="flex-1 bg-white dark:bg-zinc-900 pt-6 px-6"
+			>
+				{Platform.OS === 'android' && (
+					<StatusBar
+						barStyle={colorScheme === 'dark' ? 'light-content' : 'dark-content'}
+					/>
+				)}
 				<View className="flex-row justify-between items-center mb-6">
-					<Text className="text-xl font-bold text-slate-900">
+					<Text className="text-xl font-bold text-slate-900 dark:text-slate-100">
 						Notification Time
 					</Text>
 					<Pressable onPress={onClose}>
-						<Ionicons name="close" size={22} color="#94a3b8" />
+						<Ionicons name="close" size={22} color={colors.muted} />
 					</Pressable>
 				</View>
 				<FlatList
@@ -59,18 +71,20 @@ export const TimePickerModal = ({
 						return (
 							<Pressable
 								className={`flex-row items-center px-4 py-3 rounded-xl mb-2 ${
-									isSelected ? 'bg-teal-50' : 'bg-slate-50'
+									isSelected
+										? 'bg-teal-50 dark:bg-teal-950'
+										: 'bg-slate-50 dark:bg-zinc-900'
 								}`}
 								onPress={() => {
 									onSelect(item.value);
 									onClose();
 								}}
 							>
-								<Text className="text-base text-slate-900 flex-1">
+								<Text className="text-base text-slate-900 dark:text-slate-100 flex-1">
 									{item.label}
 								</Text>
 								{isSelected && (
-									<Ionicons name="checkmark" size={18} color="#0d9488" />
+									<Ionicons name="checkmark" size={18} color={colors.brand} />
 								)}
 							</Pressable>
 						);

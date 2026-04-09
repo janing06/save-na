@@ -6,7 +6,7 @@ import type * as SQLite from 'expo-sqlite';
 import { getDatabase } from './client';
 
 // Must match the number of migrations in src/shared/db/client.ts
-export const CURRENT_SCHEMA_VERSION = 5;
+export const CURRENT_SCHEMA_VERSION = 6;
 
 type BackupData = {
 	version: number;

@@ -2,6 +2,7 @@ import { Ionicons } from '@expo/vector-icons';
 import Entypo from '@expo/vector-icons/Entypo';
 import FontAwesome6 from '@expo/vector-icons/FontAwesome6';
 import type { BottomTabBarProps } from '@react-navigation/bottom-tabs';
+import { useThemeColors } from '@shared/lib';
 import { usePathname } from 'expo-router';
 import { type ReactNode, useEffect } from 'react';
 import { Pressable, View } from 'react-native';
@@ -37,7 +38,12 @@ type TabItemProps = {
 	onPress: () => void;
 };
 
-const TabItem = ({ name, isFocused, onPress }: TabItemProps) => {
+const TabItem = ({
+	name,
+	isFocused,
+	onPress,
+	colors,
+}: TabItemProps & { colors: ReturnType<typeof useThemeColors> }) => {
 	const width = useSharedValue(isFocused ? 110 : 44);
 	const labelOpacity = useSharedValue(isFocused ? 1 : 0);
 	const labelMaxWidth = useSharedValue(isFocused ? 80 : 0);
@@ -63,20 +69,20 @@ const TabItem = ({ name, isFocused, onPress }: TabItemProps) => {
 		maxWidth: labelMaxWidth.value,
 	}));
 
-	const iconColor = isFocused ? '#0d9488' : 'rgba(255,255,255)';
+	const iconColor = isFocused ? colors.brand : 'rgba(255,255,255,0.5)';
 
 	return (
 		<Pressable onPress={onPress} className="items-center justify-center">
 			<Animated.View
 				style={pillStyle}
 				className={`h-9 flex-row items-center justify-center gap-1.5 rounded-full overflow-hidden ${
-					isFocused ? 'bg-white' : ''
+					isFocused ? 'bg-white dark:bg-zinc-900' : ''
 				}`}
 			>
 				{TAB_ICONS[name]?.(iconColor)}
 				<Animated.Text
 					style={labelStyle}
-					className="text-sm font-semibold text-teal-600"
+					className="text-sm font-semibold text-teal-600 dark:text-teal-400"
 					numberOfLines={1}
 					pointerEvents={isFocused ? 'auto' : 'none'}
 				>
@@ -93,6 +99,7 @@ export const FloatingTabBar = ({
 	insets,
 }: BottomTabBarProps) => {
 	const pathname = usePathname();
+	const colors = useThemeColors();
 
 	if (pathname.startsWith('/budget/chat')) return null;
 
@@ -124,6 +131,7 @@ export const FloatingTabBar = ({
 							key={route.key}
 							name={route.name}
 							isFocused={isFocused}
+							colors={colors}
 							onPress={() => {
 								if (!isFocused) {
 									navigation.navigate(route.name);

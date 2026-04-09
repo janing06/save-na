@@ -69,6 +69,17 @@ async function runMigrations(database: SQLite.SQLiteDatabase): Promise<void> {
 			'ALTER TABLE budget_item ADD COLUMN due_day INTEGER DEFAULT NULL;',
 		);
 	}
+
+	// Migration 6: add theme column to user_preferences
+	const prefColumnsForTheme = await database.getAllAsync<{ name: string }>(
+		"SELECT name FROM pragma_table_info('user_preferences')",
+	);
+	const hasTheme = prefColumnsForTheme.some((c) => c.name === 'theme');
+	if (!hasTheme) {
+		await database.execAsync(
+			"ALTER TABLE user_preferences ADD COLUMN theme TEXT DEFAULT 'light';",
+		);
+	}
 }
 
 export async function getDatabase(): Promise<SQLite.SQLiteDatabase> {

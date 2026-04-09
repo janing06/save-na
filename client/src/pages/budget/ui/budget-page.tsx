@@ -1,6 +1,8 @@
 import { Ionicons } from '@expo/vector-icons';
 import type { IncomeSource, PayPeriod } from '@shared/lib';
+import { useThemeColors } from '@shared/lib';
 import { LoadingOverlay } from '@shared/ui';
+import { useColorScheme } from 'nativewind';
 import { Pressable, ScrollView, Text, View } from 'react-native';
 import {
 	SafeAreaView,
@@ -66,11 +68,14 @@ export const BudgetPage = ({
 }: Props) => {
 	const isTotal = sourceSwitcher.selectedSourceId === 'total';
 	const insets = useSafeAreaInsets();
+	const colors = useThemeColors();
+	const { colorScheme } = useColorScheme();
+	const fabIconColor = colorScheme === 'dark' ? '#000000' : 'white';
 
 	return (
-		<View className="flex-1 bg-teal-600">
+		<View className="flex-1 bg-teal-600 dark:bg-black">
 			{/* Teal banner */}
-			<SafeAreaView edges={['top']} className="bg-teal-600">
+			<SafeAreaView edges={['top']} className="bg-teal-600 dark:bg-black">
 				<MonthSelector
 					label={month.label}
 					onPrev={month.onPrev}
@@ -95,15 +100,18 @@ export const BudgetPage = ({
 			</SafeAreaView>
 
 			{/* White content slides up over teal */}
-			<View className="flex-1 bg-slate-100 rounded-t-3xl -mt-4 overflow-hidden">
+			<View className="flex-1 bg-slate-100 dark:bg-black rounded-t-3xl -mt-4 overflow-hidden">
 				{/* View mode toggle */}
-				<View className="flex-row bg-white rounded-xl p-1 mx-4 mt-4 mb-2 shadow-sm">
+				<View
+					className="flex-row rounded-xl p-1 mx-4 mt-4 mb-2 shadow-sm"
+					style={{ backgroundColor: colors.card }}
+				>
 					<Pressable
 						className={`flex-1 items-center py-2 rounded-lg ${viewMode === 'list' ? 'bg-teal-600' : ''}`}
 						onPress={() => onToggleViewMode('list')}
 					>
 						<Text
-							className={`text-xs font-semibold ${viewMode === 'list' ? 'text-white' : 'text-slate-500'}`}
+							className={`text-xs font-semibold ${viewMode === 'list' ? 'text-white' : 'text-slate-500 dark:text-slate-400'}`}
 						>
 							Overview
 						</Text>
@@ -113,7 +121,7 @@ export const BudgetPage = ({
 						onPress={() => onToggleViewMode('charts')}
 					>
 						<Text
-							className={`text-xs font-semibold ${viewMode === 'charts' ? 'text-white' : 'text-slate-500'}`}
+							className={`text-xs font-semibold ${viewMode === 'charts' ? 'text-white' : 'text-slate-500 dark:text-slate-400'}`}
 						>
 							Insights
 						</Text>
@@ -154,7 +162,7 @@ export const BudgetPage = ({
 
 							if (itemsByCategory.length === 0) {
 								return (
-									<Text className="text-slate-400 text-sm text-center mt-16">
+									<Text className="text-slate-400 dark:text-slate-500 text-sm text-center mt-16">
 										{isTotal
 											? 'No budget items yet.'
 											: 'No budget items yet.\nTap + to add one.'}
@@ -164,7 +172,7 @@ export const BudgetPage = ({
 
 							if (visibleGroups.length === 0) {
 								return (
-									<Text className="text-slate-400 text-sm text-center mt-16">
+									<Text className="text-slate-400 dark:text-slate-500 text-sm text-center mt-16">
 										No items for this pay period.
 									</Text>
 								);
@@ -197,17 +205,17 @@ export const BudgetPage = ({
 					<>
 						<Pressable
 							className="absolute left-6 bg-teal-600 w-12 h-12 rounded-full items-center justify-center shadow-lg"
-							style={{ bottom: insets.bottom + 16, shadowColor: '#0d9488' }}
+							style={{ bottom: insets.bottom + 16, shadowColor: colors.brand }}
 							onPress={onOpenChat}
 						>
-							<ChatbotIcon size={35} color="white" />
+							<ChatbotIcon size={35} color={fabIconColor} />
 						</Pressable>
 						<Pressable
 							className="absolute right-6 bg-teal-600 w-12 h-12 rounded-full items-center justify-center shadow-lg"
-							style={{ bottom: insets.bottom + 16, shadowColor: '#0d9488' }}
+							style={{ bottom: insets.bottom + 16, shadowColor: colors.brand }}
 							onPress={onAdd}
 						>
-							<Ionicons name="add" size={28} color="white" />
+							<Ionicons name="add" size={28} color={fabIconColor} />
 						</Pressable>
 					</>
 				)}
