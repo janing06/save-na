@@ -14,7 +14,12 @@ export async function checkDeviceCapability(): Promise<DeviceCapability> {
 	const totalRam = Device.totalMemory ?? 0;
 	const freeStorage = await FileSystem.getFreeDiskStorageAsync();
 
-	const availableModels = LOCAL_MODELS.filter((m) => totalRam >= m.minRamBytes);
+	// If totalMemory is unavailable (null), show all models — better to let the
+	// user try than incorrectly block them.
+	const availableModels =
+		totalRam === 0
+			? LOCAL_MODELS
+			: LOCAL_MODELS.filter((m) => totalRam >= m.minRamBytes);
 
 	const recommended =
 		availableModels.length > 0
