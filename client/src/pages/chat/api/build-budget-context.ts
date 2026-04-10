@@ -16,7 +16,9 @@ type PastMonthSummary = {
 	total_checked: number;
 };
 
-export async function buildBudgetContext(): Promise<string> {
+export async function buildBudgetContext(options?: {
+	trimForSmallModel?: boolean;
+}): Promise<string> {
 	const preferences = await getPreferences();
 	const incomeSources = await listIncomeSources();
 
@@ -49,6 +51,7 @@ export async function buildBudgetContext(): Promise<string> {
 	);
 
 	// Past months — category-level summary (last 5 months)
+	const pastMonthLimit = options?.trimForSmallModel ? 20 : 50;
 	const pastMonths = await db.getAllAsync<PastMonthSummary>(
 		`SELECT bm.year_month, c.name as category_name,
 		        SUM(bi.total_amount) as total_budgeted,
@@ -60,8 +63,8 @@ export async function buildBudgetContext(): Promise<string> {
 		 WHERE bm.year_month < ?
 		 GROUP BY bm.year_month, c.name
 		 ORDER BY bm.year_month DESC, c.sort_order ASC
-		 LIMIT 50`,
-		[yearMonth],
+		 LIMIT ?`,
+		[yearMonth, pastMonthLimit],
 	);
 
 	const getAllocationsForItem = (itemId: number) =>
@@ -153,15 +156,17 @@ export async function buildBudgetContext(): Promise<string> {
 				.reduce((s: number, a) => s + a.amount, 0);
 
 			context += `- ${item.name} (${item.category_name}): ${currency} ${item.total_amount.toLocaleString()} total\n`;
-			for (const allocation of itemAllocations) {
-				const period = payPeriods.find(
-					(p) => p.index === allocation.pay_period_index,
-				);
-				const label = period
-					? period.label
-					: `Period ${allocation.pay_period_index}`;
-				const status = allocation.is_paid ? '✅ checked' : '⏳ unchecked';
-				context += `  - ${label}: ${currency} ${allocation.amount.toLocaleString()} — ${status}\n`;
+			if (!options?.trimForSmallModel) {
+				for (const allocation of itemAllocations) {
+					const period = payPeriods.find(
+						(p) => p.index === allocation.pay_period_index,
+					);
+					const label = period
+						? period.label
+						: `Period ${allocation.pay_period_index}`;
+					const status = allocation.is_paid ? '✅ checked' : '⏳ unchecked';
+					context += `  - ${label}: ${currency} ${allocation.amount.toLocaleString()} — ${status}\n`;
+				}
 			}
 			if (checkedAmount > 0)
 				context += `  Checked so far: ${currency} ${checkedAmount.toLocaleString()}\n`;
