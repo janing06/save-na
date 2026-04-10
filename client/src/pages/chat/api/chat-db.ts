@@ -41,3 +41,19 @@ export async function saveApiKey(key: string): Promise<void> {
 		[key],
 	);
 }
+
+export async function getSelectedModel(): Promise<string | null> {
+	const db = await getDatabase();
+	const row = await db.getFirstAsync<{ selected_model: string | null }>(
+		'SELECT selected_model FROM user_preferences WHERE id = 1',
+	);
+	return row?.selected_model ?? null;
+}
+
+export async function saveSelectedModel(modelId: string): Promise<void> {
+	const db = await getDatabase();
+	await db.runAsync(
+		"UPDATE user_preferences SET selected_model = ?, updated_at = datetime('now') WHERE id = 1",
+		[modelId],
+	);
+}

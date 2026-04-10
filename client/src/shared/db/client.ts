@@ -80,6 +80,17 @@ async function runMigrations(database: SQLite.SQLiteDatabase): Promise<void> {
 			"ALTER TABLE user_preferences ADD COLUMN theme TEXT DEFAULT 'light';",
 		);
 	}
+
+	// Migration 7: add selected_model column to user_preferences
+	const prefCols7 = await database.getAllAsync<{ name: string }>(
+		"SELECT name FROM pragma_table_info('user_preferences')",
+	);
+	const hasSelectedModel = prefCols7.some((c) => c.name === 'selected_model');
+	if (!hasSelectedModel) {
+		await database.execAsync(
+			'ALTER TABLE user_preferences ADD COLUMN selected_model TEXT;',
+		);
+	}
 }
 
 export async function getDatabase(): Promise<SQLite.SQLiteDatabase> {
