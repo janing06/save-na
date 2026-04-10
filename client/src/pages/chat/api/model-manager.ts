@@ -23,12 +23,16 @@ export function getModelPath(model: LocalModelConfig): string {
 	return getModelFile(model).uri;
 }
 
-export function isModelDownloaded(model: LocalModelConfig): boolean {
+export async function isModelDownloaded(
+	model: LocalModelConfig,
+): Promise<boolean> {
 	const file = getModelFile(model);
 	return file.exists && file.size > 0;
 }
 
-export function getDownloadedModelSize(model: LocalModelConfig): number {
+export async function getDownloadedModelSize(
+	model: LocalModelConfig,
+): Promise<number> {
 	const file = getModelFile(model);
 	return file.exists ? file.size : 0;
 }
@@ -62,13 +66,15 @@ export function startModelDownload(
 	};
 }
 
-export function deleteModel(model: LocalModelConfig): void {
+export async function deleteModel(model: LocalModelConfig): Promise<void> {
 	const file = getModelFile(model);
 	if (file.exists) {
 		file.delete();
 	}
 }
 
-export function deletePartialDownload(model: LocalModelConfig): void {
-	deleteModel(model);
+export async function deletePartialDownload(
+	model: LocalModelConfig,
+): Promise<void> {
+	await deleteModel(model);
 }
