@@ -1,4 +1,3 @@
-export * from './ai-models';
 export * from './currencies';
 export * from './default-categories';
 export type { LocalModelConfig, LocalModelTier } from './local-models';

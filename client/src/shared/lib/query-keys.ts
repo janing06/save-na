@@ -12,7 +12,6 @@ export const queryKeys = {
 	notificationConfigs: (incomeSourceId: number) =>
 		['notification-configs', incomeSourceId] as const,
 	chatMessages: ['chat-messages'] as const,
-	apiKey: ['api-key'] as const,
 	theme: ['theme'] as const,
 	selectedModel: ['selected-model'] as const,
 	deviceCapability: ['device-capability'] as const,
