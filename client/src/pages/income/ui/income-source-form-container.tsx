@@ -52,6 +52,11 @@ export const IncomeSourceFormContainer = ({
 		mutationFn: updateIncomeSource,
 		onSuccess: () => {
 			invalidate();
+			if (editingSource) {
+				queryClient.invalidateQueries({
+					queryKey: queryKeys.notificationConfigs(editingSource.id),
+				});
+			}
 			onClose();
 		},
 		onError: () =>
