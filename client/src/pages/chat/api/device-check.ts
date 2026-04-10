@@ -1,6 +1,6 @@
 import { LOCAL_MODELS, type LocalModelConfig } from '@shared/config';
 import * as Device from 'expo-device';
-import * as FileSystem from 'expo-file-system';
+import { getFreeDiskStorageAsync } from 'expo-file-system/legacy';
 
 export type DeviceCapability = {
 	supported: boolean;
@@ -12,7 +12,7 @@ export type DeviceCapability = {
 
 export async function checkDeviceCapability(): Promise<DeviceCapability> {
 	const totalRam = Device.totalMemory ?? 0;
-	const freeStorage = await FileSystem.getFreeDiskStorageAsync().catch(() => 0);
+	const freeStorage = await getFreeDiskStorageAsync().catch(() => 0);
 
 	// If totalMemory is unavailable (null/0), show all models — better to let
 	// the user try than incorrectly block them.
@@ -39,5 +39,8 @@ export function hasEnoughStorage(
 	freeStorage: number,
 	modelSizeBytes: number,
 ): boolean {
+	// If freeStorage is 0, the check failed — allow the download rather than
+	// incorrectly blocking the user.
+	if (freeStorage === 0) return true;
 	return freeStorage >= modelSizeBytes * 1.2;
 }
