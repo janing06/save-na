@@ -1,3 +1,4 @@
+import { LOCAL_MODELS } from '@shared/config';
 import { LoadingOverlay } from '@shared/ui';
 import { useState } from 'react';
 import { Alert } from 'react-native';
@@ -48,20 +49,28 @@ export const ChatPageContainer = ({ onClose }: Props) => {
 		return <LoadingOverlay visible />;
 	}
 
-	if (!capability?.supported) {
+	if (capability !== null && !capability.supported) {
 		return <DeviceNotSupported onClose={onClose} />;
 	}
+
+	const resolvedCapability = capability ?? {
+		supported: true,
+		totalRam: 0,
+		freeStorage: 0,
+		availableModels: LOCAL_MODELS,
+		recommendedModel: LOCAL_MODELS[LOCAL_MODELS.length - 1],
+	};
 
 	if (!selectedModelId || !model) {
 		return (
 			<ModelSetupScreen
-				capability={capability}
+				capability={resolvedCapability}
 				isDownloading={isDownloading}
 				downloadingModelId={downloadingModelId}
 				downloadProgress={progress}
 				onDownload={async (m) => {
 					setDownloadingModelId(m.id);
-					const success = await download(m, capability.freeStorage);
+					const success = await download(m, resolvedCapability.freeStorage);
 					setDownloadingModelId(null);
 					if (success) {
 						selectModel(m.id);

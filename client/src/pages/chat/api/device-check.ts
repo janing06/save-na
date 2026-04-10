@@ -12,10 +12,10 @@ export type DeviceCapability = {
 
 export async function checkDeviceCapability(): Promise<DeviceCapability> {
 	const totalRam = Device.totalMemory ?? 0;
-	const freeStorage = await FileSystem.getFreeDiskStorageAsync();
+	const freeStorage = await FileSystem.getFreeDiskStorageAsync().catch(() => 0);
 
-	// If totalMemory is unavailable (null), show all models — better to let the
-	// user try than incorrectly block them.
+	// If totalMemory is unavailable (null/0), show all models — better to let
+	// the user try than incorrectly block them.
 	const availableModels =
 		totalRam === 0
 			? LOCAL_MODELS
