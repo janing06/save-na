@@ -30,13 +30,6 @@ export async function isModelDownloaded(
 	return file.exists && file.size > 0;
 }
 
-export async function getDownloadedModelSize(
-	model: LocalModelConfig,
-): Promise<number> {
-	const file = getModelFile(model);
-	return file.exists ? file.size : 0;
-}
-
 export type DownloadHandle = {
 	resumable: DownloadResumable;
 	promise: Promise<FileSystemDownloadResult | undefined>;

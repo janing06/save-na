@@ -1,9 +1,9 @@
 import type { LocalModelConfig } from '@shared/config';
 import type { ChatMessage } from '@shared/lib';
 import { queryKeys } from '@shared/lib';
-import type { LlamaContext } from 'llama.rn';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { useCallback, useRef, useState } from 'react';
+import type { LlamaContext } from 'llama.rn';
+import { useRef, useState } from 'react';
 import { Alert } from 'react-native';
 import { buildBudgetContext } from '../../api/build-budget-context';
 import { saveChatMessage } from '../../api/chat-db';

@@ -72,7 +72,7 @@ export const useModelDownload = () => {
 					progress: 1,
 				}));
 				return true;
-			} catch (error) {
+			} catch (_error) {
 				handleRef.current = null;
 				cancelRef.current = null;
 				await deletePartialDownload(model);
