@@ -38,6 +38,8 @@ export async function runLocalInference({
 			messages: chatMessages,
 			n_predict: 512,
 			temperature: 0.7,
+			penalty_repeat: 1.15,
+			penalty_last_n: 64,
 			stop: model.stopTokens,
 		},
 		(data) => {

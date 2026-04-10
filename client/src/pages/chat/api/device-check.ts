@@ -1,38 +1,22 @@
-import { LOCAL_MODELS, type LocalModelConfig } from '@shared/config';
+import { LOCAL_MODELS } from '@shared/config';
 import * as Device from 'expo-device';
 import { getFreeDiskStorageAsync } from 'expo-file-system/legacy';
 
 export type DeviceCapability = {
 	supported: boolean;
-	totalRam: number;
 	freeStorage: number;
-	availableModels: LocalModelConfig[];
-	recommendedModel: LocalModelConfig | null;
 };
 
 export async function checkDeviceCapability(): Promise<DeviceCapability> {
 	const totalRam = Device.totalMemory ?? 0;
 	const freeStorage = await getFreeDiskStorageAsync().catch(() => 0);
+	const model = LOCAL_MODELS[0];
 
-	// If totalMemory is unavailable (null/0), show all models — better to let
-	// the user try than incorrectly block them.
-	const availableModels =
-		totalRam === 0
-			? LOCAL_MODELS
-			: LOCAL_MODELS.filter((m) => totalRam >= m.minRamBytes);
+	// If totalMemory is unavailable (null/0), allow — better to let the user
+	// try than incorrectly block them.
+	const supported = totalRam === 0 || totalRam >= model.minRamBytes;
 
-	const recommended =
-		availableModels.length > 0
-			? availableModels[availableModels.length - 1]
-			: null;
-
-	return {
-		supported: availableModels.length > 0,
-		totalRam,
-		freeStorage,
-		availableModels,
-		recommendedModel: recommended,
-	};
+	return { supported, freeStorage };
 }
 
 export function hasEnoughStorage(

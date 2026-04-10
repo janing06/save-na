@@ -30,10 +30,10 @@ export const useSendMessage = (
 			queryClient.invalidateQueries({ queryKey: queryKeys.chatMessages });
 
 			const context = await loadContext();
-			if (!context) throw new Error('Failed to load model');
+			if (!context)
+				throw new Error('Model file not found — try downloading again');
 
-			const trimForSmallModel = model.tier === 'lite';
-			const systemPrompt = await buildBudgetContext({ trimForSmallModel });
+			const systemPrompt = await buildBudgetContext();
 
 			const reply = await runLocalInference({
 				context,

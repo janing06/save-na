@@ -48,23 +48,26 @@ export const useLocalModel = () => {
 
 	const loadContext = useCallback(async (): Promise<LlamaContext | null> => {
 		if (contextRef.current) return contextRef.current;
-		if (!model || !modelExists) return null;
+		if (!model) return null;
+
+		const exists = await isModelDownloaded(model);
+		if (!exists) return null;
 
 		setModelStatus('loading');
 		try {
 			const ctx = await initLlama({
-				model: getModelPath(model),
+				model: getModelPath(model).replace(/^file:\/\//, ''),
 				n_ctx: model.contextWindow,
 				n_gpu_layers: 99,
 			});
 			contextRef.current = ctx;
 			setModelStatus('ready');
 			return ctx;
-		} catch {
+		} catch (err) {
 			setModelStatus('error');
-			return null;
+			throw err;
 		}
-	}, [model, modelExists]);
+	}, [model]);
 
 	const releaseContext = useCallback(async () => {
 		if (contextRef.current) {

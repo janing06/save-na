@@ -41,9 +41,6 @@ export const ChatPageContainer = ({ onClose }: Props) => {
 		cancel: cancelDownload,
 	} = useModelDownload();
 	const [inputText, setInputText] = useState('');
-	const [downloadingModelId, setDownloadingModelId] = useState<string | null>(
-		null,
-	);
 
 	if (isCapabilityLoading || isModelLoading) {
 		return <LoadingOverlay visible />;
@@ -53,33 +50,21 @@ export const ChatPageContainer = ({ onClose }: Props) => {
 		return <DeviceNotSupported onClose={onClose} />;
 	}
 
-	const resolvedCapability = capability ?? {
-		supported: true,
-		totalRam: 0,
-		freeStorage: 0,
-		availableModels: LOCAL_MODELS,
-		recommendedModel: LOCAL_MODELS[LOCAL_MODELS.length - 1],
-	};
+	const freeStorage = capability?.freeStorage ?? 0;
 
 	if (!selectedModelId || !model) {
+		const m = LOCAL_MODELS[0];
 		return (
 			<ModelSetupScreen
-				capability={resolvedCapability}
 				isDownloading={isDownloading}
-				downloadingModelId={downloadingModelId}
 				downloadProgress={progress}
-				onDownload={async (m) => {
-					setDownloadingModelId(m.id);
-					const success = await download(m, resolvedCapability.freeStorage);
-					setDownloadingModelId(null);
+				onDownload={async () => {
+					const success = await download(m, freeStorage);
 					if (success) {
 						selectModel(m.id);
 					}
 				}}
-				onCancelDownload={() => {
-					cancelDownload();
-					setDownloadingModelId(null);
-				}}
+				onCancelDownload={cancelDownload}
 				onClose={onClose}
 			/>
 		);
