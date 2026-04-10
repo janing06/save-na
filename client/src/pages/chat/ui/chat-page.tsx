@@ -76,6 +76,7 @@ type Props = {
 	messages: ChatMessage[];
 	isLoading: boolean;
 	isSending: boolean;
+	partialResponse: string;
 	inputText: string;
 	onChangeText: (text: string) => void;
 	onSend: () => void;
@@ -88,6 +89,7 @@ export const ChatPage = ({
 	messages,
 	isLoading,
 	isSending,
+	partialResponse,
 	inputText,
 	onChangeText,
 	onSend,
@@ -136,7 +138,16 @@ export const ChatPage = ({
 				renderItem={({ item }) => (
 					<ChatBubble role={item.role} content={item.content} />
 				)}
-				ListFooterComponent={isSending ? <TypingIndicator /> : null}
+				ListFooterComponent={
+					isSending ? (
+						partialResponse ? (
+							// biome-ignore lint/a11y/useValidAriaRole: role is a custom prop, not an ARIA role
+							<ChatBubble role="assistant" content={partialResponse} />
+						) : (
+							<TypingIndicator />
+						)
+					) : null
+				}
 				style={{ flex: 1 }}
 				contentContainerStyle={{ padding: 16, paddingBottom: 8 }}
 				ListEmptyComponent={
