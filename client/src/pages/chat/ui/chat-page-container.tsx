@@ -2,31 +2,30 @@ import { LoadingOverlay } from '@shared/ui';
 import { useState } from 'react';
 import { Alert } from 'react-native';
 import {
-	useApiKey,
 	useChatMessages,
 	useClearChat,
+	useLocalModel,
 	useSendMessage,
 } from '../model/hooks';
 import { ChatPage } from './chat-page';
-import { ChatSetupPrompt } from './chat-setup-prompt';
 
 type Props = {
 	onClose: () => void;
 };
 
 export const ChatPageContainer = ({ onClose }: Props) => {
-	const { apiKey, isLoading: isApiKeyLoading, onSaveKey } = useApiKey();
+	const { model, loadContext, isLoading: isModelLoading } = useLocalModel();
 	const { messages, isLoading } = useChatMessages();
-	const { onSend, isSending } = useSendMessage(apiKey, messages);
+	const { onSend, isSending } = useSendMessage(
+		loadContext,
+		model ?? null,
+		messages,
+	);
 	const { onClearChat } = useClearChat();
 	const [inputText, setInputText] = useState('');
 
-	if (isApiKeyLoading) {
+	if (isModelLoading) {
 		return <LoadingOverlay visible />;
-	}
-
-	if (!apiKey) {
-		return <ChatSetupPrompt onSaveKey={onSaveKey} onClose={onClose} />;
 	}
 
 	const handleSend = () => {
