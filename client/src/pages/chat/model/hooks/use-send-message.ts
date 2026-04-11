@@ -19,6 +19,8 @@ export const useSendMessage = (
 	const [partialResponse, setPartialResponse] = useState('');
 	// Cache budget context for the session — it doesn't change between messages
 	const budgetContextCache = useRef<string | null>(null);
+	// Track consecutive failures — after 2, the native context is likely unrecoverable until restart
+	const consecutiveFailures = useRef(0);
 
 	const { mutate: onSend, isPending: isSending } = useMutation({
 		mutationFn: async (userMessage: string) => {
@@ -52,17 +54,27 @@ export const useSendMessage = (
 			await saveChatMessage('assistant', reply);
 		},
 		onSuccess: () => {
+			consecutiveFailures.current = 0;
 			queryClient.invalidateQueries({ queryKey: queryKeys.chatMessages });
 		},
 		onError: (error: Error) => {
 			setPartialResponse('');
+			consecutiveFailures.current += 1;
 			// Release the context so next send re-initializes fresh (fixes stuck UI after mid-stream failure)
 			releaseContext().catch(() => {});
-			const message =
+			let message: string;
+			if (
 				error.message === 'No model selected' ||
 				error.message === 'Model file not found — try downloading again'
-					? error.message
-					: 'Something went wrong. Please try again.';
+			) {
+				message = error.message;
+			} else if (consecutiveFailures.current >= 2) {
+				// Native context is likely unrecoverable — guide user to restart
+				message =
+					'The AI chat encountered an issue it cannot recover from. Please close and reopen the app to continue.';
+			} else {
+				message = 'Something went wrong. Please try again.';
+			}
 			Alert.alert('Error', message);
 			queryClient.invalidateQueries({ queryKey: queryKeys.chatMessages });
 		},

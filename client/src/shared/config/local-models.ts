@@ -29,10 +29,10 @@ export const LOCAL_MODELS: LocalModelConfig[] = [
 		sizeBytes: 900 * 1024 * 1024,
 		sizeLabel: '~900 MB',
 		minRamBytes: 4 * 1024 * 1024 * 1024,
-		contextWindow: 4096,
+		contextWindow: 2048,
 		stopTokens: ['<|im_end|>', '<|endoftext|>'],
 		inferenceParams: {
-			nPredict: 512,
+			nPredict: 256,
 			temperature: 0.7,
 			penaltyRepeat: 1.15,
 			penaltyLastN: 64,
