@@ -54,18 +54,32 @@ export const useLocalModel = () => {
 		if (!exists) return null;
 
 		setModelStatus('loading');
+		const modelPath = getModelPath(model).replace(/^file:\/\//, '');
 		try {
+			// Try GPU-accelerated first
 			const ctx = await initLlama({
-				model: getModelPath(model).replace(/^file:\/\//, ''),
+				model: modelPath,
 				n_ctx: model.contextWindow,
 				n_gpu_layers: 99,
 			});
 			contextRef.current = ctx;
 			setModelStatus('ready');
 			return ctx;
-		} catch (err) {
-			setModelStatus('error');
-			throw err;
+		} catch {
+			// GPU init failed — fall back to CPU-only (wider device compatibility)
+			try {
+				const ctx = await initLlama({
+					model: modelPath,
+					n_ctx: model.contextWindow,
+					n_gpu_layers: 0,
+				});
+				contextRef.current = ctx;
+				setModelStatus('ready');
+				return ctx;
+			} catch (err) {
+				setModelStatus('error');
+				throw err;
+			}
 		}
 	}, [model]);
 
