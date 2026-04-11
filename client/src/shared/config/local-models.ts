@@ -19,18 +19,18 @@ export type LocalModelConfig = {
 
 export const LOCAL_MODELS: LocalModelConfig[] = [
 	{
-		id: 'llama-3.2-1b',
+		id: 'smollm2-360m',
 		label: 'AI Assistant',
 		description:
 			'On-device AI for your budget questions. No internet required.',
-		fileName: 'Llama-3.2-1B-Instruct-Q4_K_M.gguf',
+		fileName: 'smollm2-360m-instruct-q4_k_m.gguf',
 		downloadUrl:
-			'https://huggingface.co/bartowski/Llama-3.2-1B-Instruct-GGUF/resolve/main/Llama-3.2-1B-Instruct-Q4_K_M.gguf',
-		sizeBytes: 800 * 1024 * 1024,
-		sizeLabel: '~800 MB',
-		minRamBytes: 3 * 1024 * 1024 * 1024,
+			'https://huggingface.co/HuggingFaceTB/SmolLM2-360M-Instruct-GGUF/resolve/main/smollm2-360m-instruct-q4_k_m.gguf',
+		sizeBytes: 220 * 1024 * 1024,
+		sizeLabel: '~220 MB',
+		minRamBytes: 2 * 1024 * 1024 * 1024,
 		contextWindow: 2048,
-		stopTokens: ['<|eot_id|>'],
+		stopTokens: ['<|im_end|>', '<|endoftext|>'],
 		inferenceParams: {
 			nPredict: 256,
 			temperature: 0.7,
