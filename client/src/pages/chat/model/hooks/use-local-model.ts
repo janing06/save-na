@@ -3,7 +3,7 @@ import { queryKeys } from '@shared/lib';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { initLlama, type LlamaContext } from 'llama.rn';
 import { useCallback, useEffect, useRef, useState } from 'react';
-import { AppState } from 'react-native';
+import { AppState, Platform } from 'react-native';
 import { getSelectedModel, saveSelectedModel } from '../../api/chat-db';
 import { getModelPath, isModelDownloaded } from '../../api/model-manager';
 
@@ -55,31 +55,21 @@ export const useLocalModel = () => {
 
 		setModelStatus('loading');
 		const modelPath = getModelPath(model).replace(/^file:\/\//, '');
+		// Android GPU (OpenCL/Vulkan) can silently fail mid-inference on older devices —
+		// use CPU-only on Android, GPU on iOS (Metal is stable)
+		const nGpuLayers = Platform.OS === 'ios' ? 99 : 0;
 		try {
-			// Try GPU-accelerated first
 			const ctx = await initLlama({
 				model: modelPath,
 				n_ctx: model.contextWindow,
-				n_gpu_layers: 99,
+				n_gpu_layers: nGpuLayers,
 			});
 			contextRef.current = ctx;
 			setModelStatus('ready');
 			return ctx;
-		} catch {
-			// GPU init failed — fall back to CPU-only (wider device compatibility)
-			try {
-				const ctx = await initLlama({
-					model: modelPath,
-					n_ctx: model.contextWindow,
-					n_gpu_layers: 0,
-				});
-				contextRef.current = ctx;
-				setModelStatus('ready');
-				return ctx;
-			} catch (err) {
-				setModelStatus('error');
-				throw err;
-			}
+		} catch (err) {
+			setModelStatus('error');
+			throw err;
 		}
 	}, [model]);
 
