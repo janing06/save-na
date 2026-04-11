@@ -9,8 +9,8 @@ import { getNextPaydays } from './next-paydays';
 import type { IncomeSource, NotificationConfig } from './types';
 
 async function getNotifications() {
-	// expo-notifications is not supported in Expo Go since SDK 53
-	if (Constants.appOwnership === 'expo') return null;
+	// expo-notifications push token setup errors in Expo Go — disable there
+	if (Constants.executionEnvironment === 'storeClient') return null;
 	try {
 		return await import('expo-notifications');
 	} catch {
@@ -25,7 +25,7 @@ export async function requestNotificationPermission(): Promise<boolean> {
 	if (Platform.OS === 'android') {
 		await Notifications.setNotificationChannelAsync('default', {
 			name: 'Default',
-			importance: Notifications.AndroidImportance.DEFAULT,
+			importance: Notifications.AndroidImportance.HIGH,
 		});
 	}
 	const { status } = await Notifications.requestPermissionsAsync();
@@ -130,7 +130,7 @@ export async function rescheduleAllNotifications(): Promise<void> {
 	if (Platform.OS === 'android') {
 		await Notifications.setNotificationChannelAsync('default', {
 			name: 'Default',
-			importance: Notifications.AndroidImportance.DEFAULT,
+			importance: Notifications.AndroidImportance.HIGH,
 		});
 	}
 
@@ -144,42 +144,47 @@ export async function rescheduleAllNotifications(): Promise<void> {
 		await scheduleNotificationsForSource(source, configs);
 	}
 
-	const itemsWithDueDay = await listBudgetItemsWithDueDay();
-	const now2 = new Date();
-	const today = new Date(now2.getFullYear(), now2.getMonth(), now2.getDate());
+	// Due date notifications — isolated so errors here don't affect payday/reminder
+	try {
+		const itemsWithDueDay = await listBudgetItemsWithDueDay();
+		const now2 = new Date();
+		const today = new Date(now2.getFullYear(), now2.getMonth(), now2.getDate());
 
-	for (const item of itemsWithDueDay) {
-		// Schedule for current month and next month
-		for (let monthOffset = 0; monthOffset <= 1; monthOffset++) {
-			const daysInMonth = new Date(
-				today.getFullYear(),
-				today.getMonth() + monthOffset + 1,
-				0,
-			).getDate();
-			const clampedDay = Math.min(item.due_day, daysInMonth);
-			const targetDate = new Date(
-				today.getFullYear(),
-				today.getMonth() + monthOffset,
-				clampedDay,
-			);
-			const notifyDate = new Date(targetDate);
-			notifyDate.setDate(notifyDate.getDate() - 1);
-			notifyDate.setHours(10, 0, 0, 0);
+		for (const item of itemsWithDueDay) {
+			// Schedule for current month and next month
+			for (let monthOffset = 0; monthOffset <= 1; monthOffset++) {
+				const daysInMonth = new Date(
+					today.getFullYear(),
+					today.getMonth() + monthOffset + 1,
+					0,
+				).getDate();
+				const clampedDay = Math.min(item.due_day, daysInMonth);
+				const targetDate = new Date(
+					today.getFullYear(),
+					today.getMonth() + monthOffset,
+					clampedDay,
+				);
+				const notifyDate = new Date(targetDate);
+				notifyDate.setDate(notifyDate.getDate() - 1);
+				notifyDate.setHours(10, 0, 0, 0);
 
-			if (notifyDate > now2) {
-				const dateKey = targetDate.toISOString().split('T')[0];
-				await Notifications.scheduleNotificationAsync({
-					identifier: `due-date-${item.id}-${dateKey}`,
-					content: {
-						title: 'Budget item due tomorrow',
-						body: `${item.name} (₱${item.total_amount.toLocaleString()}) is due tomorrow.`,
-					},
-					trigger: {
-						type: Notifications.SchedulableTriggerInputTypes.DATE,
-						date: notifyDate,
-					},
-				});
+				if (notifyDate > now2) {
+					const dateKey = targetDate.toISOString().split('T')[0];
+					await Notifications.scheduleNotificationAsync({
+						identifier: `due-date-${item.id}-${dateKey}`,
+						content: {
+							title: 'Budget item due tomorrow',
+							body: `${item.name} (₱${item.total_amount.toLocaleString()}) is due tomorrow.`,
+						},
+						trigger: {
+							type: Notifications.SchedulableTriggerInputTypes.DATE,
+							date: notifyDate,
+						},
+					});
+				}
 			}
 		}
+	} catch {
+		// Due date scheduling failure should not prevent payday/reminder notifications
 	}
 }

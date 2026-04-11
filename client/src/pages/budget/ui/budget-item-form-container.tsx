@@ -75,7 +75,7 @@ export const BudgetItemFormContainer = ({
 		mutationFn: createBudgetItem,
 		onSuccess: () => {
 			invalidate();
-			rescheduleAllNotifications();
+			rescheduleAllNotifications().catch(() => {});
 			onClose();
 		},
 		onError: () =>
@@ -86,7 +86,7 @@ export const BudgetItemFormContainer = ({
 		mutationFn: updateBudgetItem,
 		onSuccess: () => {
 			invalidate();
-			rescheduleAllNotifications();
+			rescheduleAllNotifications().catch(() => {});
 			onClose();
 		},
 		onError: () =>
@@ -97,7 +97,7 @@ export const BudgetItemFormContainer = ({
 		mutationFn: deleteBudgetItem,
 		onSuccess: () => {
 			invalidate();
-			rescheduleAllNotifications();
+			rescheduleAllNotifications().catch(() => {});
 			onClose();
 		},
 		onError: () =>
