@@ -19,16 +19,16 @@ export type LocalModelConfig = {
 
 export const LOCAL_MODELS: LocalModelConfig[] = [
 	{
-		id: 'smollm2-360m',
+		id: 'qwen2.5-1.5b',
 		label: 'AI Assistant',
 		description:
 			'On-device AI for your budget questions. No internet required.',
-		fileName: 'smollm2-360m-instruct-q4_k_m.gguf',
+		fileName: 'qwen2.5-1.5b-instruct-q4_k_m.gguf',
 		downloadUrl:
-			'https://huggingface.co/HuggingFaceTB/SmolLM2-360M-Instruct-GGUF/resolve/main/smollm2-360m-instruct-q4_k_m.gguf',
-		sizeBytes: 220 * 1024 * 1024,
-		sizeLabel: '~220 MB',
-		minRamBytes: 2 * 1024 * 1024 * 1024,
+			'https://huggingface.co/Qwen/Qwen2.5-1.5B-Instruct-GGUF/resolve/main/qwen2.5-1.5b-instruct-q4_k_m.gguf',
+		sizeBytes: 900 * 1024 * 1024,
+		sizeLabel: '~900 MB',
+		minRamBytes: 4 * 1024 * 1024 * 1024,
 		contextWindow: 2048,
 		stopTokens: ['<|im_end|>', '<|endoftext|>'],
 		inferenceParams: {
