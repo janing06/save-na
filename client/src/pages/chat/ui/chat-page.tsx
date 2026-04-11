@@ -57,37 +57,20 @@ const Dot = ({ delay }: { delay: number }) => {
 	);
 };
 
-const THINKING_PHRASES = [
-	'Thinking',
-	'Analyzing your budget',
-	'Crunching the numbers',
-];
-
-const TypingIndicator = () => {
-	const [phraseIndex, setPhraseIndex] = useState(0);
-
-	useEffect(() => {
-		const interval = setInterval(() => {
-			setPhraseIndex((i) => (i + 1) % THINKING_PHRASES.length);
-		}, 2000);
-		return () => clearInterval(interval);
-	}, []);
-
-	return (
-		<View className="mb-3 self-start">
-			<View className="px-4 py-3 rounded-2xl rounded-bl-sm bg-white dark:bg-zinc-900 flex-row items-center gap-2">
-				<Text className="text-sm text-slate-500 dark:text-slate-400">
-					{THINKING_PHRASES[phraseIndex]}
-				</Text>
-				<View className="flex-row items-center gap-1">
-					<Dot delay={0} />
-					<Dot delay={150} />
-					<Dot delay={300} />
-				</View>
+const TypingIndicator = () => (
+	<View className="mb-3 self-start">
+		<View className="px-4 py-3 rounded-2xl rounded-bl-sm bg-white dark:bg-zinc-900 flex-row items-center gap-2">
+			<Text className="text-sm text-slate-500 dark:text-slate-400">
+				Thinking
+			</Text>
+			<View className="flex-row items-center gap-1">
+				<Dot delay={0} />
+				<Dot delay={150} />
+				<Dot delay={300} />
 			</View>
 		</View>
-	);
-};
+	</View>
+);
 
 const SUGGESTIONS = [
 	'How is my budget looking?',
