@@ -16,7 +16,7 @@ export async function clearAllData(): Promise<void> {
 
 	// expo-notifications is not supported in Expo Go since SDK 53
 	const Constants = (await import('expo-constants')).default;
-	if (Constants.appOwnership !== 'expo') {
+	if (Constants.executionEnvironment !== 'storeClient') {
 		try {
 			const Notifications = await import('expo-notifications');
 			await Notifications.cancelAllScheduledNotificationsAsync();
