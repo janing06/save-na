@@ -30,6 +30,9 @@ export const ChatBubble = ({ role, content }: Props) => {
 			borderColor: colors.card,
 		},
 		paragraph: { marginTop: 0, marginBottom: 4 },
+		heading1: { fontSize: 14, fontWeight: '700' as const, color: colors.text },
+		heading2: { fontSize: 14, fontWeight: '700' as const, color: colors.text },
+		heading3: { fontSize: 14, fontWeight: '700' as const, color: colors.text },
 	};
 
 	return (

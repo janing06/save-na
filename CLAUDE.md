@@ -1,6 +1,6 @@
 # SaveNa — Project Context for Claude
 
-Personal budgeting app for Filipinos built with React Native + Expo. All data stored locally on device via SQLite. No backend, no accounts, no network requests.
+Personal budgeting app for Filipinos built with React Native + Expo. All data stored locally on device via SQLite. No backend, no accounts. The AI chat model requires a one-time internet download; all inference runs on-device after that.
 
 ---
 
