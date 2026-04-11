@@ -26,10 +26,12 @@ export const ChatPageContainer = ({ onClose }: Props) => {
 		isLoading: isModelLoading,
 		selectModel,
 		loadContext,
+		releaseContext,
 	} = useLocalModel();
 	const { messages, isLoading } = useChatMessages();
 	const { onSend, isSending, partialResponse } = useSendMessage(
 		loadContext,
+		releaseContext,
 		model ?? null,
 		messages,
 	);

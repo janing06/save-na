@@ -11,6 +11,7 @@ import { runLocalInference } from '../../api/local-inference';
 
 export const useSendMessage = (
 	loadContext: () => Promise<LlamaContext | null>,
+	releaseContext: () => Promise<void>,
 	model: LocalModelConfig | null,
 	messages: ChatMessage[],
 ) => {
@@ -55,6 +56,8 @@ export const useSendMessage = (
 		},
 		onError: (error: Error) => {
 			setPartialResponse('');
+			// Release the context so next send re-initializes fresh (fixes stuck UI after mid-stream failure)
+			releaseContext().catch(() => {});
 			const message =
 				error.message === 'No model selected' ||
 				error.message === 'Model file not found — try downloading again'
