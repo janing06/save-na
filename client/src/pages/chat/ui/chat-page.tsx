@@ -123,6 +123,7 @@ export const ChatPage = ({
 	onClose,
 }: Props) => {
 	const flatListRef = useRef<FlatList>(null);
+	const isAtBottom = useRef(true);
 	const [keyboardHeight, setKeyboardHeight] = useState(0);
 	const colors = useThemeColors();
 
@@ -139,9 +140,9 @@ export const ChatPage = ({
 		}
 	}, [sortedMessages.length]);
 
-	// Auto-scroll as tokens stream in
+	// Auto-scroll as tokens stream in, but only if the user hasn't scrolled up
 	useEffect(() => {
-		if (partialResponse) {
+		if (partialResponse && isAtBottom.current) {
 			flatListRef.current?.scrollToEnd({ animated: false });
 		}
 	}, [partialResponse]);
@@ -171,6 +172,14 @@ export const ChatPage = ({
 				renderItem={({ item }) => (
 					<ChatBubble role={item.role} content={item.content} />
 				)}
+				onScroll={(e) => {
+					const { contentOffset, contentSize, layoutMeasurement } =
+						e.nativeEvent;
+					const distanceFromBottom =
+						contentSize.height - contentOffset.y - layoutMeasurement.height;
+					isAtBottom.current = distanceFromBottom < 50;
+				}}
+				scrollEventThrottle={100}
 				ListFooterComponent={
 					isSending ? (
 						partialResponse ? (
