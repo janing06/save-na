@@ -55,7 +55,12 @@ export const useSendMessage = (
 		},
 		onError: (error: Error) => {
 			setPartialResponse('');
-			Alert.alert('Error', error.message);
+			const message =
+				error.message === 'No model selected' ||
+				error.message === 'Model file not found — try downloading again'
+					? error.message
+					: 'Something went wrong. Please try again.';
+			Alert.alert('Error', message);
 			queryClient.invalidateQueries({ queryKey: queryKeys.chatMessages });
 		},
 	});
