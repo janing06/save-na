@@ -1,6 +1,6 @@
 export { exportBackup, type RestoreResult, restoreBackup } from './backup';
 export { clearAllData } from './clear-data';
-export { getDatabase } from './client';
+export { getDatabase, resetDatabase } from './client';
 export {
 	getNotificationConfigsForSource,
 	insertNotificationConfigs,

@@ -82,6 +82,10 @@ async function runMigrations(database: SQLite.SQLiteDatabase): Promise<void> {
 	}
 }
 
+export function resetDatabase(): void {
+	db = null;
+}
+
 export async function getDatabase(): Promise<SQLite.SQLiteDatabase> {
 	if (db) return db;
 

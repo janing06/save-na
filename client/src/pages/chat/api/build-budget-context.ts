@@ -1,4 +1,9 @@
-import { getDatabase, getPreferences, listIncomeSources } from '@shared/db';
+import {
+	getDatabase,
+	getPreferences,
+	listIncomeSources,
+	resetDatabase,
+} from '@shared/db';
 import { type BudgetItemAllocation, computePayPeriods } from '@shared/lib';
 
 type BudgetItemRow = {
@@ -16,7 +21,7 @@ type PastMonthSummary = {
 	total_checked: number;
 };
 
-export async function buildBudgetContext(): Promise<string> {
+async function buildBudgetContextInternal(): Promise<string> {
 	const preferences = await getPreferences();
 	const incomeSources = await listIncomeSources();
 
@@ -219,4 +224,25 @@ export async function buildBudgetContext(): Promise<string> {
 	}
 
 	return context;
+}
+
+export async function buildBudgetContext(): Promise<string> {
+	try {
+		return await buildBudgetContextInternal();
+	} catch {
+		// Native DB handle may have been reclaimed by the OS (low memory).
+		// Reset the singleton and retry once with a fresh connection.
+		resetDatabase();
+		try {
+			return await buildBudgetContextInternal();
+		} catch {
+			// DB still unavailable — return minimal context so the model
+			// can still respond, just without personalized budget data.
+			return `
+  You are SaveNa, a personal budget assistant for a Filipino user.
+  Budget data is temporarily unavailable. Let the user know you are
+  unable to access their budget right now and ask them to try again.
+`;
+		}
+	}
 }
