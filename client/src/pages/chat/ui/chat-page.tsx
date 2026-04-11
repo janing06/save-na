@@ -50,19 +50,44 @@ const Dot = ({ delay }: { delay: number }) => {
 	}));
 
 	return (
-		<Animated.View style={style} className="w-2 h-2 rounded-full bg-muted" />
+		<Animated.View
+			style={style}
+			className="w-1.5 h-1.5 rounded-full bg-slate-400 dark:bg-slate-500"
+		/>
 	);
 };
 
-const TypingIndicator = () => (
-	<View className="mb-3 self-start">
-		<View className="px-4 py-3 rounded-2xl rounded-bl-sm bg-white dark:bg-zinc-900 flex-row items-center gap-1.5">
-			<Dot delay={0} />
-			<Dot delay={150} />
-			<Dot delay={300} />
+const THINKING_PHRASES = [
+	'Thinking',
+	'Analyzing your budget',
+	'Crunching the numbers',
+];
+
+const TypingIndicator = () => {
+	const [phraseIndex, setPhraseIndex] = useState(0);
+
+	useEffect(() => {
+		const interval = setInterval(() => {
+			setPhraseIndex((i) => (i + 1) % THINKING_PHRASES.length);
+		}, 2000);
+		return () => clearInterval(interval);
+	}, []);
+
+	return (
+		<View className="mb-3 self-start">
+			<View className="px-4 py-3 rounded-2xl rounded-bl-sm bg-white dark:bg-zinc-900 flex-row items-center gap-2">
+				<Text className="text-sm text-slate-500 dark:text-slate-400">
+					{THINKING_PHRASES[phraseIndex]}
+				</Text>
+				<View className="flex-row items-center gap-1">
+					<Dot delay={0} />
+					<Dot delay={150} />
+					<Dot delay={300} />
+				</View>
+			</View>
 		</View>
-	</View>
-);
+	);
+};
 
 const SUGGESTIONS = [
 	'How is my budget looking?',
@@ -76,6 +101,7 @@ type Props = {
 	messages: ChatMessage[];
 	isLoading: boolean;
 	isSending: boolean;
+	partialResponse: string;
 	inputText: string;
 	onChangeText: (text: string) => void;
 	onSend: () => void;
@@ -88,6 +114,7 @@ export const ChatPage = ({
 	messages,
 	isLoading,
 	isSending,
+	partialResponse,
 	inputText,
 	onChangeText,
 	onSend,
@@ -104,12 +131,20 @@ export const ChatPage = ({
 
 	useEffect(() => {
 		if (sortedMessages.length > 0) {
-			setTimeout(
+			const timeout = setTimeout(
 				() => flatListRef.current?.scrollToEnd({ animated: true }),
 				100,
 			);
+			return () => clearTimeout(timeout);
 		}
 	}, [sortedMessages.length]);
+
+	// Auto-scroll as tokens stream in
+	useEffect(() => {
+		if (partialResponse) {
+			flatListRef.current?.scrollToEnd({ animated: false });
+		}
+	}, [partialResponse]);
 
 	useEffect(() => {
 		if (Platform.OS !== 'android') return;
@@ -136,7 +171,16 @@ export const ChatPage = ({
 				renderItem={({ item }) => (
 					<ChatBubble role={item.role} content={item.content} />
 				)}
-				ListFooterComponent={isSending ? <TypingIndicator /> : null}
+				ListFooterComponent={
+					isSending ? (
+						partialResponse ? (
+							// biome-ignore lint/a11y/useValidAriaRole: role is a custom prop, not an ARIA role
+							<ChatBubble role="assistant" content={partialResponse} />
+						) : (
+							<TypingIndicator />
+						)
+					) : null
+				}
 				style={{ flex: 1 }}
 				contentContainerStyle={{ padding: 16, paddingBottom: 8 }}
 				ListEmptyComponent={

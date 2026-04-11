@@ -1,6 +1,7 @@
+import { getModelById } from '@shared/config';
 import { getDatabase } from '@shared/db';
 import type { Category } from '@shared/lib';
-import { queryKeys } from '@shared/lib';
+import { deleteModelFile, queryKeys } from '@shared/lib';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useRouter } from 'expo-router';
 import { useState } from 'react';
@@ -24,41 +25,45 @@ export const SettingsPageContainer = () => {
 	const backup = useBackup();
 	const { theme, updateTheme } = useTheme();
 
-	const { data: apiKey = null } = useQuery({
-		queryKey: queryKeys.apiKey,
+	const { data: selectedModelId = null } = useQuery({
+		queryKey: queryKeys.selectedModel,
 		queryFn: async () => {
 			const db = await getDatabase();
-			const row = await db.getFirstAsync<{ openrouter_api_key: string | null }>(
-				'SELECT openrouter_api_key FROM user_preferences WHERE id = 1',
+			const row = await db.getFirstAsync<{ selected_model: string | null }>(
+				'SELECT selected_model FROM user_preferences WHERE id = 1',
 			);
-			return row?.openrouter_api_key ?? null;
+			return row?.selected_model ?? null;
 		},
 	});
+
+	const model = selectedModelId ? getModelById(selectedModelId) : null;
 
 	const queryClient = useQueryClient();
 
-	const { mutate: removeApiKey } = useMutation({
+	const { mutate: deleteModelMutation } = useMutation({
 		mutationFn: async () => {
+			if (!model) return;
+			deleteModelFile(model);
 			const db = await getDatabase();
 			await db.runAsync(
-				"UPDATE user_preferences SET openrouter_api_key = NULL, updated_at = datetime('now') WHERE id = 1",
+				"UPDATE user_preferences SET selected_model = NULL, updated_at = datetime('now') WHERE id = 1",
 			);
 		},
 		onSuccess: () => {
-			queryClient.invalidateQueries({ queryKey: queryKeys.apiKey });
+			queryClient.invalidateQueries({ queryKey: queryKeys.selectedModel });
 		},
 	});
 
-	const handleRemoveApiKey = () => {
+	const handleDeleteModel = () => {
 		Alert.alert(
-			'Remove API Key',
-			'This will remove your OpenRouter API key. You can re-enter it in the Chat tab.',
+			'Delete Model',
+			`This will delete the ${model?.label ?? ''} model file to free up storage. You can download it again in the Chat tab.`,
 			[
 				{ text: 'Cancel', style: 'cancel' },
 				{
-					text: 'Remove',
+					text: 'Delete',
 					style: 'destructive',
-					onPress: () => removeApiKey(),
+					onPress: () => deleteModelMutation(),
 				},
 			],
 		);
@@ -92,8 +97,9 @@ export const SettingsPageContainer = () => {
 			currencyPicker={currencyPicker}
 			categoryActions={categoryActions}
 			onClearData={clearData.onClear}
-			apiKey={apiKey}
-			onRemoveApiKey={handleRemoveApiKey}
+			modelName={model?.label ?? null}
+			modelSize={model?.sizeLabel ?? null}
+			onDeleteModel={handleDeleteModel}
 			onExportBackup={backup.onExport}
 			onRestoreBackup={backup.onRestore}
 			isLoading={isPrefsLoading || isCatsLoading || backup.isLoading}

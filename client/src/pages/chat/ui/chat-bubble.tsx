@@ -7,27 +7,6 @@ type Props = {
 	content: string;
 };
 
-const _userStyles = {
-	body: { color: '#ffffff', fontSize: 14, lineHeight: 20 },
-	strong: { color: '#ffffff', fontWeight: '700' },
-	em: { color: '#ffffff' },
-	link: { color: '#bae6fd' },
-	bullet_list_icon: { color: '#ffffff' },
-	ordered_list_icon: { color: '#ffffff' },
-	code_inline: {
-		backgroundColor: 'rgba(255,255,255,0.15)',
-		color: '#ffffff',
-		fontSize: 13,
-	},
-	fence: {
-		backgroundColor: 'rgba(255,255,255,0.1)',
-		color: '#ffffff',
-		fontSize: 13,
-		borderColor: 'rgba(255,255,255,0.2)',
-	},
-	paragraph: { marginTop: 0, marginBottom: 4 },
-};
-
 export const ChatBubble = ({ role, content }: Props) => {
 	const isUser = role === 'user';
 	const colors = useThemeColors();
@@ -51,6 +30,9 @@ export const ChatBubble = ({ role, content }: Props) => {
 			borderColor: colors.card,
 		},
 		paragraph: { marginTop: 0, marginBottom: 4 },
+		heading1: { fontSize: 14, fontWeight: '700' as const, color: colors.text },
+		heading2: { fontSize: 14, fontWeight: '700' as const, color: colors.text },
+		heading3: { fontSize: 14, fontWeight: '700' as const, color: colors.text },
 	};
 
 	return (

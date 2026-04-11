@@ -69,6 +69,7 @@ export default {
 				},
 			],
 			'expo-sqlite',
+			'llama.rn',
 			[
 				'expo-notifications',
 				{

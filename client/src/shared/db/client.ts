@@ -48,17 +48,6 @@ async function runMigrations(database: SQLite.SQLiteDatabase): Promise<void> {
 		}
 	}
 
-	// Migration 4: add openrouter_api_key column to user_preferences
-	const prefColumns = await database.getAllAsync<{ name: string }>(
-		"SELECT name FROM pragma_table_info('user_preferences')",
-	);
-	const hasApiKey = prefColumns.some((c) => c.name === 'openrouter_api_key');
-	if (!hasApiKey) {
-		await database.execAsync(
-			'ALTER TABLE user_preferences ADD COLUMN openrouter_api_key TEXT;',
-		);
-	}
-
 	// Migration 5: add due_day column to budget_item
 	const budgetItemColumns = await database.getAllAsync<{ name: string }>(
 		"SELECT name FROM pragma_table_info('budget_item')",
@@ -78,6 +67,17 @@ async function runMigrations(database: SQLite.SQLiteDatabase): Promise<void> {
 	if (!hasTheme) {
 		await database.execAsync(
 			"ALTER TABLE user_preferences ADD COLUMN theme TEXT DEFAULT 'light';",
+		);
+	}
+
+	// Migration 7: add selected_model column to user_preferences
+	const prefCols7 = await database.getAllAsync<{ name: string }>(
+		"SELECT name FROM pragma_table_info('user_preferences')",
+	);
+	const hasSelectedModel = prefCols7.some((c) => c.name === 'selected_model');
+	if (!hasSelectedModel) {
+		await database.execAsync(
+			'ALTER TABLE user_preferences ADD COLUMN selected_model TEXT;',
 		);
 	}
 }
