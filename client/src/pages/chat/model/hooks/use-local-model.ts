@@ -58,11 +58,14 @@ export const useLocalModel = () => {
 		// Android GPU (OpenCL/Vulkan) can silently fail mid-inference on older devices —
 		// use CPU-only on Android, GPU on iOS (Metal is stable)
 		const nGpuLayers = Platform.OS === 'ios' ? 99 : 0;
+		// Limit to 4 threads on Android to avoid overloading efficiency cores
+		const nThreads = Platform.OS === 'android' ? 4 : undefined;
 		try {
 			const ctx = await initLlama({
 				model: modelPath,
 				n_ctx: model.contextWindow,
 				n_gpu_layers: nGpuLayers,
+				n_threads: nThreads,
 			});
 			contextRef.current = ctx;
 			setModelStatus('ready');
