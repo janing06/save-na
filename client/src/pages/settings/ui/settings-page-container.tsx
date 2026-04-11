@@ -1,9 +1,8 @@
 import { getModelById } from '@shared/config';
 import { getDatabase } from '@shared/db';
 import type { Category } from '@shared/lib';
-import { queryKeys } from '@shared/lib';
+import { deleteModelFile, queryKeys } from '@shared/lib';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { Directory, File, Paths } from 'expo-file-system';
 import { useRouter } from 'expo-router';
 import { useState } from 'react';
 import { Alert } from 'react-native';
@@ -44,13 +43,7 @@ export const SettingsPageContainer = () => {
 	const { mutate: deleteModelMutation } = useMutation({
 		mutationFn: async () => {
 			if (!model) return;
-			const file = new File(
-				new Directory(Paths.document, 'models'),
-				model.fileName,
-			);
-			if (file.exists) {
-				file.delete();
-			}
+			deleteModelFile(model);
 			const db = await getDatabase();
 			await db.runAsync(
 				"UPDATE user_preferences SET selected_model = NULL, updated_at = datetime('now') WHERE id = 1",

@@ -131,12 +131,20 @@ export const ChatPage = ({
 
 	useEffect(() => {
 		if (sortedMessages.length > 0) {
-			setTimeout(
+			const timeout = setTimeout(
 				() => flatListRef.current?.scrollToEnd({ animated: true }),
 				100,
 			);
+			return () => clearTimeout(timeout);
 		}
 	}, [sortedMessages.length]);
+
+	// Auto-scroll as tokens stream in
+	useEffect(() => {
+		if (partialResponse) {
+			flatListRef.current?.scrollToEnd({ animated: false });
+		}
+	}, [partialResponse]);
 
 	useEffect(() => {
 		if (Platform.OS !== 'android') return;

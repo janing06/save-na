@@ -9,6 +9,12 @@ export type LocalModelConfig = {
 	minRamBytes: number;
 	contextWindow: number;
 	stopTokens: string[];
+	inferenceParams: {
+		nPredict: number;
+		temperature: number;
+		penaltyRepeat: number;
+		penaltyLastN: number;
+	};
 };
 
 export const LOCAL_MODELS: LocalModelConfig[] = [
@@ -25,6 +31,12 @@ export const LOCAL_MODELS: LocalModelConfig[] = [
 		minRamBytes: 4 * 1024 * 1024 * 1024,
 		contextWindow: 4096,
 		stopTokens: ['<|im_end|>', '<|endoftext|>'],
+		inferenceParams: {
+			nPredict: 512,
+			temperature: 0.7,
+			penaltyRepeat: 1.15,
+			penaltyLastN: 64,
+		},
 	},
 ];
 

@@ -82,9 +82,23 @@ export async function buildBudgetContext(): Promise<string> {
 
 	let context = `
   You are SaveNa, a personal budget assistant for a Filipino user.
-  SaveNa is a budgeting app built around pay schedules — users allocate budget items per income source across their pay periods (e.g. 15th and 30th of the month).
-  Each budget item can be checked off per pay period to track what has already been accounted for.
 
+  === HOW SAVENA WORKS ===
+  SaveNa is a envelope-style budgeting app built around pay schedules. Here is how it works:
+
+  1. INCOME SOURCES — The user sets up one or more income sources (e.g. salary, freelance). Each source has a pay schedule (e.g. semi-monthly: paid on the 15th and 30th) and a total monthly amount.
+
+  2. BUDGET ITEMS — For each income source, the user creates budget items (e.g. Rent, Groceries, Electric Bill). Each item has a total amount for the month and is split across the income source's pay periods. For example, a ${currency} 5,000 Rent item paid semi-monthly might be split as ${currency} 2,500 on the 15th and ${currency} 2,500 on the 30th.
+
+  3. CHECKING OFF — Each budget item allocation (per pay period) can be checked off or left unchecked:
+     - CHECKED (✅) means the user has already set aside or paid that amount for that pay period. It is accounted for — the money has been allocated or the bill has been paid.
+     - UNCHECKED (⏳) means that allocation is still upcoming or not yet paid. The money has not been set aside yet for that specific pay period.
+     - "Checked so far" = total amount the user has already handled this month.
+     - "Still unchecked" = total amount still pending or upcoming this month.
+
+  4. PURPOSE — The goal is to make sure every peso from every paycheck is intentionally allocated. By checking off items as each payday arrives, the user tracks exactly what has been covered and what still needs to be paid.
+
+  === YOUR ROLE ===
   You have access to the user's complete financial data for the current month and summaries of past months.
   Use this data to answer questions accurately. Do not make up numbers — only reference what is in the data provided.
 
@@ -113,9 +127,12 @@ export async function buildBudgetContext(): Promise<string> {
 			source.pay_dates,
 			yearMonth,
 		);
-		const payAmounts: number[] = source.pay_amounts
-			? JSON.parse(source.pay_amounts)
-			: [];
+		let payAmounts: number[] = [];
+		try {
+			payAmounts = source.pay_amounts ? JSON.parse(source.pay_amounts) : [];
+		} catch {
+			// malformed JSON — fall back to equal split
+		}
 
 		context += `- ${source.name}: ${currency} ${source.amount.toLocaleString()} total (${source.pay_schedule})\n`;
 		context += `  Pay periods this month:\n`;

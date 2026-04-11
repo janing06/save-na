@@ -16,14 +16,13 @@ export const useSendMessage = (
 ) => {
 	const queryClient = useQueryClient();
 	const [partialResponse, setPartialResponse] = useState('');
-	const isInferring = useRef(false);
+	// Cache budget context for the session — it doesn't change between messages
+	const budgetContextCache = useRef<string | null>(null);
 
 	const { mutate: onSend, isPending: isSending } = useMutation({
 		mutationFn: async (userMessage: string) => {
 			if (!model) throw new Error('No model selected');
-			if (isInferring.current) throw new Error('Already processing');
 
-			isInferring.current = true;
 			setPartialResponse('');
 
 			await saveChatMessage('user', userMessage);
@@ -33,12 +32,14 @@ export const useSendMessage = (
 			if (!context)
 				throw new Error('Model file not found — try downloading again');
 
-			const systemPrompt = await buildBudgetContext();
+			if (!budgetContextCache.current) {
+				budgetContextCache.current = await buildBudgetContext();
+			}
 
 			const reply = await runLocalInference({
 				context,
 				model,
-				systemPrompt,
+				systemPrompt: budgetContextCache.current,
 				messages,
 				userMessage,
 				onToken: (token) => {
@@ -50,11 +51,9 @@ export const useSendMessage = (
 			await saveChatMessage('assistant', reply);
 		},
 		onSuccess: () => {
-			isInferring.current = false;
 			queryClient.invalidateQueries({ queryKey: queryKeys.chatMessages });
 		},
 		onError: (error: Error) => {
-			isInferring.current = false;
 			setPartialResponse('');
 			Alert.alert('Error', error.message);
 			queryClient.invalidateQueries({ queryKey: queryKeys.chatMessages });

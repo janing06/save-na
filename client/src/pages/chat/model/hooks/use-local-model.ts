@@ -77,8 +77,9 @@ export const useLocalModel = () => {
 				// ignore release errors
 			}
 			contextRef.current = null;
-			setModelStatus(model && modelExists ? 'downloaded' : 'no-model');
 		}
+		// Always reset status — also clears 'error' state to allow retry
+		setModelStatus(model && modelExists ? 'downloaded' : 'no-model');
 	}, [model, modelExists]);
 
 	// Release context on app background

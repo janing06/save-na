@@ -89,18 +89,20 @@ export const useModelDownload = () => {
 
 	const cancel = useCallback(async () => {
 		const handle = handleRef.current;
+		const modelToClean = cancelRef.current;
+		// Clear refs immediately before any awaits to avoid race on unmount
+		handleRef.current = null;
+		cancelRef.current = null;
 		if (handle) {
 			try {
 				await handle.resumable.cancelAsync();
 			} catch {
 				// ignore cancel errors
 			}
-			handleRef.current = null;
 		}
 		// Clean up partial file
-		if (cancelRef.current) {
-			await deletePartialDownload(cancelRef.current);
-			cancelRef.current = null;
+		if (modelToClean) {
+			await deletePartialDownload(modelToClean);
 		}
 		setState({
 			isDownloading: false,

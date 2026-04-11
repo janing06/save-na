@@ -32,7 +32,7 @@ export const DeviceNotSupported = ({ onClose }: Props) => {
 				</Text>
 				<Text className="text-sm text-slate-500 dark:text-slate-400 text-center">
 					Your device doesn't have enough memory to run the AI assistant. This
-					feature requires at least 3 GB of RAM.
+					feature requires at least 4 GB of RAM.
 				</Text>
 			</View>
 		</SafeAreaView>

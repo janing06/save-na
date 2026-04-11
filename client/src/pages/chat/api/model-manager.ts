@@ -1,19 +1,14 @@
 import type { LocalModelConfig } from '@shared/config';
-import { Directory, File, Paths } from 'expo-file-system';
+import { deleteModelFile, getModelFile } from '@shared/lib';
+import { Directory, Paths } from 'expo-file-system';
 import {
 	createDownloadResumable,
 	type DownloadResumable,
 	type FileSystemDownloadResult,
 } from 'expo-file-system/legacy';
 
-const getModelsDir = (): Directory => new Directory(Paths.document, 'models');
-
-function getModelFile(model: LocalModelConfig): File {
-	return new File(getModelsDir(), model.fileName);
-}
-
 function ensureModelsDir(): void {
-	const dir = getModelsDir();
+	const dir = new Directory(Paths.document, 'models');
 	if (!dir.exists) {
 		dir.create();
 	}
@@ -59,15 +54,8 @@ export function startModelDownload(
 	};
 }
 
-export async function deleteModel(model: LocalModelConfig): Promise<void> {
-	const file = getModelFile(model);
-	if (file.exists) {
-		file.delete();
-	}
-}
-
 export async function deletePartialDownload(
 	model: LocalModelConfig,
 ): Promise<void> {
-	await deleteModel(model);
+	deleteModelFile(model);
 }

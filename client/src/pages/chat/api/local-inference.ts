@@ -33,13 +33,16 @@ export async function runLocalInference({
 		{ role: 'user' as const, content: userMessage },
 	];
 
+	const { nPredict, temperature, penaltyRepeat, penaltyLastN } =
+		model.inferenceParams;
+
 	const result = await context.completion(
 		{
 			messages: chatMessages,
-			n_predict: 512,
-			temperature: 0.7,
-			penalty_repeat: 1.15,
-			penalty_last_n: 64,
+			n_predict: nPredict,
+			temperature,
+			penalty_repeat: penaltyRepeat,
+			penalty_last_n: penaltyLastN,
 			stop: model.stopTokens,
 		},
 		(data) => {
