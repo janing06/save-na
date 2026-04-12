@@ -2,7 +2,7 @@ import { Ionicons } from '@expo/vector-icons';
 import type { ChatMessage } from '@shared/lib';
 import { useThemeColors } from '@shared/lib';
 import { LoadingOverlay } from '@shared/ui';
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useState } from 'react';
 import {
 	FlatList,
 	Keyboard,
@@ -58,7 +58,7 @@ const Dot = ({ delay }: { delay: number }) => {
 };
 
 const TypingIndicator = () => (
-	<View className="mb-3 self-start">
+	<View className="px-4 pt-2 pb-1 self-start">
 		<View className="px-4 py-3 rounded-2xl rounded-bl-sm bg-white dark:bg-zinc-900 flex-row items-center gap-2">
 			<Text className="text-sm text-slate-500 dark:text-slate-400">
 				Thinking
@@ -105,36 +105,8 @@ export const ChatPage = ({
 	onClearChat,
 	onClose,
 }: Props) => {
-	const flatListRef = useRef<FlatList>(null);
-	const isAtBottom = useRef(true);
-	const [showScrollToBottom, setShowScrollToBottom] = useState(false);
 	const [keyboardHeight, setKeyboardHeight] = useState(0);
 	const colors = useThemeColors();
-
-	// Messages come from DB in DESC order, reverse for display
-	const sortedMessages = [...messages].reverse();
-
-	useEffect(() => {
-		if (sortedMessages.length > 0) {
-			const timeout = setTimeout(
-				() => flatListRef.current?.scrollToEnd({ animated: true }),
-				100,
-			);
-			return () => clearTimeout(timeout);
-		}
-	}, [sortedMessages.length]);
-
-	// Auto-scroll as tokens stream in, but only if the user hasn't scrolled up
-	useEffect(() => {
-		if (partialResponse && isAtBottom.current) {
-			flatListRef.current?.scrollToEnd({ animated: false });
-		}
-	}, [partialResponse]);
-
-	// Hide scroll-to-bottom button when streaming ends
-	useEffect(() => {
-		if (!isSending) setShowScrollToBottom(false);
-	}, [isSending]);
 
 	useEffect(() => {
 		if (Platform.OS !== 'android') return;
@@ -154,76 +126,40 @@ export const ChatPage = ({
 
 	const content = (
 		<>
-			<View className="flex-1">
-				<FlatList
-					ref={flatListRef}
-					data={sortedMessages}
-					keyExtractor={(item) => String(item.id)}
-					renderItem={({ item }) => (
-						<ChatBubble role={item.role} content={item.content} />
-					)}
-					onScrollBeginDrag={() => {
-						isAtBottom.current = false;
-						if (isSending) setShowScrollToBottom(true);
-					}}
-					onScroll={(e) => {
-						const { contentOffset, contentSize, layoutMeasurement } =
-							e.nativeEvent;
-						const distanceFromBottom =
-							contentSize.height - contentOffset.y - layoutMeasurement.height;
-						if (distanceFromBottom < 50) {
-							isAtBottom.current = true;
-							// Only call setState when transitioning true→false to avoid
-							// continuous re-renders while sitting at the bottom
-							setShowScrollToBottom((prev) => (prev ? false : prev));
-						}
-					}}
-					scrollEventThrottle={100}
-					ListFooterComponent={
-						isSending ? (
-							partialResponse ? (
-								// biome-ignore lint/a11y/useValidAriaRole: role is a custom prop, not an ARIA role
-								<ChatBubble role="assistant" content={partialResponse} />
-							) : (
-								<TypingIndicator />
-							)
-						) : null
-					}
-					style={{ flex: 1 }}
-					contentContainerStyle={{ padding: 16, paddingBottom: 8 }}
-					ListEmptyComponent={
-						!isSending ? (
-							// biome-ignore lint/a11y/useValidAriaRole: role is a custom prop, not an ARIA role
-							<ChatBubble
-								role="assistant"
-								content={`Hi! I'm SaveNa, your personal budget assistant. 👋\n\nI can see your income sources, budget items, and spending history. Ask me anything — like how your budget is looking, where you can save more, or how this month compares to last month. 💸`}
-							/>
-						) : null
-					}
-				/>
-				{showScrollToBottom && (
-					<Pressable
-						onPress={() => {
-							isAtBottom.current = true;
-							setShowScrollToBottom(false);
-							flatListRef.current?.scrollToEnd({ animated: true });
-						}}
-						className="absolute bottom-3 self-center bg-teal-600 rounded-full px-4 py-2 flex-row items-center gap-1.5 active:opacity-80"
-						style={{
-							shadowColor: '#000',
-							shadowOffset: { width: 0, height: 2 },
-							shadowOpacity: 0.2,
-							shadowRadius: 4,
-							elevation: 4,
-						}}
-					>
-						<Ionicons name="arrow-down" size={14} color="#ffffff" />
-						<Text className="text-white text-xs font-semibold">
-							Jump to latest
-						</Text>
-					</Pressable>
+			{/* Inverted FlatList — new messages appear at the bottom naturally.
+			    Data is in DESC order from DB which is correct for inverted lists.
+			    No auto-scroll logic needed. */}
+			<FlatList
+				data={messages}
+				keyExtractor={(item) => String(item.id)}
+				renderItem={({ item }) => (
+					<ChatBubble role={item.role} content={item.content} />
 				)}
-			</View>
+				inverted
+				style={{ flex: 1 }}
+				contentContainerStyle={{ padding: 16, paddingBottom: 8 }}
+				ListEmptyComponent={
+					!isSending ? (
+						// biome-ignore lint/a11y/useValidAriaRole: role is a custom prop, not an ARIA role
+						<ChatBubble
+							role="assistant"
+							content={`Hi! I'm SaveNa, your personal budget assistant. 👋\n\nI can see your income sources, budget items, and spending history. Ask me anything — like how your budget is looking, where you can save more, or how this month compares to last month. 💸`}
+						/>
+					) : null
+				}
+			/>
+
+			{/* Streaming area — lives outside FlatList so token updates never
+			    cause FlatList re-renders or scroll interference */}
+			{isSending &&
+				(partialResponse ? (
+					<View className="px-4 pt-2 pb-1">
+						{/* biome-ignore lint/a11y/useValidAriaRole: role is a custom prop, not an ARIA role */}
+						<ChatBubble role="assistant" content={partialResponse} />
+					</View>
+				) : (
+					<TypingIndicator />
+				))}
 
 			{/* Bottom section: suggestions + input */}
 			<View>

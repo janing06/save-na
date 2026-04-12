@@ -19,7 +19,7 @@ export const useSendMessage = (
 	const [partialResponse, setPartialResponse] = useState('');
 	// Cache budget context for the session — it doesn't change between messages
 	const budgetContextCache = useRef<string | null>(null);
-	// Track consecutive failures — after 2, the native context is likely unrecoverable until restart
+	// Track consecutive failures — after 5, the native context is likely unrecoverable until restart
 	const consecutiveFailures = useRef(0);
 
 	const { mutate: onSend, isPending: isSending } = useMutation({
