@@ -126,6 +126,9 @@ async function buildBudgetContextInternal(): Promise<string> {
 
 	// Income sources with pay period breakdown
 	context += `INCOME SOURCES:\n`;
+	if (incomeSources.length === 0) {
+		context += `No income sources set up yet.\n`;
+	}
 	for (const source of incomeSources) {
 		const payPeriods = computePayPeriods(
 			source.pay_schedule,
@@ -153,6 +156,9 @@ async function buildBudgetContextInternal(): Promise<string> {
 
 	// Budget items with per-period allocations and checked status
 	context += `BUDGET ITEMS WITH PAY PERIOD ALLOCATIONS:\n`;
+	if (budgetItems.length === 0) {
+		context += `No budget items added yet for this month.\n`;
+	}
 	for (const source of incomeSources) {
 		const sourceItems = budgetItems.filter(
 			(b) => b.income_source_id === source.id,
