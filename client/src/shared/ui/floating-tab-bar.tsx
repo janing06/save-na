@@ -69,7 +69,11 @@ const TabItem = ({
 		maxWidth: labelMaxWidth.value,
 	}));
 
-	const iconColor = isFocused ? colors.brand : 'rgba(255,255,255,0.5)';
+	const iconColor = isFocused
+		? colors.brand
+		: colors.isDark
+			? 'rgba(0,0,0,0.45)'
+			: 'rgba(255,255,255,0.5)';
 
 	return (
 		<Pressable onPress={onPress} className="items-center justify-center">

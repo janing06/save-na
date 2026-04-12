@@ -25,5 +25,6 @@ const darkColors = {
 
 export const useThemeColors = () => {
 	const { colorScheme } = useColorScheme();
-	return colorScheme === 'dark' ? darkColors : lightColors;
+	const isDark = colorScheme === 'dark';
+	return { ...(isDark ? darkColors : lightColors), isDark };
 };
