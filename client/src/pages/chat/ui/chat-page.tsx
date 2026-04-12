@@ -173,10 +173,12 @@ export const ChatPage = ({
 							contentSize.height - contentOffset.y - layoutMeasurement.height;
 						if (distanceFromBottom < 50) {
 							isAtBottom.current = true;
-							setShowScrollToBottom(false);
+							// Only call setState when transitioning true→false to avoid
+							// continuous re-renders while sitting at the bottom
+							setShowScrollToBottom((prev) => (prev ? false : prev));
 						}
 					}}
-					scrollEventThrottle={16}
+					scrollEventThrottle={100}
 					ListFooterComponent={
 						isSending ? (
 							partialResponse ? (
