@@ -107,6 +107,7 @@ export const ChatPage = ({
 }: Props) => {
 	const flatListRef = useRef<FlatList>(null);
 	const isAtBottom = useRef(true);
+	const [showScrollToBottom, setShowScrollToBottom] = useState(false);
 	const [keyboardHeight, setKeyboardHeight] = useState(0);
 	const colors = useThemeColors();
 
@@ -130,6 +131,11 @@ export const ChatPage = ({
 		}
 	}, [partialResponse]);
 
+	// Hide scroll-to-bottom button when streaming ends
+	useEffect(() => {
+		if (!isSending) setShowScrollToBottom(false);
+	}, [isSending]);
+
 	useEffect(() => {
 		if (Platform.OS !== 'android') return;
 
@@ -148,43 +154,74 @@ export const ChatPage = ({
 
 	const content = (
 		<>
-			<FlatList
-				ref={flatListRef}
-				data={sortedMessages}
-				keyExtractor={(item) => String(item.id)}
-				renderItem={({ item }) => (
-					<ChatBubble role={item.role} content={item.content} />
-				)}
-				onScroll={(e) => {
-					const { contentOffset, contentSize, layoutMeasurement } =
-						e.nativeEvent;
-					const distanceFromBottom =
-						contentSize.height - contentOffset.y - layoutMeasurement.height;
-					isAtBottom.current = distanceFromBottom < 50;
-				}}
-				scrollEventThrottle={100}
-				ListFooterComponent={
-					isSending ? (
-						partialResponse ? (
+			<View className="flex-1">
+				<FlatList
+					ref={flatListRef}
+					data={sortedMessages}
+					keyExtractor={(item) => String(item.id)}
+					renderItem={({ item }) => (
+						<ChatBubble role={item.role} content={item.content} />
+					)}
+					onScrollBeginDrag={() => {
+						isAtBottom.current = false;
+						if (isSending) setShowScrollToBottom(true);
+					}}
+					onScroll={(e) => {
+						const { contentOffset, contentSize, layoutMeasurement } =
+							e.nativeEvent;
+						const distanceFromBottom =
+							contentSize.height - contentOffset.y - layoutMeasurement.height;
+						if (distanceFromBottom < 50) {
+							isAtBottom.current = true;
+							setShowScrollToBottom(false);
+						}
+					}}
+					scrollEventThrottle={16}
+					ListFooterComponent={
+						isSending ? (
+							partialResponse ? (
+								// biome-ignore lint/a11y/useValidAriaRole: role is a custom prop, not an ARIA role
+								<ChatBubble role="assistant" content={partialResponse} />
+							) : (
+								<TypingIndicator />
+							)
+						) : null
+					}
+					style={{ flex: 1 }}
+					contentContainerStyle={{ padding: 16, paddingBottom: 8 }}
+					ListEmptyComponent={
+						!isSending ? (
 							// biome-ignore lint/a11y/useValidAriaRole: role is a custom prop, not an ARIA role
-							<ChatBubble role="assistant" content={partialResponse} />
-						) : (
-							<TypingIndicator />
-						)
-					) : null
-				}
-				style={{ flex: 1 }}
-				contentContainerStyle={{ padding: 16, paddingBottom: 8 }}
-				ListEmptyComponent={
-					!isSending ? (
-						// biome-ignore lint/a11y/useValidAriaRole: role is a custom prop, not an ARIA role
-						<ChatBubble
-							role="assistant"
-							content={`Hi! I'm SaveNa, your personal budget assistant. 👋\n\nI can see your income sources, budget items, and spending history. Ask me anything — like how your budget is looking, where you can save more, or how this month compares to last month. 💸`}
-						/>
-					) : null
-				}
-			/>
+							<ChatBubble
+								role="assistant"
+								content={`Hi! I'm SaveNa, your personal budget assistant. 👋\n\nI can see your income sources, budget items, and spending history. Ask me anything — like how your budget is looking, where you can save more, or how this month compares to last month. 💸`}
+							/>
+						) : null
+					}
+				/>
+				{showScrollToBottom && (
+					<Pressable
+						onPress={() => {
+							isAtBottom.current = true;
+							setShowScrollToBottom(false);
+							flatListRef.current?.scrollToEnd({ animated: true });
+						}}
+						className="absolute bottom-3 self-center bg-teal-600 rounded-full px-4 py-2 flex-row items-center gap-1.5 active:opacity-80"
+						style={{
+							shadowColor: '#000',
+							shadowOffset: { width: 0, height: 2 },
+							shadowOpacity: 0.2,
+							shadowRadius: 4,
+							elevation: 4,
+						}}
+					>
+						<Ionicons name="arrow-down" size={14} color="#ffffff" />
+						<Text className="text-white text-xs font-semibold">
+							Jump to latest
+						</Text>
+					</Pressable>
+				)}
+			</View>
 
 			{/* Bottom section: suggestions + input */}
 			<View>
