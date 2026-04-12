@@ -68,8 +68,8 @@ export const useSendMessage = (
 				error.message === 'Model file not found — try downloading again'
 			) {
 				message = error.message;
-			} else if (consecutiveFailures.current >= 2) {
-				// Native context is likely unrecoverable — device may not be compatible
+			} else if (consecutiveFailures.current >= 5) {
+				// Persistent failures likely indicate hardware incompatibility
 				message =
 					'AI chat does not appear to be supported on your device. This feature requires a device with sufficient processing power.';
 			} else {
