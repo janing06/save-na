@@ -69,9 +69,9 @@ export const useSendMessage = (
 			) {
 				message = error.message;
 			} else if (consecutiveFailures.current >= 2) {
-				// Native context is likely unrecoverable — guide user to restart
+				// Native context is likely unrecoverable — device may not be compatible
 				message =
-					'The AI chat encountered an issue it cannot recover from. Please close and reopen the app to continue.';
+					'AI chat does not appear to be supported on your device. This feature requires a device with sufficient processing power.';
 			} else {
 				message = 'Something went wrong. Please try again.';
 			}
