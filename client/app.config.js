@@ -69,7 +69,6 @@ export default {
 				},
 			],
 			'expo-sqlite',
-			['llama.rn', { enableOpenCLAndHexagon: false }],
 			[
 				'expo-notifications',
 				{

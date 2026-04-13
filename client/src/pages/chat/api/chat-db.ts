@@ -25,18 +25,19 @@ export async function clearChatMessages(): Promise<void> {
 	await db.runAsync('DELETE FROM chat_message');
 }
 
-export async function getSelectedModel(): Promise<string | null> {
+export async function getApiKey(): Promise<string | null> {
 	const db = await getDatabase();
-	const row = await db.getFirstAsync<{ selected_model: string | null }>(
-		'SELECT selected_model FROM user_preferences WHERE id = 1',
+	const row = await db.getFirstAsync<{ openrouter_api_key: string | null }>(
+		'SELECT openrouter_api_key FROM user_preferences WHERE id = 1',
 	);
-	return row?.selected_model ?? null;
+	return row?.openrouter_api_key ?? null;
 }
 
-export async function saveSelectedModel(modelId: string): Promise<void> {
+export async function saveApiKey(key: string): Promise<void> {
 	const db = await getDatabase();
 	await db.runAsync(
-		"UPDATE user_preferences SET selected_model = ?, updated_at = datetime('now') WHERE id = 1",
-		[modelId],
+		`INSERT INTO user_preferences (id, openrouter_api_key) VALUES (1, ?)
+		 ON CONFLICT(id) DO UPDATE SET openrouter_api_key = excluded.openrouter_api_key, updated_at = datetime('now')`,
+		[key],
 	);
 }

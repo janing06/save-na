@@ -23,9 +23,8 @@ type Props = {
 		onEdit: (cat: Category) => void;
 	};
 	onClearData: () => void;
-	modelName: string | null;
-	modelSize: string | null;
-	onDeleteModel: () => void;
+	apiKey: string | null;
+	onRemoveApiKey: () => void;
 	onExportBackup: () => void;
 	onRestoreBackup: () => void;
 	isLoading: boolean;
@@ -39,9 +38,8 @@ export const SettingsPage = ({
 	currencyPicker,
 	categoryActions,
 	onClearData,
-	modelName,
-	modelSize,
-	onDeleteModel,
+	apiKey,
+	onRemoveApiKey,
 	onExportBackup,
 	onRestoreBackup,
 	isLoading,
@@ -159,21 +157,21 @@ export const SettingsPage = ({
 					<View className="mx-4 bg-white dark:bg-zinc-900 rounded-2xl overflow-hidden">
 						<View className="px-4 py-4">
 							<Text className="text-sm font-medium text-slate-900 dark:text-slate-100">
-								AI Model
+								API Key
 							</Text>
 							<Text className="text-xs text-slate-400 dark:text-slate-500 mt-0.5">
-								{modelName
-									? `${modelName} (${modelSize})`
+								{apiKey
+									? `Configured: ${apiKey.slice(0, 8)}...${apiKey.slice(-4)}`
 									: 'Not configured — set up in the Chat tab'}
 							</Text>
 						</View>
-						{modelName && (
+						{apiKey && (
 							<Pressable
-								onPress={onDeleteModel}
+								onPress={onRemoveApiKey}
 								className="px-4 py-3 border-t border-slate-100 dark:border-zinc-800 active:opacity-60"
 							>
 								<Text className="text-sm text-red-500 dark:text-red-400">
-									Delete Model
+									Remove API Key
 								</Text>
 							</Pressable>
 						)}
