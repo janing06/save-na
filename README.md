@@ -31,7 +31,7 @@ A personal budgeting app for Filipinos built with React Native and Expo, designe
 - **Categories** — Organize budget items by category; create and manage custom categories in Settings
 - **Payday Notifications** — Get notified on payday and reminded 2 days later to check off budget items; configurable per income source with custom times
 - **Total Tab Source Labels** — Budget items in the Total tab show which income source they belong to, grouped by source for easy comparison
-- **AI Chat Assistant** — Ask questions about your budget and spending using an on-device AI assistant; runs entirely on your device, no API key or internet required after the one-time model download
+- **AI Chat Assistant** — Ask questions about your budget and spending using an AI assistant powered by OpenRouter; requires a free API key and internet connection
 - **Clear All Data** — Reset the app to a clean state from Settings
 
 ---
@@ -48,7 +48,7 @@ A personal budgeting app for Filipinos built with React Native and Expo, designe
 | [TanStack React Query](https://tanstack.com/query) | Server state, caching, and cache invalidation |
 | [Jotai](https://jotai.org) | Global atom state |
 | [NativeWind](https://www.nativewind.dev) | Tailwind CSS utility classes for React Native |
-| [llama.rn](https://github.com/mybigday/llama.rn) | On-device LLM inference (GGUF models via llama.cpp) |
+| [OpenRouter](https://openrouter.ai) | AI chat API with multi-model fallback (free + paid models) |
 | [Biome](https://biomejs.dev) | Linting and formatting |
 | [EAS Build](https://docs.expo.dev/build/introduction/) | Cloud builds for Android and iOS |
 | [Claude Code](https://claude.ai/claude-code) | AI-assisted development |
@@ -108,7 +108,7 @@ The app follows **Feature-Sliced Design (FSD)** with a **container/presentation*
 - **Container** (`*-page-container.tsx`) — composes hooks, owns data fetching and mutations
 - **Presentation** (`*-page.tsx`) — pure UI, receives everything via props
 
-All data is stored **locally on device** using SQLite via `expo-sqlite`. There is no backend — no accounts. The AI chat model requires a one-time internet download; all inference runs on-device via `llama.rn`. TanStack Query wraps all DB calls for caching and invalidation.
+All data is stored **locally on device** using SQLite via `expo-sqlite`. There is no backend — no accounts. The AI chat feature uses OpenRouter's API and requires a free API key and internet connection. TanStack Query wraps all DB calls for caching and invalidation.
 
 Pay period logic is computed in-memory from the income source's schedule and pay dates, not stored in the database.
 

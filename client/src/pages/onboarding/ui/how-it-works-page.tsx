@@ -9,8 +9,7 @@ const features = [
 	{
 		icon: 'lock-closed-outline' as const,
 		title: 'Your budget stays private',
-		description:
-			'No sign in needed. Your data stays on your phone. AI chat runs entirely on your device — no API key or internet required after setup.',
+		description: 'No sign in needed. Your data stays on your phone.',
 	},
 	{
 		icon: 'wallet-outline' as const,
