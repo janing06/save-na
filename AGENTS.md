@@ -1,6 +1,6 @@
 # SaveNa — Agent Guide
 
-Personal budgeting app for Filipinos built with React Native + Expo. All data stored locally on device via SQLite. No backend, no accounts. The AI chat model requires a one-time internet download; all inference runs on-device after that.
+Personal budgeting app for Filipinos built with React Native + Expo. All data stored locally on device via SQLite. No backend, no accounts. The AI chat feature uses OpenRouter's API and requires a free API key and internet connection.
 
 ---
 
@@ -32,7 +32,7 @@ All work happens inside `client/`. Run every command from there.
 | Lint + format | Biome |
 | Architecture validation | steiger (FSD) |
 | Dead code | knip |
-| On-device AI | llama.rn (GGUF models via llama.cpp) |
+| AI chat | OpenRouter API (multi-model fallback, free + paid) |
 | Builds | EAS Build (cloud) |
 
 ---
